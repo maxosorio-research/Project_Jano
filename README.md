@@ -58,7 +58,7 @@ The current implementation combines the workspace shell, local processing pipeli
 - persist reader preferences locally through a settings repository;
 - document and preview the future conditional OCR → translation flow without activating processing;
 - detect a local Ollama runtime and list its installed models;
-- recommend the local `translategemma:4b` model and run a reproducible academic translation smoke test based on the Cranmer and Desmarais (2011) test PDF, without modifying project documents;
+- use `translategemma:12b` as the official local translation model, keep conservative review independently configurable, and provide a reproducible academic translation smoke test based on the Cranmer and Desmarais (2011) test PDF;
 - GitHub Actions CI on Windows.
 
 The translated reading surface now supports a manual local pipeline: PDF.js native extraction, conditional bundled English OCR, TXT and structured artifacts, ID-preserving Ollama translation, generated Markdown, and safe Markdown rendering. Generated translations use deterministic 1:1 alignment. Source anchors currently estimate within-page segment positions from stored reading order and text weight; precise PDF text-item/rectangle locators remain follow-up work. External-translation alignment, contextual span alignment, additional OCR languages, automatic processing on import, Zotero, and plugin behavior are not implemented yet.
@@ -67,7 +67,7 @@ The project library is an expandable folder tree with compact file rows, sorting
 
 The home view keeps the portable-project creation card and remembers up to eight recently opened project folders. To process a document, select an original without a translation and choose **Extract and translate** in the Translation panel. Ollama must be running with the selected model installed.
 
-To try Milestone 2.6, install `translategemma:4b` in Ollama, run `pnpm tauri dev`, open **Ajustes → Ollama local**, and execute the fixed sample. The former `qwen2.5:0.5b` diagnostic preference is migrated automatically. For reader testing, create or open a project, place a text-selectable PDF in its `_orig` folder, choose **Refresh**, and select the document in the library.
+To use the current local pipeline, install `translategemma:12b` in Ollama and, for the default review pass, `qwen2.5:7b-instruct`. Run `pnpm tauri dev`, open **Ajustes → Ollama local**, and verify both model roles. Earlier single-model preferences are migrated automatically. For reader testing, create or open a project, place a text-selectable PDF in its `_orig` folder, choose **Refresh**, and select the document in the library.
 
 ## Prerequisites
 

@@ -1,6 +1,6 @@
 # ADR 0011 — Ollama local runtime diagnostic spike
 
-Status: Accepted experimental spike
+Status: Accepted experimental spike; production-model choice superseded by ADR 0012
 
 ## Context
 
@@ -20,7 +20,7 @@ Jano adds a narrow `LocalTranslationRuntime` boundary with an Ollama adapter. Se
 - run one fixed, reproducible academic translation smoke test using the abstract extracted from Cranmer and Desmarais (2011);
 - display raw output, duration, and token counts.
 
-The test PDF is read only for this explicit benchmark. The smoke test does not modify it, persist generated translations into a Jano project, or enable automatic translation. `translategemma:4b` is the recommended diagnostic model for the observed machine, not yet a permanent provider choice for Jano's full document pipeline.
+The test PDF is read only for this explicit benchmark. The smoke test does not modify it, persist generated translations into a Jano project, or enable automatic translation. `translategemma:4b` was the diagnostic model for the observed machine during this spike. The later production pipeline decision in ADR 0012 designates `translategemma:12b` as Jano's official translation model.
 
 ## Consequences
 

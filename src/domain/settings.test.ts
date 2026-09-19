@@ -21,7 +21,8 @@ describe("normalizeAppSettings", () => {
         targetLanguage: "pt",
         ocrPolicy: "never",
         reviewLevel: "strict",
-        ollamaModel: "gemma3:4b",
+        translationModel: "gemma3:4b",
+        reviewModel: "qwen2.5:7b-instruct",
         librarySort: "modified-desc",
         recentProjects: [
           {
@@ -41,7 +42,8 @@ describe("normalizeAppSettings", () => {
       reviewLevel: "strict",
       automaticTranslation: false,
       processingLocation: "local-only",
-      ollamaModel: "gemma3:4b",
+      translationModel: "gemma3:4b",
+      reviewModel: "qwen2.5:7b-instruct",
       librarySort: "modified-desc",
       recentProjects: [
         {
@@ -55,9 +57,18 @@ describe("normalizeAppSettings", () => {
     });
   });
 
-  it("migrates the earlier experimental Qwen model to TranslateGemma", () => {
+  it("migrates the former shared model into its appropriate role", () => {
+    expect(normalizeAppSettings({ ollamaModel: "qwen2.5:0.5b" })).toMatchObject(
+      {
+        translationModel: "translategemma:12b",
+        reviewModel: "qwen2.5:0.5b",
+      },
+    );
     expect(
-      normalizeAppSettings({ ollamaModel: "qwen2.5:0.5b" }).ollamaModel,
-    ).toBe("translategemma:4b");
+      normalizeAppSettings({ ollamaModel: "translategemma:4b" }),
+    ).toMatchObject({
+      translationModel: "translategemma:12b",
+      reviewModel: "qwen2.5:7b-instruct",
+    });
   });
 });

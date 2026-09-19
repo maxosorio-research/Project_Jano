@@ -18,7 +18,8 @@ export type AppSettings = {
   reviewLevel: ReviewLevel;
   automaticTranslation: boolean;
   processingLocation: "local-only";
-  ollamaModel: string;
+  translationModel: string;
+  reviewModel: string;
   librarySort: LibrarySort;
   recentProjects: RecentProject[];
   projectLocations: string[];
@@ -32,7 +33,8 @@ export const defaultAppSettings: AppSettings = {
   reviewLevel: "normal",
   automaticTranslation: false,
   processingLocation: "local-only",
-  ollamaModel: "translategemma:4b",
+  translationModel: "translategemma:12b",
+  reviewModel: "qwen2.5:7b-instruct",
   librarySort: "name-asc",
   recentProjects: [],
   projectLocations: [],
@@ -42,7 +44,11 @@ export function normalizeAppSettings(value: unknown): AppSettings {
   if (!value || typeof value !== "object") {
     return defaultAppSettings;
   }
-  const candidate = value as Partial<AppSettings>;
+  const candidate = value as Partial<AppSettings> & { ollamaModel?: unknown };
+  const legacyModel =
+    typeof candidate.ollamaModel === "string" && candidate.ollamaModel !== ""
+      ? candidate.ollamaModel
+      : null;
   const zoomOptions = [0.5, 0.75, 1, 1.25, 1.5];
   return {
     defaultZoom: zoomOptions.includes(candidate.defaultZoom ?? 0)
@@ -63,12 +69,17 @@ export function normalizeAppSettings(value: unknown): AppSettings {
       : defaultAppSettings.reviewLevel,
     automaticTranslation: false,
     processingLocation: "local-only",
-    ollamaModel:
-      typeof candidate.ollamaModel === "string" &&
-      candidate.ollamaModel !== "" &&
-      candidate.ollamaModel !== "qwen2.5:0.5b"
-        ? candidate.ollamaModel
-        : defaultAppSettings.ollamaModel,
+    translationModel:
+      typeof candidate.translationModel === "string" &&
+      candidate.translationModel !== ""
+        ? candidate.translationModel
+        : defaultAppSettings.translationModel,
+    reviewModel:
+      typeof candidate.reviewModel === "string" && candidate.reviewModel !== ""
+        ? candidate.reviewModel
+        : legacyModel && !legacyModel.startsWith("translategemma:")
+          ? legacyModel
+          : defaultAppSettings.reviewModel,
     librarySort: isLibrarySort(candidate.librarySort)
       ? candidate.librarySort
       : defaultAppSettings.librarySort,

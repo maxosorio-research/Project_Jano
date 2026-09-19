@@ -61,23 +61,31 @@ export function OllamaSettingsSection({
     };
   }, [runtime]);
 
-  const selectedModel = status?.models.some(
-    (model) => model.name === settings.ollamaModel,
+  const selectedTranslationModel = status?.models.some(
+    (model) => model.name === settings.translationModel,
   )
-    ? settings.ollamaModel
+    ? settings.translationModel
+    : (status?.models[0]?.name ?? "");
+  const selectedReviewModel = status?.models.some(
+    (model) => model.name === settings.reviewModel,
+  )
+    ? settings.reviewModel
     : (status?.models[0]?.name ?? "");
 
   async function runTest() {
-    if (!selectedModel) return;
+    if (!selectedTranslationModel) return;
     setTesting(true);
     setError(null);
     setTestResult(null);
     try {
       setTestResult(
-        await runtime.runSmokeTest(selectedModel, settings.targetLanguage),
+        await runtime.runSmokeTest(
+          selectedTranslationModel,
+          settings.targetLanguage,
+        ),
       );
-      if (settings.ollamaModel !== selectedModel) {
-        onChange({ ...settings, ollamaModel: selectedModel });
+      if (settings.translationModel !== selectedTranslationModel) {
+        onChange({ ...settings, translationModel: selectedTranslationModel });
       }
     } catch (caught) {
       setError(messageFrom(caught));
@@ -118,18 +126,44 @@ export function OllamaSettingsSection({
           </dl>
           {status.models.length ? (
             <>
-              <label htmlFor="ollama-model">Modelo instalado</label>
+              <label htmlFor="ollama-translation-model">
+                Modelo de traducción
+              </label>
               <select
-                id="ollama-model"
+                id="ollama-translation-model"
                 onChange={(event) =>
-                  onChange({ ...settings, ollamaModel: event.target.value })
+                  onChange({
+                    ...settings,
+                    translationModel: event.target.value,
+                  })
                 }
-                value={selectedModel}
+                value={selectedTranslationModel}
               >
                 {status.models.map((model) => (
                   <option key={model.name} value={model.name}>
                     {model.name}
-                    {model.name === "translategemma:4b"
+                    {model.name === "translategemma:12b"
+                      ? " · recomendado"
+                      : ""}{" "}
+                    · {model.parameterSize ?? "tamaño desconocido"} ·{" "}
+                    {formatSize(model.size)}
+                  </option>
+                ))}
+              </select>
+              <label htmlFor="ollama-review-model">
+                Modelo de revisión y estructura
+              </label>
+              <select
+                id="ollama-review-model"
+                onChange={(event) =>
+                  onChange({ ...settings, reviewModel: event.target.value })
+                }
+                value={selectedReviewModel}
+              >
+                {status.models.map((model) => (
+                  <option key={model.name} value={model.name}>
+                    {model.name}
+                    {model.name === "qwen2.5:7b-instruct"
                       ? " · recomendado"
                       : ""}{" "}
                     · {model.parameterSize ?? "tamaño desconocido"} ·{" "}
