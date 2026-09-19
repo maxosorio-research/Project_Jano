@@ -1,4 +1,8 @@
 import { useEffect, useMemo, useRef } from "react";
+import {
+  backgroundJobForDocument,
+  type BackgroundProcessingJobs,
+} from "../../application/pipeline/backgroundDocumentProcessing";
 import { presentPairState } from "../../domain/pairState";
 import type { LibrarySort } from "../../domain/settings";
 import {
@@ -27,6 +31,7 @@ type LibraryTreeProps = {
   onActiveFolderChange(path: string): void;
   onFolderExpandedChange(path: string, expanded: boolean): void;
   onSelectDocument(documentId: string): void;
+  processingJobs: BackgroundProcessingJobs;
   selectedDocumentId: string | null;
   snapshot: ProjectSnapshot;
   sort: LibrarySort;
@@ -39,6 +44,7 @@ export function LibraryTree({
   onActiveFolderChange,
   onFolderExpandedChange,
   onSelectDocument,
+  processingJobs,
   selectedDocumentId,
   snapshot,
   sort,
@@ -132,12 +138,34 @@ export function LibraryTree({
         );
       }
 
+      const processingJob = backgroundJobForDocument(
+        processingJobs,
+        snapshot.project.projectId,
+        node.document.documentId,
+      );
       const state = presentPairState(node.document.pairState);
+      const indicator = processingJob
+        ? processingJob.phase === "running"
+          ? {
+              className: "processing",
+              icon: "traduccion-en-proceso" as const,
+              label: processingJob.progress?.message ?? "Procesando traducción",
+            }
+          : {
+              className: "processing-failed",
+              icon: "error" as const,
+              label: processingJob.error ?? "La traducción no pudo completarse",
+            }
+        : {
+            className: node.document.pairState,
+            icon: pairStateIcons[node.document.pairState],
+            label: state.label,
+          };
       const selected = node.document.documentId === selectedDocumentId;
       return (
         <button
           aria-current={selected ? "page" : undefined}
-          aria-label={`${node.document.title}. ${state.label}`}
+          aria-label={`${node.document.title}. ${indicator.label}`}
           className={`library-document-row ${selected ? "selected" : ""}`}
           data-document-id={node.document.documentId}
           key={node.key}
@@ -146,7 +174,7 @@ export function LibraryTree({
           ref={(element) => setRowRef(node.key, element)}
           role="treeitem"
           style={{ "--tree-depth": depth } as React.CSSProperties}
-          title={`${node.document.title} · ${state.label}`}
+          title={`${node.document.title} · ${indicator.label}`}
           type="button"
         >
           <span className="library-file-icon" aria-hidden="true">
@@ -154,14 +182,11 @@ export function LibraryTree({
           </span>
           <span className="library-row-name">{node.document.title}</span>
           <span
-            className={`library-state state-${node.document.pairState}`}
-            title={state.label}
+            className={`library-state state-${indicator.className}`}
+            title={indicator.label}
           >
-            <JanoIcon
-              name={pairStateIcons[node.document.pairState]}
-              size={14}
-            />
-            <span className="sr-only">{state.label}</span>
+            <JanoIcon name={indicator.icon} size={14} />
+            <span className="sr-only">{indicator.label}</span>
           </span>
         </button>
       );

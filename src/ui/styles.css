@@ -748,6 +748,14 @@ button:disabled {
   color: var(--teal);
 }
 
+.library-state.state-processing {
+  color: var(--amber);
+}
+
+.library-state.state-processing-failed {
+  color: var(--red);
+}
+
 .library-state.state-conflict,
 .library-state.state-missing-original,
 .library-state.state-missing-translation {

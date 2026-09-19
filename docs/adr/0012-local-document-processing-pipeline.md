@@ -12,7 +12,7 @@ The original PDF remains canonical. Generated text and translations are derived 
 
 Jano implements a user-initiated local pipeline:
 
-1. PDF.js extracts the native text layer page by page.
+1. PDF.js extracts the native text layer page by page. Native text items retain their page coordinates long enough for a deterministic recursive whitespace analysis to identify horizontal regions, columns, and spanning blocks before producing logical reading order.
 2. A deterministic quality check chooses usable native text.
 3. Pages with absent or deficient text use bundled Tesseract.js OCR when the `when-needed` policy is enabled.
 4. The normalized text is segmented before translation and receives stable per-run segment IDs. Equation lines, figure captions, table captions, raster images, and sufficiently complex vector drawings receive conservative structural markers.
@@ -20,8 +20,9 @@ Jano implements a user-initiated local pipeline:
 6. Segments are sent to the fixed loopback Ollama runtime in bounded contextual batches.
 7. Ollama must return structured JSON containing every original segment ID and every protected token; incomplete output is rejected before persistence.
 8. The project stores `source.txt`, `segments.json`, `translation.json`, `alignment.json`, `math.json`, and `processing.json` under `.jano/documents/<document_id>/`.
-9. The readable output is written as `<source-stem>.<target-language>.md` under the mirrored translation folder and rendered without raw HTML. Figures, charts, and tables are represented as page-linked notices rather than unreliable layout reconstructions.
+9. The readable output is written as `<source-stem>.<target-language>.md` under the mirrored translation folder and rendered without raw HTML. It includes a visible `------------[Página N° <n>]------------` marker at the start of every source page. Figures, charts, and tables are represented as page-linked notices rather than unreliable layout reconstructions.
 10. Pipeline failures are classified by stage. Recoverable model-output and server failures use at most five retries per batch or recovered fragment after the initial attempt. Invalid multi-segment output is divided into smaller batches; transient server failures retry the same batch with bounded backoff. Cleanup failures never replace the original processing error. Permanent failures such as an invalid PDF, an unavailable configured model, or a denied filesystem write are reported immediately.
+11. The application-level processing coordinator owns active jobs by project and document identity. Changing the selected document does not cancel or detach a running job. Completion refreshes the project snapshot and its library indicator without changing the user's current document selection; job progress and failures remain session-local UI state.
 
 OCR assets and the English trained-data file are bundled with the desktop frontend. No OCR or document content is fetched from a CDN. Translation uses only `http://127.0.0.1:11434`.
 
@@ -34,5 +35,6 @@ OCR assets and the English trained-data file are bundled with the desktop fronte
 - A malformed equation cannot crash the whole reading surface: rendering falls back to faithful literal text.
 - Graphic detection is deliberately conservative. Jano points readers to the canonical PDF page and does not infer chart geometry or values from extracted labels.
 - The initial OCR language is English, matching the current EN-to-target workflow.
-- Reading-order reconstruction for complex multicolumn documents remains heuristic and requires later quality work.
+- Reading-order reconstruction is coordinate-aware and supports mixed column/full-width regions through recursive whitespace partitioning. It remains heuristic for irregular overlaps, rotated text, and highly graphical layouts and therefore requires a growing regression corpus.
+- A document can continue processing while the reader inspects another document. The library communicates running, completed, and failed states without redirecting the reader.
 - Cancellation, resumable batches, richer block classification, and additional OCR languages remain follow-up work.

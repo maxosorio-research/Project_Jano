@@ -15,6 +15,7 @@ import type {
   PdfDocumentHandle,
   PdfPageRenderJob,
 } from "../../application/ports/PdfDocumentAdapter";
+import { reconstructPdfReadingOrder } from "./pdfReadingOrder";
 
 GlobalWorkerOptions.workerSrc = workerUrl;
 
@@ -31,33 +32,25 @@ class PdfJsDocumentHandle implements PdfDocumentHandle {
   async extractPageText(pageNumber: number): Promise<string> {
     const page = await this.document.getPage(pageNumber);
     const content = await page.getTextContent({ includeMarkedContent: true });
-    const items = content.items.filter(
-      (item): item is TextItem => "str" in item && item.str.trim() !== "",
-    );
-    let text = "";
-    let previousY: number | null = null;
-    let previousHeight = 0;
-    for (const item of items) {
-      const y = item.transform[5];
-      const lineChanged =
-        previousY !== null &&
-        Math.abs(y - previousY) > Math.max(2, previousHeight * 0.45);
-      if (text && lineChanged && !text.endsWith("\n")) {
-        const gap = Math.abs(y - (previousY ?? y));
-        text += gap > Math.max(8, previousHeight * 1.45) ? "\n\n" : "\n";
-      } else if (
-        text &&
-        !/[\s\u00ad-]$/.test(text) &&
-        !/^[\s,.;:!?)]/.test(item.str)
-      ) {
-        text += " ";
-      }
-      text += item.str;
-      if (item.hasEOL) text += "\n";
-      previousY = y;
-      previousHeight = Math.max(item.height, 1);
-    }
-    return text.trim();
+    const viewport = page.getViewport({ scale: 1 });
+    const items = content.items
+      .map((item, sourceIndex) => ({ item, sourceIndex }))
+      .filter(
+        (entry): entry is { item: TextItem; sourceIndex: number } =>
+          "str" in entry.item && entry.item.str.trim() !== "",
+      )
+      .map(({ item, sourceIndex }) => ({
+        text: item.str,
+        x: item.transform[4],
+        y: item.transform[5],
+        width: item.width,
+        height: Math.max(item.height, 1),
+        sourceIndex,
+      }));
+    return reconstructPdfReadingOrder(items, {
+      width: viewport.width,
+      height: viewport.height,
+    });
   }
 
   async inspectPageVisuals(pageNumber: number) {

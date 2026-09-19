@@ -1,6 +1,20 @@
 import { open } from "@tauri-apps/plugin-dialog";
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import {
+  useCallback,
+  useEffect,
+  useMemo,
+  useReducer,
+  useRef,
+  useState,
+} from "react";
 import type { AppShellModel } from "../application/createAppShellModel";
+import {
+  backgroundJobForDocument,
+  backgroundProcessingKey,
+  backgroundProcessingReducer,
+} from "../application/pipeline/backgroundDocumentProcessing";
+import { userFacingPipelineError } from "../application/pipeline/pipelineError";
+import { processPdfDocument } from "../application/pipeline/processPdfDocument";
 import type { PdfDocumentAdapter } from "../application/ports/PdfDocumentAdapter";
 import type { LocalTranslationRuntime } from "../application/ports/LocalTranslationRuntime";
 import type { OcrEngine } from "../application/ports/OcrEngine";
@@ -98,6 +112,10 @@ export function App({
     documentId: string;
     value: ReaderDocument | null;
   } | null>(null);
+  const [backgroundJobs, dispatchBackgroundJob] = useReducer(
+    backgroundProcessingReducer,
+    {},
+  );
   const [scrollMode, setScrollMode] = useState<ScrollMode>("synchronized");
   const [panelRatio, setPanelRatio] = useState<PanelRatio>("50-50");
   const [panelLocks, setPanelLocks] = useState<Record<ReaderSide, boolean>>({
@@ -117,6 +135,7 @@ export function App({
     side: ReaderSide;
     until: number;
   } | null>(null);
+  const activeProcessingPromisesRef = useRef(new Map<string, Promise<void>>());
 
   const selectedDocument = useMemo(
     () =>
@@ -130,6 +149,11 @@ export function App({
   const activeDocumentId = selectedDocument?.documentId ?? null;
   const activeTranslationHash = selectedDocument?.translation?.sha256 ?? null;
   const activeProjectRoot = snapshot?.project.root ?? null;
+  const selectedProcessingJob = backgroundJobForDocument(
+    backgroundJobs,
+    snapshot?.project.projectId,
+    selectedDocument?.documentId,
+  );
   const readerDocument =
     loadedReaderDocument?.documentId === activeDocumentId
       ? loadedReaderDocument.value
@@ -394,6 +418,53 @@ export function App({
     if (snapshot) {
       await run(() => projectGateway.openProject(snapshot.project.root));
     }
+  }
+
+  function processDocumentInBackground() {
+    if (!snapshot || !selectedDocument?.original) return;
+    const projectId = snapshot.project.projectId;
+    const rootPath = snapshot.project.root;
+    const documentId = selectedDocument.documentId;
+    const key = backgroundProcessingKey(projectId, documentId);
+    if (activeProcessingPromisesRef.current.has(key)) return;
+
+    dispatchBackgroundJob({ type: "started", projectId, documentId });
+    const task = processPdfDocument({
+      documentId,
+      originalRelativePath: selectedDocument.original.relativePath,
+      rootPath,
+      settings,
+      documentAdapter: pdfDocumentAdapter,
+      fileGateway: sourceFileGateway,
+      ocrEngine,
+      projectGateway,
+      translationRuntime: localTranslationRuntime,
+      onProgress: (progress) =>
+        dispatchBackgroundJob({
+          type: "progressed",
+          projectId,
+          documentId,
+          progress,
+        }),
+    })
+      .then((nextSnapshot) => {
+        setSnapshot((current) =>
+          current?.project.projectId === projectId ? nextSnapshot : current,
+        );
+        dispatchBackgroundJob({ type: "finished", projectId, documentId });
+      })
+      .catch((caught) => {
+        dispatchBackgroundJob({
+          type: "failed",
+          projectId,
+          documentId,
+          error: userFacingPipelineError(caught),
+        });
+      });
+    activeProcessingPromisesRef.current.set(key, task);
+    void task.finally(() => {
+      activeProcessingPromisesRef.current.delete(key);
+    });
   }
 
   async function createFolder() {
@@ -706,6 +777,7 @@ export function App({
                   updateSettings({ ...settings, librarySort })
                 }
                 selectedDocumentId={selectedDocument?.documentId ?? null}
+                processingJobs={backgroundJobs}
                 snapshot={snapshot}
                 sort={settings.librarySort}
               />
@@ -899,23 +971,16 @@ export function App({
           </div>
           <DocumentTranslationPanel
             document={selectedDocument}
-            documentAdapter={pdfDocumentAdapter}
             fileGateway={sourceFileGateway}
             key={selectedDocument?.documentId ?? "empty"}
             locked={panelLocks.translation}
-            ocrEngine={ocrEngine}
-            onProcessed={(nextSnapshot) => {
-              setSnapshot(nextSnapshot);
-              setSelectedId(selectedDocument?.documentId ?? null);
-            }}
+            onProcess={processDocumentInBackground}
             onUserIntent={handleTranslationIntent}
             onViewportChange={handleTranslationScroll}
-            projectGateway={projectGateway}
+            processingJob={selectedProcessingJob}
             readerDocument={readerDocument}
             ref={translationReaderRef}
             rootPath={snapshot?.project.root ?? null}
-            runtime={localTranslationRuntime}
-            settings={settings}
           />
         </article>
       </section>
