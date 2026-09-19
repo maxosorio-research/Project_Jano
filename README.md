@@ -26,7 +26,7 @@ The MVP is intentionally narrower than the long-term vision. Do not implement ro
 
 The current custom icon coverage and the remaining drawing backlog are tracked in `docs/ICON-INVENTORY.md`.
 
-Long-term concepts are in `docs/ROADMAP.md`. Architecture decisions already made are recorded under `docs/adr/`.
+Long-term concepts are in `docs/ROADMAP.md`. Architecture decisions already made are recorded under `docs/adr/`. `docs/source-notes/` holds the original, informal Spanish-language design notes the documents above were distilled from; they are historical context, not a source of current scope or requirements.
 
 ## Development status
 
@@ -74,7 +74,10 @@ To try Milestone 2.6, install `translategemma:4b` in Ollama, run `pnpm tauri dev
 - Node.js 24
 - pnpm 11.19
 - Rust stable with `cargo`, `rustfmt`, and `clippy`
-- the platform prerequisites listed in the Tauri 2 documentation
+- the platform-specific Tauri 2 system dependencies, see https://v2.tauri.app/start/prerequisites/
+  (on Windows: the WebView2 runtime and the Visual Studio C++ build tools;
+  on Linux: `webkit2gtk`, `libssl-dev`, `librsvg2-dev`, and the standard build toolchain;
+  on macOS: Xcode command line tools)
 
 ## Commands
 
