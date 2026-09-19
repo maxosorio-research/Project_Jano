@@ -1,0 +1,267 @@
+Sí. Entonces el **Punto 6** queda bastante mejor definido: el scroll no sincroniza páginas ni porcentajes, sino **la posición semántica que el usuario está viendo**. Esto es coherente con la decisión previa de que Jano trabaje sobre segmentos alineados y no sobre equivalencias de página. fileciteturn0file0L36-L85
+
+Lo formalizaría como **scroll sincronizado por anclas de contenido**.
+
+```text id="27p1ql"
+ORIGINAL                                  TRADUCCIÓN
+
+página 12                                 página 14
+
+...                                       ...
+
+segmento EN-147                           segmento ES-152
+segmento EN-148  ← ancla visible  ─────→  segmento ES-153
+segmento EN-149                           segmento ES-154
+                                         segmento ES-155
+
+...                                       ...
+```
+
+Si el usuario desplaza el original y el segmento `EN-148` pasa a ocupar una determinada posición de la pantalla, Jano identifica su contraparte —por ejemplo `ES-153`— y mueve el otro visor para que esa contraparte aparezca aproximadamente en **la misma posición visual**.
+
+La secuencia sería:
+
+```text id="sf9vyr"
+scroll en panel A
+        ↓
+detectar contenido actualmente visible
+        ↓
+determinar ancla principal
+        ↓
+consultar Alignment Engine
+        ↓
+encontrar contraparte en panel B
+        ↓
+calcular su posición visual
+        ↓
+desplazar panel B
+```
+
+Esto coincide con la lógica básica que ya habíamos señalado para el MVP —detectar el segmento visible principal y posicionar su equivalente en el segundo panel—, pero ahora podemos especificarla con mayor precisión. fileciteturn0file5L65-L78
+
+### No usaría una sola ancla rígida
+
+Un detalle importante: si el programa simplemente dijera «el párrafo central debe estar exactamente centrado», el segundo visor podría dar pequeños saltos continuamente.
+
+Usaría **anclas + interpolación**.
+
+Supongamos:
+
+```text id="27zjwb"
+Original
+
+A ────────────────────
+│
+│   usuario está aquí
+│
+B ────────────────────
+```
+
+y sabemos que:
+
+```text id="mgmik5"
+A_original ↔ A_traducción
+B_original ↔ B_traducción
+```
+
+Si el usuario está aproximadamente al 40 % del recorrido entre A y B en el original, Jano intenta colocar el visor traducido aproximadamente al 40 % del recorrido entre sus correspondientes A y B.
+
+Conceptualmente:
+
+\[
+r =
+\frac{y-y_A}{y_B-y_A}
+\]
+
+y:
+
+\[
+y_{\text{trad}}
+=
+y_{A,\text{trad}}
++
+r\left(y_{B,\text{trad}}-y_{A,\text{trad}}\right)
+\]
+
+Así el movimiento sería **continuo**, no una sucesión de saltos de párrafo en párrafo.
+
+### ¿Qué serían las anclas?
+
+Principalmente los segmentos alineados que ya forman parte del modelo de Jano:
+
+```text id="h1doxe"
+seg_en_120 ↔ seg_es_123
+seg_en_121 ↔ seg_es_124
+seg_en_122 ↔ seg_es_125 + seg_es_126
+seg_en_123 ↔ seg_es_127
+```
+
+Como ya decidimos admitir relaciones `1→1`, `1→2`, `2→1`, etc., una ancla no tiene por qué significar «un párrafo idéntico al otro». fileciteturn0file0L187-L201
+
+Para el scroll basta con saber:
+
+> «este punto conceptual del original corresponde aproximadamente a este punto conceptual de la traducción».
+
+### El panel que toca el usuario manda
+
+También establecería una regla muy simple:
+
+```text id="xkl8r3"
+Usuario hace scroll en ORIGINAL
+→ ORIGINAL = líder
+→ TRADUCCIÓN = seguidor
+```
+
+Si inmediatamente mueve la traducción:
+
+```text id="jyjqox"
+Usuario hace scroll en TRADUCCIÓN
+→ TRADUCCIÓN = líder
+→ ORIGINAL = seguidor
+```
+
+No existiría un panel maestro permanente.
+
+Eso permitiría leer indistintamente desde cualquiera de los dos idiomas.
+
+### Sincronización no significa posiciones idénticas
+
+Por ejemplo:
+
+```text id="qu39x2"
+ORIGINAL                    TRADUCCIÓN
+
+p. 18                        p. 21
+
+┌────────────────┐          ┌────────────────┐
+│ párrafo A      │          │ párrafo A      │
+│                │          │                │
+│ párrafo B      │          │ párrafo B      │
+│                │          │                │
+│ párrafo C      │          │ continuación B │
+│                │          │                │
+└────────────────┘          │ párrafo C      │
+                            └────────────────┘
+```
+
+Es perfectamente correcto que:
+
+```text id="hgmioc"
+Original: página 18
+Traducción: página 21
+```
+
+mientras ambos visores estén mostrando **la misma zona conceptual del documento**.
+
+La página pasa a ser información secundaria.
+
+### También introduciría tolerancia
+
+No intentaría corregir constantemente desplazamientos minúsculos.
+
+Algo parecido a:
+
+```text id="7s7zm8"
+desfase pequeño
+→ no hacer nada
+
+desfase perceptible
+→ corrección suave
+
+cambio de ancla
+→ recalcular correspondencia
+```
+
+Esto evitaría que ambos paneles parezcan estar «peleándose» por la posición.
+
+Y la corrección debería ser animada muy brevemente, no un salto instantáneo.
+
+### Cuando no exista una alineación clara
+
+Si una zona tiene baja confianza:
+
+```text id="s2wq2v"
+segmento 201
+segmento 202
+segmento 203
+```
+
+pero Jano solo conoce con seguridad:
+
+```text id="y1elz0"
+segmento 198 ↔ segmento 201
+segmento 205 ↔ segmento 209
+```
+
+puede simplemente interpolar entre esas dos anclas conocidas.
+
+Esto es importante porque significa que **el scroll no necesita una alineación perfecta de cada oración para funcionar razonablemente bien**.
+
+### En términos de interfaz
+
+Mantendría un control sencillo:
+
+```text id="gwccxc"
+🔗 Sincronización
+    ● Activada
+    ○ Desactivada
+```
+
+Activada:
+
+```text id="5uquge"
+scroll A → mueve B
+scroll B → mueve A
+```
+
+Desactivada:
+
+```text id="sdn4e8"
+A y B se desplazan independientemente
+```
+
+Y añadiría posiblemente un comando:
+
+```text id="jesepu"
+⌘/Ctrl + Shift + L
+Re-alinear visores
+```
+
+que tomaría el contenido actualmente visible del panel activo y volvería a colocar su contraparte en el otro.
+
+---
+
+### Punto 6 — definición final
+
+Lo dejaría especificado así:
+
+```text id="f0a75q"
+PUNTO 6 — SCROLL SINCRONIZADO
+
+1. Jano no sincroniza páginas.
+2. Jano no sincroniza porcentajes absolutos de scroll.
+3. Jano sincroniza posiciones semánticas mediante anclas
+   derivadas de los segmentos alineados.
+4. El panel desplazado por el usuario se convierte
+   temporalmente en el panel líder.
+5. Jano localiza las anclas equivalentes en el otro documento.
+6. Entre dos anclas, interpola la posición para producir
+   un desplazamiento continuo.
+7. La contraparte debe aparecer aproximadamente en la misma
+   zona del viewport, no necesariamente en la misma página.
+8. Se utiliza tolerancia para evitar microajustes y saltos.
+9. Cuando faltan alineaciones intermedias, se interpola
+   entre las anclas confiables más cercanas.
+10. El usuario puede desactivar la sincronización y mover
+    ambos documentos independientemente.
+```
+
+Así, la definición central del sistema sería:
+
+\[
+\boxed{
+\text{sincronizar lo que estás leyendo, no dónde estás en el archivo}
+}
+\]
+
+Eso distingue bastante bien el comportamiento de Jano de un simple visor de PDFs con «scroll enlazado». Consideraría el **Punto 6 conceptualmente cerrado**; su implementación dependerá directamente del **Punto 5 — sistema de alineación**, porque son esas correspondencias las que proporcionarán las anclas.

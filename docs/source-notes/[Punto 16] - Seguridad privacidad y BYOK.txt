@@ -1,0 +1,421 @@
+Sí. Ese diseño mantiene coherente el proyecto: **open-source, local-first y BYOK (“bring your own key”)**. El programa no tendría cuentas, servidor propio ni claves compartidas; cada usuario decide si quiere activar traducción automática y con qué proveedor.
+
+Haría una distinción importante: la API key puede **almacenarse únicamente en el equipo del usuario**, pero cuando se utiliza una API remota necesariamente se envía al proveedor para autenticar la petición. Lo que no debería ocurrir nunca es que la clave pase por servidores tuyos, quede incorporada al ejecutable, se escriba en los documentos o aparezca en el repositorio.
+
+### Cómo lo integraría en Jano
+
+El flujo podría ser:
+
+```text id="w0530i"
+📄 Acemoglu - Institutions.pdf
+🔴 No existe traducción
+
+        ↓
+
+[ Crear traducción ]
+
+        ↓
+
+Idioma destino: Español
+Proveedor:      [ OpenAI ▼ ]
+Modelo:         [ ... ▼ ]
+
+Glosario académico: ✓
+Preservar estructura: ✓
+Carpeta destino:
+D:\Papers\Traducciones\
+
+        ↓
+
+[ Traducir documento ]
+```
+
+Una vez terminado:
+
+```text id="9k4kmg"
+/originales/
+    Acemoglu - Institutions.pdf
+
+/traducciones/
+    Acemoglu - Institutions.pdf
+```
+
+y automáticamente pasaría de:
+
+```text id="cj0ifn"
+🔴 Acemoglu - Institutions.pdf
+   Falta traducción
+```
+
+a:
+
+```text id="bzkmi3"
+✅ Acemoglu - Institutions.pdf
+```
+
+Luego se abre directamente en el lector bilingüe.
+
+Pero internamente yo **no haría que el PDF traducido fuese la estructura fundamental**. Mantendría el modelo que ya discutimos: segmentos original ↔ traducción. El visor necesita esa correspondencia para sincronizar scroll y selección. fileciteturn0file0L57-L85
+
+Por ejemplo:
+
+```json id="9g6yy1"
+{
+  "document": "Acemoglu - Institutions",
+  "source_language": "en",
+  "target_language": "es",
+  "segments": [
+    {
+      "id": 421,
+      "source": "Political institutions determine...",
+      "translation": "Las instituciones políticas determinan..."
+    }
+  ]
+}
+```
+
+Eso además ya estaba implícito en la arquitectura que planteamos originalmente: separar representación estructurada y visualización. fileciteturn0file0L114-L142
+
+## La API key no debería guardarse como texto plano
+
+Evitaría algo como:
+
+```text id="aefacp"
+config.json
+
+{
+    "openai_api_key": "sk-..."
+}
+```
+
+aunque esté exclusivamente en el computador.
+
+También evitaría depender únicamente de un `.env`. Es útil durante desarrollo, pero no es la solución ideal para distribuir la aplicación.
+
+Con Tauri tienes dos caminos razonables.
+
+**Opción 1 — almacén de credenciales del sistema operativo.** En Rust existen bibliotecas que permiten utilizar Keychain en macOS, Credential Manager en Windows y almacenes equivalentes en Linux. La biblioteca `keyring`, por ejemplo, proporciona acceso multiplataforma a almacenes de secretos. ([docs.rs](https://docs.rs/keyring/latest/keyring/?utm_source=chatgpt.com))
+
+Conceptualmente:
+
+```text id="sufbou"
+Jano
+ │
+ ├── Configuración normal
+ │      proveedor = OpenAI
+ │      modelo = ...
+ │      idioma = es
+ │
+ └── API key
+        │
+        └── Windows Credential Manager
+            macOS Keychain
+            Linux Secret Service
+```
+
+**Opción 2 — Tauri Stronghold.** Tauri mantiene un plugin específico para almacenar secretos y claves mediante un vault cifrado local. ([v2.tauri.app](https://v2.tauri.app/es/plugin/stronghold/?utm_source=chatgpt.com))
+
+Para Jano probablemente empezaría con el almacén nativo del sistema operativo por simplicidad y reservaría Stronghold si más adelante necesitas almacenar más secretos o datos sensibles.
+
+En configuración el usuario vería:
+
+```text id="dj0y4r"
+Proveedor de traducción
+
+OpenAI
+
+API Key
+••••••••••••••••••••••••••••
+
+✓ Clave almacenada localmente
+
+[ Comprobar conexión ]
+[ Cambiar clave ]
+[ Eliminar clave ]
+```
+
+No mostraría la clave completa después de introducirla.
+
+Y obviamente:
+
+```text id="d0ww3p"
+Git repository
+    ❌ API keys
+    ❌ config del usuario
+    ❌ credenciales
+
+    ✅ código
+    ✅ schemas
+    ✅ ejemplos de configuración
+```
+
+Si utilizas OpenAI, su documentación trata explícitamente las API keys como secretos y recomienda cargarlas mediante variables de entorno o mecanismos de gestión de secretos, no incorporarlas al código. ([platform.openai.com](https://platform.openai.com/docs/quickstart/make-your-first-api-request?utm_source=chatgpt.com))
+
+## Haría el traductor independiente del proveedor
+
+Esto es especialmente importante en un proyecto open-source.
+
+No diseñaría:
+
+```text id="8s2tqy"
+Jano → OpenAI
+```
+
+Diseñaría:
+
+```text id="zqe2ep"
+                         ┌─ OpenAI
+                         ├─ Anthropic
+Jano → Translation API ──┼─ DeepL
+                         ├─ Gemini
+                         ├─ Ollama
+                         └─ otros
+```
+
+Internamente podrías tener una interfaz simple:
+
+```ts id="euze0i"
+interface TranslationProvider {
+    translate(
+        segments: Segment[],
+        options: TranslationOptions
+    ): Promise<TranslatedSegment[]>;
+}
+```
+
+Cada proveedor implementa lo suyo.
+
+Eso evita quedar atado a precios, modelos o APIs concretas.
+
+Y habilita algo todavía más interesante:
+
+```text id="tm6m75"
+Proveedor: Local / Ollama
+```
+
+En ese caso:
+
+\[
+\text{PDF} \rightarrow \text{Jano} \rightarrow \text{modelo local}
+\]
+
+y **ni el documento ni una API key salen del computador**.
+
+Eso sí sería privacidad completamente local.
+
+## Para traducción académica, no enviaría párrafos aislados
+
+Este punto es crucial.
+
+Una traducción ingenua haría:
+
+```text id="kiy3si"
+párrafo 1 → API
+párrafo 2 → API
+párrafo 3 → API
+```
+
+y perderías contexto.
+
+En cambio, Jano debería mantener unidades pequeñas para la alineación, pero traducir **bloques contextuales mayores**.
+
+Por ejemplo:
+
+```text id="izvksc"
+SECCIÓN 3
+
+segmentos 130–155
+        ↓
+contexto completo
+        ↓
+modelo
+        ↓
+traducciones 130–155
+```
+
+De esta manera puedes exigirle al modelo:
+
+- conservar las fronteras de los segmentos;
+- mantener terminología consistente;
+- no resumir;
+- no omitir citas;
+- preservar fórmulas;
+- preservar notas al pie;
+- conservar nombres propios;
+- utilizar registro académico;
+- devolver una correspondencia inequívoca entre segmentos.
+
+Algo del estilo:
+
+```json id="si4bhy"
+[
+  {
+    "id": 130,
+    "translation": "..."
+  },
+  {
+    "id": 131,
+    "translation": "..."
+  }
+]
+```
+
+Esto es mucho más importante que pedir simplemente «translate this text».
+
+## Añadiría un “perfil de traducción académica”
+
+Podría existir:
+
+```text id="58atrj"
+Perfil
+
+○ General
+● Académico
+○ Literal
+○ Personalizado
+```
+
+Y en **Académico**:
+
+```text id="ms48qy"
+✓ No resumir
+✓ No simplificar argumentos
+✓ Conservar terminología técnica
+✓ Mantener referencias bibliográficas
+✓ Mantener tablas y ecuaciones
+✓ Mantener notas al pie
+✓ Preservar estructura
+✓ Marcar términos ambiguos
+```
+
+Además:
+
+```text id="gnk0nx"
+Glosario personal
+
+institutions → instituciones
+accountability → rendición de cuentas
+path dependence → dependencia de trayectoria
+cleavage → clivaje
+```
+
+Eso puede tener mucho valor para economía, ciencia política, sociología, etc.
+
+### Y guardaría la procedencia
+
+Cada traducción generada debería llevar metadata:
+
+```json id="w091l6"
+{
+  "translation": {
+    "type": "machine",
+    "provider": "openai",
+    "model": "...",
+    "created_at": "...",
+    "target_language": "es",
+    "reviewed": false
+  }
+}
+```
+
+**Nunca guardaría la API key ahí.**
+
+Cuando posteriormente una traducción termine asociada a una anotación de Zotero, Jano podría mostrar:
+
+```text id="os16mn"
+Traducción de trabajo
+Generada automáticamente
+No es una traducción publicada
+```
+
+Eso protege precisamente la distinción metodológica que planteabas antes.
+
+## También cambiaría ligeramente el sistema de nombres
+
+No exigiría realmente que los archivos tengan exactamente el mismo nombre y extensión. Usaría un `document_id` o nombre base.
+
+Por ejemplo:
+
+```text id="s5qoud"
+/original/
+    north_institutions.pdf
+
+/translations/
+    north_institutions.es.jano
+    north_institutions.es.pdf
+```
+
+Jano sabe que todos pertenecen a:
+
+```text id="vnsuva"
+document_id = north_institutions
+```
+
+Eso permitiría después:
+
+```text id="pf9557"
+north_institutions.en.pdf
+north_institutions.es.jano
+north_institutions.fr.jano
+north_institutions.de.jano
+```
+
+sin romper el modelo original de emparejamiento.
+
+## Lo más interesante: el proyecto empieza a tener capas muy claras
+
+```text id="la5zuv"
+                    JANO
+────────────────────────────────────────
+
+1. BIBLIOTECA
+   original ↔ traducciones
+
+2. DOCUMENT ENGINE
+   PDF → páginas → bloques → segmentos
+
+3. ALIGNMENT ENGINE
+   original segment ↔ translated segment
+
+4. READER
+   visor dual + scroll + selección
+
+5. TRANSLATION ENGINE
+   API remota / modelo local
+   + contexto académico
+   + glosario
+
+6. RESEARCH INTEGRATIONS
+   Zotero
+   ↓
+   anotación sobre ORIGINAL
+   + traducción auxiliar
+
+────────────────────────────────────────
+```
+
+Y me parece importante que **1–4 funcionen completamente sin Internet**. El punto 5 solamente necesita conexión si el usuario escoge un proveedor remoto. Zotero también debería ser opcional.
+
+Así alguien podría clonar Jano desde GitHub, instalarlo y simplemente utilizarlo con:
+
+```text id="5hmewc"
+original.pdf + traducción existente
+```
+
+sin crear cuentas, introducir claves ni conectarse a nada.
+
+Mientras que otro usuario podría activar:
+
+```text id="sw94rc"
+No existe traducción
+        ↓
+Traducir con mi API key
+        ↓
+crear traducción
+        ↓
+leer
+        ↓
+guardar highlights originales en Zotero
+```
+
+Ahí el proyecto deja de ser un simple visor. Se empieza a convertir en una **herramienta local de lectura, traducción y gestión de evidencia académica**, manteniendo una regla arquitectónica muy sana: **el original siempre es la fuente canónica; todo lo demás —traducción, alineación, anotaciones y ayudas— son capas asociadas a él.**

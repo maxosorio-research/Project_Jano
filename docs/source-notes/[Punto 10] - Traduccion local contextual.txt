@@ -1,0 +1,23 @@
+Sí. De hecho, para Jano me parece una dirección especialmente coherente: **hacer de la traducción local una capacidad de primera clase**, no una solución secundaria. Ya habíamos dejado la arquitectura preparada para que `Local/Ollama` fuese simplemente otro proveedor y para que, en ese modo, ni documento ni credenciales salgan del equipo. fileciteturn0file2L154-L204
+
+La ventaja principal no es solo que sea gratis. Para Jano aporta **privacidad, funcionamiento offline, coste marginal cero por paper y reproducibilidad**. Puedes traducir un libro de 700 páginas sin preguntarte cuánto costará cada ejecución. Además, los modelos locales actuales ya son suficientemente multilingües como para que valga la pena experimentar: Qwen3, por ejemplo, declara soporte para más de 100 idiomas y capacidades específicas de traducción; Ollama ofrece desde 0.6B hasta 32B y superiores. ([ollama.com](https://ollama.com/library/qwen3?utm_source=chatgpt.com)) Gemma 3 tiene variantes de 1B, 4B, 12B y 27B, contexto de hasta 128K y soporte para más de 140 idiomas. ([ollama.com](https://ollama.com/library/gemma3?utm_source=chatgpt.com))
+
+Para **traducción contextual académica**, además, prefiero probar un LLM instructivo local antes que depender exclusivamente de un traductor clásico. Jano podría enviar algo como una sección completa junto con los segmentos y exigir al modelo conservar terminología, IDs, citas y estructura. Eso es exactamente compatible con el pipeline que ya definimos: unidades pequeñas para alineación, pero **bloques mayores para proporcionar contexto al traductor**. fileciteturn0file2L206-L263
+
+Yo contemplaría tres familias para experimentar:
+
+- **LLM local generalista:** Qwen3 4B/8B/14B o modelos posteriores de la familia Qwen. Probablemente la vía más interesante para glosarios, instrucciones académicas y contexto. Ollama muestra, por ejemplo, Qwen3 4B en unos 2,5 GB y 8B en unos 5,2 GB cuantizados. ([ollama.com](https://ollama.com/library/qwen3?utm_source=chatgpt.com))
+- **LLM multilingüe compacto:** Gemma 3 4B/12B; las variantes disponibles en Ollama rondan 3,3 GB y 8,1 GB respectivamente. ([ollama.com](https://ollama.com/library/gemma3?utm_source=chatgpt.com))
+- **Traductor especializado:** MADLAD-400-3B-MT soporta cientos de idiomas y tiene licencia Apache-2.0; serviría como referencia frente a los LLM generalistas. ([huggingface.co](https://huggingface.co/google/madlad400-3b-mt/blob/main/config.json?utm_source=chatgpt.com)) NLLB también es interesante técnicamente, pero su checkpoint de 600M está bajo CC BY-NC 4.0, así que habría que revisar cuidadosamente cómo se ofrece o distribuye con Jano. ([huggingface.co](https://huggingface.co/facebook/nllb-200-distilled-600M?utm_source=chatgpt.com))
+
+La clave es que **no elegiría ahora “el modelo de Jano”**. Diseñaría algo así:
+
+`Jano → TranslationProvider → Local Runtime → modelo elegido por el usuario`
+
+y probablemente usaría **Ollama como primer backend local**, porque ya proporciona una API local uniforme independientemente del modelo. Después podríamos admitir llama.cpp u otros runtimes sin modificar el pipeline de traducción.
+
+También haría que Jano detecte el hardware y sugiera una categoría: `Ligero`, `Equilibrado`, `Alta calidad`. Así alguien con 16 GB de RAM podría utilizar un modelo pequeño/medio, mientras que una workstation podría ejecutar uno bastante mayor.
+
+Lo más importante sería construir eventualmente un **benchmark Jano EN→ES académico**: 20–50 pasajes reales de economía, ciencia política y ciencias sociales, con terminología, citas, notas, frases largas y ambigüedad; comparar modelos locales y APIs remotas bajo exactamente el mismo prompt. Eso nos diría mucho más que los benchmarks genéricos sobre cuál conviene integrar.
+
+Por tanto, modificaría ligeramente la concepción anterior: **Jano debería funcionar completamente gratis y offline incluyendo opcionalmente traducción automática local; las APIs de pago serían una alternativa para quien quiera más calidad o velocidad, no un requisito.**

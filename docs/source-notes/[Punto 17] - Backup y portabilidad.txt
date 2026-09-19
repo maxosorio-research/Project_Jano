@@ -1,0 +1,763 @@
+Para el **Punto 17**, fijaría un principio fuerte:
+
+> **Un proyecto de Jano debe poder sobrevivir como una carpeta autónoma. Copiar esa carpeta a otro computador debería ser suficiente para recuperar el proyecto.**
+
+Esto encaja con lo ya decidido: cada proyecto es una carpeta independiente con `orig`, `trad` y una carpeta interna `.jano`; además, los documentos deben seguir siendo archivos normales y utilizables aunque Jano desaparezca. fileciteturn0file4L3-L24 fileciteturn0file4L282-L290
+
+### 1. Proyecto autocontenido y portable
+
+Si alguien crea un proyecto directamente dentro de Dropbox, OneDrive, Google Drive, Syncthing, Nextcloud, etc., la estructura podría seguir siendo:
+
+```text id="4qc02d"
+Mi nube/
+└── Jano/
+    └── Tesis/
+        ├── Tesis_orig/
+        │   ├── North1990.pdf
+        │   └── Acemoglu2001.pdf
+        │
+        ├── Tesis_trad/
+        │   ├── North1990.pdf
+        │   └── Acemoglu2001.pdf
+        │
+        └── .jano/
+            ├── project.json
+            ├── state.sqlite
+            ├── documents/
+            ├── alignments/
+            ├── annotations/
+            └── backups/
+```
+
+Jano no tendría que saber qué nube está detrás. Para él sigue siendo una carpeta local normal.
+
+Eso mantiene además la separación que ya definimos: `.jano` contiene estado y datos derivados, no debería convertirse en un contenedor opaco de los PDFs. fileciteturn0file4L259-L280
+
+### 2. Todas las rutas deberían ser relativas
+
+Esto es fundamental para portabilidad.
+
+Nunca guardar:
+
+```text id="a8f0nv"
+C:\Users\Max\OneDrive\Tesis\Tesis_orig\North1990.pdf
+```
+
+como identidad permanente.
+
+Guardar:
+
+```text id="g1fpno"
+original_path:
+"Tesis_orig/North1990.pdf"
+```
+
+y resolverlo respecto de la raíz del proyecto.
+
+Entonces el mismo proyecto puede estar en:
+
+```text id="fkbf89"
+Windows
+C:\Users\Ana\Dropbox\Tesis\
+```
+
+o:
+
+```text id="wj3k3k"
+macOS
+/Users/Ana/Library/CloudStorage/Dropbox/Tesis/
+```
+
+sin modificar nada.
+
+El `document_id` que ya decidimos usar seguirá siendo la identidad real del documento; el nombre y la ruta solamente ayudan a localizarlo. fileciteturn0file4L43-L59
+
+---
+
+## 3. No incrustaría información dentro del PDF original
+
+Aquí tomaría una decisión bastante estricta.
+
+No modificaría:
+
+```text id="183w88"
+North1990.pdf
+```
+
+para meterle alineaciones, progreso, IDs o anotaciones de Jano.
+
+El PDF original debe permanecer intacto.
+
+La trazabilidad viviría en:
+
+```text id="vs2lum"
+.jano/
+```
+
+Eso protege precisamente la regla que venimos usando de que el documento original es la fuente canónica. En el diseño de Zotero ya habíamos separado la fuente original, la traducción auxiliar y la metadata técnica de Jano. fileciteturn0file1L196-L216
+
+Lo que sí haría es una especie de **sidecar interno** por documento.
+
+Por ejemplo:
+
+```text id="y6k9z4"
+.jano/
+└── documents/
+    └── 7f2a92c1/
+        ├── document.json
+        ├── segments.json
+        ├── alignment.json
+        ├── annotations.json
+        └── reading.json
+```
+
+Aunque internamente parte de esto termine almacenándose en SQLite por rendimiento, conceptualmente son datos pertenecientes a ese `document_id`.
+
+---
+
+# 4. Cómo hacer trazable un documento
+
+Cada documento debería tener algo parecido a:
+
+```json id="pt5grd"
+{
+  "document_id": "7f2a92c1",
+  "original": {
+    "path": "Tesis_orig/Instituciones/North1990.pdf",
+    "sha256": "a94f...",
+    "size": 3849281
+  },
+  "translation": {
+    "path": "Tesis_trad/Instituciones/North1990.pdf",
+    "sha256": "10bc..."
+  }
+}
+```
+
+Aquí hay dos mecanismos diferentes:
+
+```text id="ancimh"
+document_id
+```
+
+identifica **el documento dentro de Jano**.
+
+Mientras que:
+
+```text id="a9kv5t"
+sha256
+```
+
+identifica **esa versión concreta del archivo**.
+
+Esto permite distinguir:
+
+```text id="obt50n"
+North1990.pdf
+```
+
+de:
+
+```text id="rhy4f0"
+North1990.pdf
+```
+
+aunque tengan exactamente el mismo nombre pero contenido distinto.
+
+---
+
+# 5. Las alineaciones deben apuntar a segmentos, no a archivos
+
+Esto aprovecha directamente el núcleo que ya definimos: Jano representa el documento mediante segmentos alineados y no mediante equivalencias de página. fileciteturn0file0L57-L85
+
+Por ejemplo:
+
+```json id="79ifrc"
+{
+  "alignment_id": "al_03822",
+  "source": ["seg_en_148"],
+  "target": ["seg_es_151", "seg_es_152"],
+  "type": "1:2",
+  "confidence": 0.97
+}
+```
+
+Entonces puedes mover, renombrar o respaldar los PDFs y esa correspondencia sigue existiendo.
+
+La estructura conceptualmente continúa siendo:
+
+```text id="wujvnf"
+document_id
+    │
+    ├── original
+    ├── translation
+    │
+    └── segments
+          │
+          └── alignments
+```
+
+que es precisamente el modelo `Document → Text blocks → Segments → Alignment → Viewer` que venimos construyendo. fileciteturn0file0L203-L225
+
+---
+
+# 6. Las anotaciones deberían tener anclas redundantes
+
+Este es probablemente el detalle más importante para que el sistema sea resistente.
+
+No guardaría solamente:
+
+```text id="ir63vl"
+annotation → segment_148
+```
+
+Guardaría además datos que permitan **relocalizarla si el documento cambia**.
+
+Algo como:
+
+```json id="bw6u94"
+{
+  "annotation_id": "ann_a82f",
+
+  "document_id": "7f2a92c1",
+  "segment_id": "seg_en_148",
+
+  "page": 27,
+
+  "anchor": {
+    "exact": "Institutions are the rules of the game...",
+    "prefix": "In this framework, ",
+    "suffix": " They structure incentives...",
+    "page_text_hash": "..."
+  },
+
+  "created_at": "2026-09-16T00:10:42Z"
+}
+```
+
+Así tenemos varias capas para encontrarla nuevamente:
+
+```text id="qv4swe"
+1. segment_id
+2. texto exacto
+3. contexto anterior/posterior
+4. página
+5. posición visual
+```
+
+Si una edición nueva del PDF desplaza el texto de la página 27 a la 28, Jano todavía puede encontrar la cita mediante el texto.
+
+Eso es bastante más robusto que guardar solo coordenadas.
+
+---
+
+# 7. El progreso también debería estar anclado semánticamente
+
+No almacenaría únicamente:
+
+```text id="ki8h2u"
+page = 37
+```
+
+porque puede cambiar una edición.
+
+Algo mejor sería:
+
+```json id="v1klbl"
+{
+  "document_id": "7f2a92c1",
+
+  "reading_position": {
+    "segment_id": "seg_en_422",
+    "page": 37,
+    "viewport_offset": 0.31,
+    "updated_at": "..."
+  }
+}
+```
+
+La prioridad sería:
+
+```text id="idicev"
+segmento
+↓
+página
+↓
+posición aproximada
+```
+
+Entonces Jano puede reconstruir razonablemente dónde estabas.
+
+---
+
+# 8. Detectar modificaciones del archivo
+
+Supongamos que sincronizas el proyecto con la nube y sustituyes:
+
+```text id="lzebte"
+North1990.pdf
+```
+
+por una versión mejor escaneada.
+
+El `document_id` puede seguir siendo el mismo, pero cambia:
+
+```text id="7rmvfe"
+SHA256 anterior ≠ SHA256 nuevo
+```
+
+Jano detectaría:
+
+```text id="cdyqzc"
+⚠ El archivo original ha cambiado
+
+North1990.pdf
+
+Se conservarán:
+✓ metadata
+✓ traducción
+✓ anotaciones
+
+Jano intentará reubicar:
+↻ 218 segmentos
+↻ 43 anotaciones
+↻ 1 posición de lectura
+```
+
+Después:
+
+```text id="xbfre2"
+✓ 40 anotaciones reubicadas
+⚠ 3 requieren revisión
+```
+
+Esto convierte la “trazabilidad” en algo realmente útil.
+
+---
+
+# 9. Proyectos administrados y proyectos enlazados
+
+Introduciría una distinción simple.
+
+### Proyecto portable
+
+Todo está dentro de:
+
+```text id="t93nze"
+Proyecto/
+```
+
+Resultado:
+
+```text id="6iohvr"
+✓ Completamente portable
+```
+
+### Proyecto con archivos externos
+
+Por ejemplo:
+
+```text id="9jajyw"
+Proyecto/
+   .jano/
+
+D:\Papers\North1990.pdf
+```
+
+Resultado:
+
+```text id="549req"
+⚠ Contiene 17 archivos externos
+
+Este proyecto no es completamente portable.
+```
+
+Y Jano podría ofrecer:
+
+```text id="n7zlcu"
+[Convertir en proyecto portable]
+```
+
+que copia esos documentos a `Proyecto_orig` / `Proyecto_trad`.
+
+Esto evita sorpresas cuando alguien cambia de computador.
+
+---
+
+# 10. Configuración → Copia de seguridad
+
+Tu idea la implementaría aproximadamente así:
+
+```text id="dwbqdq"
+Configuración
+└── Copia de seguridad
+
+    Ubicación de proyectos
+    /Users/.../Dropbox/Jano/
+
+    ─────────────────────────
+
+    Copia manual
+
+    [ Crear copia de seguridad ]
+
+    Incluir:
+    ☑ Configuración
+    ☑ Proyectos
+    ☑ Alineaciones y anotaciones
+    ☑ Plugins
+    ☑ Configuración de plugins
+    ☐ Documentos originales
+    ☐ Traducciones
+
+    ─────────────────────────
+
+    [ Restaurar copia de seguridad ]
+```
+
+Tendría **dos niveles de paquete**.
+
+---
+
+## 11. `.jano-project`
+
+Un único proyecto:
+
+```text id="x90wxz"
+Tesis.jano-project
+```
+
+internamente sería sencillamente un ZIP estandarizado:
+
+```text id="3tisas"
+manifest.json
+project/
+    .jano/
+    Tesis_orig/
+    Tesis_trad/
+```
+
+El usuario decide si incluir documentos.
+
+Podría existir:
+
+```text id="7m6c9p"
+Proyecto ligero
+23 MB
+solo metadata + traducciones estructuradas
+
+Proyecto completo
+1.8 GB
+incluye PDFs
+```
+
+---
+
+# 12. `.jano-backup`
+
+Este sería el respaldo general:
+
+```text id="snhthw"
+Jano-Backup-2026-09-16.jano-backup
+```
+
+Podría contener:
+
+```text id="d9v2ic"
+manifest.json
+
+profile/
+    settings.json
+    shortcuts.json
+    dictionaries/
+    themes/
+
+plugins/
+    zotero/
+    obsidian/
+    ...
+
+projects/
+    project-a/
+    project-b/
+```
+
+Además:
+
+```json id="z28orl"
+{
+  "format": "jano-backup",
+  "schema_version": 3,
+  "jano_version": "0.9.4",
+  "created_at": "...",
+  "platform": "windows"
+}
+```
+
+Eso es importante para futuras migraciones.
+
+---
+
+# 13. Las API keys serían la excepción
+
+No las incluiría por defecto.
+
+Ya habíamos decidido que las credenciales deberían almacenarse en el almacén seguro del sistema operativo, no dentro de configuraciones normales. fileciteturn0file2L79-L137
+
+Por tanto:
+
+```text id="t92g6j"
+Copia restaurada
+
+✓ Configuración
+✓ Proyectos
+✓ Plugins
+✓ Glosarios
+✓ Preferencias
+
+⚠ OpenAI
+  API key requerida
+
+⚠ DeepL
+  API key requerida
+```
+
+El usuario vuelve a introducirlas.
+
+Mucho más seguro que tener una API key dentro de un ZIP que alguien termina subiendo accidentalmente a Drive.
+
+Más adelante podría existir una exportación **cifrada con contraseña**, pero no la introduciría inicialmente.
+
+---
+
+# 14. Plugins
+
+Aquí también aprovecharía la arquitectura de plugins local que ya definimos: cada complemento vive en una carpeta autocontenida con `manifest`, código y recursos. fileciteturn0file8L50-L93
+
+Eso hace el backup trivial:
+
+```text id="gvbfwu"
+plugins/
+├── zotero-jano/
+├── obsidian-export/
+└── deepl/
+```
+
+Al restaurar en otro computador:
+
+```text id="62bw1f"
+Plugins restaurados
+
+Zotero Integration
+Permisos anteriores:
+• selection:read
+• annotations:write
+• network:localhost
+
+[Revisar permisos]   [Activar]
+```
+
+Por seguridad, yo requeriría **autorizar nuevamente los permisos de plugins** en un equipo nuevo.
+
+---
+
+# 15. Copias automáticas
+
+También incorporaría snapshots pequeños solamente del estado.
+
+Por ejemplo:
+
+```text id="u9tsvo"
+.jano/backups/
+
+2026-09-16_001.jano-state
+2026-09-15_001.jano-state
+2026-09-14_001.jano-state
+```
+
+No duplicarían PDFs.
+
+Solo:
+
+```text id="8xpf9v"
+alineaciones
+anotaciones
+progreso
+metadata
+configuración del proyecto
+```
+
+Por tanto podrían pesar pocos megabytes.
+
+Una política sencilla:
+
+```text id="n1aex2"
+últimas 10 copias
++
+1 diaria durante 30 días
+```
+
+configurable.
+
+---
+
+# 16. Cuidado con las nubes sincronizadas
+
+Aquí introduciría una restricción importante.
+
+Copiar una carpeta Jano mediante Dropbox/OneDrive es fácil; **editar simultáneamente el mismo proyecto desde dos computadores es otro problema**.
+
+Por ejemplo:
+
+```text id="nt7c0y"
+PC A                     PC B
+
+abre Tesis
+  ↓
+modifica state.sqlite    abre Tesis
+                          ↓
+                         modifica state.sqlite
+        ↓
+Dropbox intenta reconciliar ambos
+```
+
+Esto puede generar conflictos.
+
+Para una primera versión usaría un modelo **single-writer**:
+
+```text id="adgh5p"
+.jano/
+└── session.lock
+```
+
+Al abrir:
+
+```text id="4mlaky"
+⚠ Este proyecto parece estar abierto
+en otro equipo.
+
+Equipo:
+MacBook-Max
+
+Última actividad:
+00:24
+
+[Abrir solo lectura]
+[Forzar apertura]
+```
+
+Y Jano haría un checkpoint consistente del estado antes de cerrar.
+
+Una sincronización multi-equipo simultánea real sería otro problema mucho mayor y no es necesaria para conseguir portabilidad.
+
+---
+
+# 17. Verificación del backup
+
+Cada backup debería llevar checksums:
+
+```text id="aps0wc"
+manifest.json
+checksums.json
+```
+
+Al restaurar:
+
+```text id="wv1zhy"
+Verificando copia...
+
+✓ configuración
+✓ 4 proyectos
+✓ 213 documentos
+✓ 18.422 alineaciones
+✓ 764 anotaciones
+✓ 4 plugins
+```
+
+y detectar:
+
+```text id="36m5z6"
+⚠ paper_041.pdf dañado
+```
+
+antes de sobrescribir nada.
+
+---
+
+# 18. Restauración con vista previa
+
+Nunca haría simplemente:
+
+```text id="6507hx"
+Restaurar → sobrescribir todo
+```
+
+Mostraría:
+
+```text id="xni806"
+Restaurar copia
+
+Encontrado:
+
+4 proyectos
+213 documentos
+764 anotaciones
+4 plugins
+
+Conflictos:
+2 proyectos ya existen
+
+Proyecto Tesis
+○ conservar actual
+○ restaurar copia
+○ importar como "Tesis (restaurado)"
+
+[Cancelar]               [Restaurar]
+```
+
+Esto hará mucho más segura la migración entre computadores.
+
+---
+
+## Arquitectura final del Punto 17
+
+Lo resumiría así:
+
+```text id="hv7ohv"
+                     JANO
+                       │
+        ┌──────────────┴──────────────┐
+        │                             │
+     PERFIL                       PROYECTOS
+        │                             │
+ configuración                  Proyecto/
+ plugins                       ├── orig/
+ preferencias                  ├── trad/
+ glosarios                     └── .jano/
+        │                             │
+        │                     document_id
+        │                     segments
+        │                     alignments
+        │                     annotations
+        │                     progress
+        │
+        └───────────┬─────────────────┘
+                    │
+               Backup engine
+                    │
+          ┌─────────┴─────────┐
+          │                   │
+    .jano-backup        .jano-project
+    perfil completo      proyecto único
+```
+
+Y establecería seis reglas de diseño:
+
+1. **Las rutas internas son relativas.**
+2. **Cada documento tiene un `document_id` estable y hashes verificables.**
+3. **Los PDFs originales nunca necesitan ser modificados por Jano.**
+4. **Alineaciones, anotaciones y progreso se guardan como metadata trazable dentro de `.jano`.**
+5. **Copiar la carpeta completa de un proyecto debe bastar para moverlo.**
+6. **El backup completo es un archivo comprimido estándar, restaurable y verificable.**
+
+Con eso el **Punto 17** quedaría conceptualmente bastante cerrado. La subdecisión técnica que dejaría para el Punto 3 —formato interno— es determinar cuánto de `.jano` será **SQLite** por rendimiento y cuánto será **JSON/archivos sidecar** por transparencia, recuperación y facilidad de versionado. Esa decisión conecta directamente este punto con el formato interno de Jano.

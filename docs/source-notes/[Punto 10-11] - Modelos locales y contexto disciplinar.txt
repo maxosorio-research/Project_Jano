@@ -1,0 +1,500 @@
+Sí. Las dos decisiones encajan entre sí y, de hecho, haría que constituyeran el núcleo del **Punto 10 + Punto 11**: Jano debería ser **local-first también para la IA**, y cada proyecto debería aportar al modelo un **contexto disciplinar persistente**.
+
+La arquitectura ya apuntaba en esa dirección: habíamos separado el motor de traducción del proveedor concreto y planteado bloques contextuales grandes conservando los IDs de los segmentos. fileciteturn0file2L154-L204 fileciteturn0file2L206-L263
+
+## 10. Modelos locales como núcleo
+
+No diseñaría:
+
+```text id="ib9gw7"
+Jano
+  ↓
+Ollama
+  ↓
+modelo determinado
+```
+
+sino:
+
+```text id="n3qm4b"
+                     ┌─ Runtime local administrado por Jano
+                     │
+Jano Translation ────┼─ Ollama
+Engine               │
+                     ├─ futuro llama.cpp / MLX / etc.
+                     │
+                     └─ API remota opcional
+```
+
+Así **modelo** y **runtime** son dos decisiones distintas.
+
+Para una primera implementación, Ollama sigue siendo muy atractivo porque ofrece una API local homogénea y permite cambiar de modelo sin que Jano tenga que conocer sus detalles. Pero evitaría hacer que el formato de Jano dependa de Ollama; más adelante Jano podría incorporar un runtime propio y funcionar sin instalar software adicional.
+
+### El usuario escogería el modelo
+
+Imagino una configuración así:
+
+```text id="rax80x"
+Configuración → IA y traducción
+
+Modo
+● Local — sin conexión
+○ API remota
+
+Runtime local
+Ollama                         ✓ Detectado
+
+Modelo de traducción
+
+● TranslateGemma 4B            ✓ Instalado
+○ TranslateGemma 12B           ↓ 8.1 GB
+○ Qwen 3.5 9B                 ↓
+○ Otro modelo...              +
+
+[Administrar modelos]
+```
+
+TranslateGemma es particularmente interesante ahora: tiene variantes 4B, 12B y 27B y está específicamente orientado a traducción de 55 idiomas; en Ollama, las variantes cuantizadas mostradas ocupan aproximadamente 3,3 GB, 8,1 GB y 17 GB respectivamente. ([ollama.com](https://ollama.com/library/translategemma?utm_source=chatgpt.com))
+
+También existen modelos generalistas multilingües como Qwen3/Qwen3.5. Qwen3 declara soporte para más de 100 idiomas y capacidades de traducción, mientras que Qwen3.5 actualmente ofrece varios tamaños desde 0.8B en adelante. ([ollama.com](https://ollama.com/library/qwen3?utm_source=chatgpt.com))
+
+Pero **no fijaría todavía un “modelo oficial de Jano”**. Conviene primero comparar calidad EN→ES académica.
+
+### Si el modelo no está instalado
+
+Exactamente como propones:
+
+```text id="rczj2a"
+Este proyecto utiliza:
+TranslateGemma 12B
+
+El modelo no está instalado.
+
+Tamaño de descarga: 8.1 GB
+Almacenamiento requerido: ~9 GB
+Origen: ...
+Licencia: ...
+Hash: ...
+
+Después de descargarlo podrá utilizarse
+completamente sin conexión.
+
+[Cancelar]            [Descargar modelo]
+```
+
+Nunca descargaría automáticamente varios GB porque el usuario eligió accidentalmente una opción.
+
+Y Jano debería almacenar junto al catálogo:
+
+```text id="gl40ln"
+model_id
+runtime
+versión
+tamaño
+licencia
+origen
+hash
+idiomas
+requisitos aproximados
+```
+
+Esto también es importante por la filosofía de distribución del proyecto: **“local” no significa necesariamente “libre” jurídicamente**. Cada modelo tiene su propia licencia. Por ejemplo, Qwen3 8B aparece bajo Apache-2.0, mientras otros modelos pueden tener términos distintos. ([huggingface.co](https://huggingface.co/Qwen/Qwen3-8B/tree/main?utm_source=chatgpt.com))
+
+Jano debería mostrarlo en vez de ocultarlo.
+
+## Detección de hardware
+
+Aquí sí automatizaría bastante.
+
+En el primer uso:
+
+```text id="vmh0zd"
+Hardware detectado
+
+RAM      16 GB
+GPU      8 GB VRAM
+
+Modelos compatibles
+
+Ligero
+✓ 4B
+
+Equilibrado
+✓ 8B / 9B
+
+Exigente
+⚠ 12B+ puede ser lento
+```
+
+Pero sería una **recomendación**, no una restricción.
+
+El usuario siempre podría seleccionar:
+
+> Mostrar todos los modelos.
+
+Así Jano sigue siendo útil tanto en un notebook modesto como en una workstation.
+
+---
+
+# 11. El contexto disciplinar
+
+Esta parte me parece incluso más importante que el modelo.
+
+Tu idea de:
+
+```text id="g8rdyy"
+Proyecto:
+Tesis
+
+Disciplina:
+Ciencia política
+```
+
+debería quedar almacenada permanentemente en `.jano`.
+
+Pero ampliaría ligeramente el concepto. En vez de una sola etiqueta, utilizaría un **perfil contextual del proyecto**.
+
+Por ejemplo:
+
+```text id="fi77z5"
+Disciplina
+Ciencia política
+
+Subcampo
+Política comparada
+
+Idioma de origen
+Inglés
+
+Idioma de lectura
+Español
+
+Variante terminológica
+Español académico
+
+Perfil
+Traducción académica fiel
+
+Contexto adicional
+[ opcional ]
+```
+
+Internamente podría quedar:
+
+```json id="53blja"
+{
+  "translation_profile": {
+    "discipline": "political_science",
+    "subfield": "comparative_politics",
+    "source_language": "en",
+    "target_language": "es",
+    "style": "academic_faithful"
+  }
+}
+```
+
+Esto pertenece perfectamente al proyecto autónomo que ya definimos, donde `.jano` conserva configuración y metadata mientras originales y traducciones siguen siendo archivos normales. fileciteturn0file4L3-L24
+
+## ¿Qué gana realmente el modelo con “Ciencia política”?
+
+No le mandaría simplemente:
+
+> Este texto es de ciencia política.
+
+Jano utilizaría la etiqueta para construir automáticamente un **contexto de traducción**.
+
+Por ejemplo:
+
+```text id="3qop3f"
+DOMINIO
+Ciencia política — Política comparada
+
+TIPO DE TEXTO
+Documento académico
+
+OBJETIVO
+Traducción de trabajo destinada a lectura académica.
+
+CRITERIOS
+- preservar el argumento original;
+- no resumir;
+- no simplificar;
+- conservar citas y referencias;
+- mantener terminología especializada;
+- mantener consistencia terminológica entre segmentos.
+
+TERMINOLOGÍA DEL PROYECTO
+accountability → rendición de cuentas
+rule of law → Estado de derecho
+cleavage → clivaje
+path dependence → dependencia de trayectoria
+```
+
+Y después:
+
+```text id="x29uu4"
+CONTEXTO DEL DOCUMENTO
+Título
+Resumen / abstract
+encabezado de sección
+párrafos anteriores
+
+SEGMENTOS A TRADUCIR
+seg_184 ...
+seg_185 ...
+seg_186 ...
+```
+
+Es mucho más potente.
+
+## Usaría una jerarquía de contexto
+
+Algo parecido a:
+
+```text id="pi2lgt"
+                    CONTEXTO JANO
+
+1. Reglas universales
+   │
+   ├─ no resumir
+   ├─ preservar referencias
+   └─ preservar IDs
+
+2. Disciplina
+   │
+   └─ Ciencia política
+
+3. Subdisciplina
+   │
+   └─ Política comparada
+
+4. Proyecto
+   │
+   └─ glosario de la tesis
+
+5. Documento
+   │
+   ├─ título
+   ├─ abstract
+   └─ metadata
+
+6. Sección
+   │
+   └─ contexto cercano
+
+7. Segmentos
+      └─ texto que debe traducirse
+```
+
+Así el modelo tiene contexto a distintos niveles sin tener que enviar el libro entero cada vez.
+
+Esto encaja con la decisión previa de traducir **bloques contextuales**, manteniendo segmentos pequeños para alineación. fileciteturn0file14L81-L142
+
+## Además permitiría varias disciplinas
+
+Esto me parece importante.
+
+Un proyecto puede ser:
+
+```text id="hwm81f"
+Disciplina principal
+Ciencia política
+
+Áreas asociadas
+☑ Economía
+☑ Historia
+☐ Sociología
+```
+
+Una tesis sobre instituciones, por ejemplo, podría utilizar literatura de economía política, historia económica y política comparada.
+
+Por eso usaría:
+
+```json id="dojmeb"
+{
+  "domains": [
+    {
+      "name": "political_science",
+      "primary": true
+    },
+    {
+      "name": "economics",
+      "primary": false
+    }
+  ]
+}
+```
+
+en lugar de una única etiqueta rígida.
+
+## Y añadiría contexto libre
+
+Junto a las etiquetas:
+
+```text id="ih3qpo"
+Contexto del proyecto
+
+Esta investigación estudia instituciones políticas,
+desarrollo económico y democratización en América Latina.
+
+[                                             ]
+```
+
+Eso puede ser extremadamente útil.
+
+Porque dos proyectos etiquetados:
+
+> Ciencia política
+
+pueden tratar respectivamente de:
+
+```text id="mnqo8f"
+teoría política normativa
+```
+
+y:
+
+```text id="g99hs5"
+modelos espaciales de competencia electoral
+```
+
+y necesitar vocabularios bastante distintos.
+
+---
+
+# Glosario automático del proyecto
+
+Aquí creo que aparece una función especialmente interesante.
+
+El proyecto podría ir formando:
+
+```text id="jlqbdo"
+Glosario — Ciencia política
+
+accountability
+→ rendición de cuentas
+
+checks and balances
+→ controles y contrapesos
+
+cleavage
+→ clivaje
+
+constituency
+→ distrito electoral
+
+incumbent
+→ titular del cargo
+
+path dependence
+→ dependencia de trayectoria
+```
+
+Y cada término tendría:
+
+```text id="rws9tr"
+Origen:
+● Usuario
+○ Sugerido por Jano
+
+Aplicación:
+● Siempre en este proyecto
+○ Preguntar
+○ Solo este documento
+```
+
+Entonces la calidad podría **mejorar conforme avanza el proyecto**, sin entrenar ningún modelo.
+
+Esto es mucho más sencillo y controlable que intentar hacer fine-tuning.
+
+---
+
+# Incluso separaría “modelo” de “perfil de traducción”
+
+Una configuración muy potente sería:
+
+```text id="90kf0b"
+MODELO
+TranslateGemma 12B
+
+PERFIL
+Ciencia política — Académico
+
+GLOSARIO
+Tesis.jano — 84 términos
+```
+
+De manera que puedas cambiar:
+
+```text id="2txrbl"
+TranslateGemma
+       ↓
+Qwen
+```
+
+sin perder:
+
+```text id="fm3j8d"
+disciplina
+subdisciplina
+glosario
+preferencias
+contexto
+```
+
+El conocimiento de traducción pertenece **al proyecto**, no al modelo.
+
+Eso será importante si dentro de dos años aparecen modelos locales mucho mejores.
+
+---
+
+## Hay solo una precaución con las etiquetas disciplinares
+
+No deben convertirse en órdenes demasiado fuertes.
+
+Si el texto dice:
+
+> institution
+
+Jano no debería traducir automáticamente todo uso como:
+
+> institución política
+
+solo porque el proyecto esté etiquetado como Ciencia política.
+
+La jerarquía debe ser:
+
+\[
+\boxed{
+\text{texto original}
+>
+\text{contexto inmediato}
+>
+\text{glosario explícito}
+>
+\text{disciplina}
+}
+\]
+
+La etiqueta disciplinar **desambigua**, pero nunca debería sobreescribir el significado concreto del texto.
+
+Eso también evita que el modelo “academice” demasiado una frase sencilla.
+
+---
+
+## Cerraría entonces los Puntos 10 y 11 así
+
+1. **Jano funciona completamente offline**, incluida la traducción.
+2. El motor de traducción no depende de un modelo ni runtime específicos.
+3. El usuario puede instalar y seleccionar distintos modelos locales.
+4. Jano detecta modelos disponibles y hardware, pero no decide irrevocablemente por el usuario.
+5. Una descarga requiere autorización explícita e informa tamaño, origen y licencia.
+6. Las APIs remotas son opcionales y nunca necesarias para utilizar Jano.
+7. Cada proyecto guarda un **perfil disciplinar** en `.jano`.
+8. Puede contener disciplina principal, disciplinas secundarias, subcampo, descripción y glosario.
+9. Jano construye automáticamente un contexto académico a partir de esa metadata.
+10. El contexto se combina con título, abstract, sección y segmentos cercanos.
+11. Los glosarios pertenecen al proyecto y sobreviven al cambio de modelo.
+12. La disciplina orienta la traducción, pero el texto fuente siempre tiene prioridad.
+
+Esto además hace que la idea de proyecto cobre bastante más sentido: **un proyecto Jano no sería solo una carpeta de documentos; acumularía contexto académico y terminológico que mejora progresivamente la lectura y traducción de todos los documentos que contiene.**

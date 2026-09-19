@@ -1,0 +1,535 @@
+Esto amplía bastante el Punto 14. Lo cerraría no como “sistema propio de anotaciones”, sino como un **sistema local de evidencia académica**, donde Zotero y Word sean integraciones externas. La lógica encaja con una decisión previa: el original es la fuente canónica y la traducción una capa auxiliar. fileciteturn0file2L365-L421
+
+### 14.1. Jano debe poder funcionar completamente sin Zotero
+
+Cada highlight, comentario, tag o nota debería existir primero como un objeto de Jano dentro de `.jano`. Esto garantiza que el usuario conserve todo aunque no instale Zotero, cambie de gestor bibliográfico o simplemente quiera trabajar offline.
+
+Una anotación podría tener conceptualmente:
+
+```json id="w65ewp"
+{
+  "annotation_id": "ann_42f...",
+  "document_id": "doc_19a...",
+
+  "source": {
+    "segment_id": "seg_en_148",
+    "text": "Institutions are the rules of the game...",
+    "page": 27
+  },
+
+  "translation": {
+    "segment_id": "seg_es_151",
+    "text": "Las instituciones son las reglas del juego...",
+    "origin": "machine"
+  },
+
+  "type": "highlight",
+  "color": "yellow",
+
+  "comment": "Definición central para marco teórico",
+
+  "tags": [
+    "instituciones",
+    "marco-teórico"
+  ],
+
+  "created_at": "...",
+  "updated_at": "..."
+}
+```
+
+La anotación debería conservar también anclas redundantes —segmento, texto exacto, contexto, página y posición— para poder relocalizarla aunque cambie el PDF. Eso ya coincide con el modelo de persistencia y trazabilidad que habíamos definido. fileciteturn0file9L204-L249
+
+### 14.2. Highlights, comentarios, tags y notas son objetos distintos
+
+No los reduciría todos a “anotaciones”.
+
+Un **highlight** está físicamente ligado a un fragmento. Un **comentario** pertenece a ese highlight. Los **tags** permiten recuperación transversal. Y una **nota** puede contener múltiples evidencias, texto propio y enlaces a distintos documentos.
+
+Por ejemplo:
+
+```text id="uqe5pj"
+NOTA: Instituciones y desarrollo
+────────────────────────────────────────
+
+Idea:
+La literatura institucional distingue...
+
+Evidencias vinculadas:
+
+▸ North 1990, p. 3
+  “Institutions are the rules...”
+  Traducción: «Las instituciones son...»
+
+▸ Acemoglu et al. 2001, p. 1370
+  “We exploit differences...”
+  Traducción: «Explotamos diferencias...»
+
+Tags:
+#instituciones #desarrollo #marco-teórico
+```
+
+Esto hace que Jano pueda convertirse en una herramienta de **recopilación de evidencia**, sin intentar convertirse necesariamente en otro Obsidian.
+
+### 14.3. Zotero debería ser una sincronización, no el almacenamiento primario
+
+Cuando Zotero esté disponible:
+
+```text id="wqjq84"
+JANO
+annotation_id = A17
+      │
+      ├──────── local
+      │
+      └──────── Zotero
+                 annotation_key = Z84K...
+```
+
+Jano conserva algo como:
+
+```text id="1p6lcz"
+external_links
+└── zotero
+    ├── item_key
+    ├── attachment_key
+    ├── annotation_key
+    ├── last_synced_at
+    └── sync_state
+```
+
+Zotero ya permite que sus anotaciones contengan texto destacado, comentarios y relación con el documento; además, su integración con Word inserta citas y bibliografías dinámicas. ([zotero.org](https://www.zotero.org/support/word_processor_integration?utm_source=chatgpt.com))
+
+Para nuestra lógica bilingüe seguiría usando:
+
+```text id="h8v9dt"
+Zotero highlight:
+texto ORIGINAL
+
+Zotero comment:
+traducción
++ comentario del investigador
+```
+
+porque la anotación debe permanecer vinculada al original. Esto coincide con lo que habíamos establecido anteriormente para la integración Zotero. fileciteturn0file1L53-L80
+
+### 14.4. Habría tres modos de almacenamiento
+
+En la configuración de cada proyecto o globalmente:
+
+```text id="pkjtuz"
+Anotaciones
+
+● Guardar solamente en Jano
+
+○ Guardar en Jano + Zotero
+  ☑ highlights
+  ☑ comentarios
+  ☑ tags
+  ☑ notas compatibles
+
+Zotero:
+✓ conectado
+```
+
+No permitiría que “Guardar en Zotero” implicase **no guardar en Jano**, porque entonces volveríamos a depender de un sistema externo.
+
+El modelo sería:
+
+\[
+\text{Jano = registro local}
+\]
+
+\[
+\text{Zotero = réplica/integración bibliográfica opcional}
+\]
+
+### 14.5. Necesitamos pensar desde ahora en conflictos
+
+Supongamos:
+
+```text id="th2v5t"
+Jano:
+Comentario = "Definición institucional"
+
+Zotero:
+el usuario lo cambia a
+"Usar en capítulo 2"
+```
+
+¿Qué ocurre?
+
+Por eso cada vínculo externo necesitará:
+
+```text id="jxy3ru"
+last_synced_at
+local_updated_at
+remote_updated_at
+sync_state
+```
+
+y estados como:
+
+```text id="psd2ab"
+✓ sincronizado
+↑ cambios locales
+↓ cambios externos
+⚠ conflicto
+```
+
+No necesitamos implementar sincronización bidireccional sofisticada al comienzo, pero el modelo de datos debería permitirla.
+
+---
+
+# Jano para Word
+
+Aquí aparece una consecuencia bastante importante de tu propuesta.
+
+No pensaría simplemente en:
+
+> “plugin para pegar citas”.
+
+Pensaría en **Jano Writer**: una interfaz de escritura conectada a la base local de evidencias.
+
+Conceptualmente:
+
+```text id="yp5f0z"
+                     JANO
+                       │
+          ┌────────────┴─────────────┐
+          │                          │
+       READER                     WRITER
+          │                          │
+leer / destacar              Word / futuro LibreOffice
+anotar / traducir                   │
+          │                          │
+          └──────── Evidence DB ─────┘
+```
+
+De esta manera el conocimiento recopilado durante la lectura reaparece directamente durante la escritura.
+
+### El flujo ideal
+
+Estás escribiendo en Word:
+
+```text id="b5x8xn"
+Las instituciones condicionan los incentivos...
+|
+cursor
+```
+
+Abres el panel **Jano**:
+
+```text id="kyapzi"
+┌─────────────────────────────────────┐
+│ JANO                                │
+│                                     │
+│ Buscar evidencia                    │
+│ [ instituciones                  ]  │
+│                                     │
+│ North 1990                          │
+│ p. 3                                │
+│                                     │
+│ «Las instituciones son las reglas   │
+│ del juego en una sociedad...»       │
+│                                     │
+│ Original                            │
+│ “Institutions are the rules...”     │
+│                                     │
+│ #instituciones #marco-teórico       │
+│                                     │
+│ [Abrir en Jano]                     │
+│ [Insertar cita]                     │
+│ [Insertar cita + fragmento]         │
+└─────────────────────────────────────┘
+```
+
+Pulsas:
+
+**Insertar cita**
+
+y Word obtiene:
+
+```text id="myjtce"
+(North, 1990, p. 3)
+```
+
+o el formato correspondiente al estilo seleccionado.
+
+Microsoft permite crear complementos de Word con paneles laterales que pueden leer la selección del documento, insertar contenido y crear controles de contenido mediante Office.js. ([learn.microsoft.com](https://learn.microsoft.com/en-us/office/dev/add-ins/develop/support-for-task-pane-and-content-add-ins?utm_source=chatgpt.com))
+
+Por tanto, técnicamente la interacción es viable.
+
+### Pero esto introduce un requisito nuevo que no teníamos
+
+Para citar **sin Zotero**, Jano tendrá que conocer metadatos bibliográficos.
+
+Hasta ahora bastaba con:
+
+```text id="3ix9pj"
+document_id
+PDF
+translation
+segments
+annotations
+```
+
+Ahora necesitamos también:
+
+```text id="1f0hon"
+ReferenceRecord
+
+authors
+title
+year
+journal
+volume
+issue
+pages
+publisher
+DOI
+ISBN
+item_type
+...
+```
+
+Porque para producir:
+
+```text id="8nucgq"
+North, D. C. (1990).
+Institutions, Institutional Change and Economic Performance.
+Cambridge University Press.
+```
+
+Jano necesita saber qué obra está citando.
+
+Esto convierte al documento en algo así:
+
+```text id="cecew5"
+Document
+│
+├── Files
+│   ├── original
+│   └── translations
+│
+├── Bibliographic record
+│
+├── Segments
+│
+├── Alignments
+│
+├── Annotations
+│
+└── External links
+    ├── Zotero
+    └── ...
+```
+
+No convierte necesariamente a Jano en un gestor bibliográfico completo, pero sí necesita una **capa bibliográfica mínima**.
+
+### Zotero seguiría siendo útil
+
+Para usuarios con Zotero, no tiene sentido duplicar todo su sistema de citación.
+
+Zotero ya dispone de una integración madura con Word que crea citas dinámicas, permite cambiar estilos y mantiene automáticamente la bibliografía. ([zotero.org](https://www.zotero.org/support/word_processor_integration?utm_source=chatgpt.com))
+
+Entonces Jano podría tener dos estrategias:
+
+```text id="f2jfuh"
+CON ZOTERO
+
+Jano Writer
+    ↓
+selección de evidencia
+    ↓
+referencia Zotero
+    ↓
+Zotero inserta/gestiona cita
+```
+
+y:
+
+```text id="dfepth"
+SIN ZOTERO
+
+Jano Writer
+    ↓
+selección de evidencia
+    ↓
+ReferenceRecord local
+    ↓
+motor CSL
+    ↓
+cita + bibliografía
+```
+
+Así no intentamos reemplazar Zotero para quien ya lo usa.
+
+### Lo especialmente interesante sería buscar evidencias, no solo bibliografía
+
+Zotero en Word está orientado fundamentalmente a seleccionar **referencias bibliográficas**. Su diálogo permite buscar autores, títulos, años y añadir páginas u otros localizadores. ([zotero.org](https://www.zotero.org/support/word_processor_plugin_usage?utm_source=chatgpt.com))
+
+Jano podría añadir una capa distinta:
+
+```text id="u2b9ip"
+Buscar:
+"dependencia de trayectoria"
+
+Resultados:
+
+North 1990 · p. 95
+████████████████
+«Una vez establecida una trayectoria...»
+
+Pierson 2000 · p. 252
+████████████████
+«Los procesos con retornos crecientes...»
+
+Mahoney 2000 · p. 510
+████████████████
+«La dependencia de trayectoria...»
+```
+
+Es decir, durante la escritura no recuerdas necesariamente:
+
+> “quiero citar North 1990”.
+
+Muchas veces recuerdas:
+
+> “había guardado algo sobre dependencia de trayectoria”.
+
+Jano podría buscar sobre **tus highlights, tags, comentarios y notas**.
+
+Eso conecta lectura y escritura de una manera mucho más directa.
+
+### También permitiría insertar evidencia manteniendo trazabilidad
+
+Por ejemplo:
+
+```text id="g7fgs2"
+[Insertar fragmento original]
+
+→ “Institutions are the rules of the game…” (North, 1990, p. 3)
+```
+
+o:
+
+```text id="4n8iut"
+[Insertar traducción de trabajo]
+
+→ «Las instituciones son las reglas del juego…»
+```
+
+pero en este segundo caso Jano podría advertir:
+
+```text id="1nee2y"
+⚠ Traducción de trabajo
+
+La fuente publicada está en inglés.
+
+[Insertar original]
+[Insertar traducción con indicación]
+[Cancelar]
+```
+
+Eso reutiliza precisamente la metadata de procedencia que ya decidimos conservar para las traducciones. fileciteturn0file2L304-L331
+
+### El plugin de Word debería comunicarse con Jano, no leer `.jano` directamente
+
+Igual que los plugins internos que ya diseñamos, no permitiría:
+
+```text id="khkx0p"
+Word plugin
+     ↓
+abrir index.sqlite
+     ↓
+hacer consultas directamente
+```
+
+Sino:
+
+```text id="cym6tf"
+Word
+ │
+ │ Jano Writer
+ ▼
+localhost
+ │
+ ▼
+Jano API
+ │
+ ├── searchAnnotations()
+ ├── searchReferences()
+ ├── getCitation()
+ ├── getEvidence()
+ └── openInReader()
+```
+
+Eso es coherente con el principio de plugins que ya fijamos: las integraciones deben usar una API pública en vez de conocer la estructura interna de la base de datos. fileciteturn0file8L95-L170
+
+### Hay un detalle técnico con Word que debemos dejar anotado
+
+Los Office Add-ins modernos usan tecnologías web y un panel de tareas. Microsoft indica que sus recursos web deben servirse desde un servidor web; para publicación/web normalmente se requiere HTTPS. ([learn.microsoft.com](https://learn.microsoft.com/es-es/office/dev/add-ins/concepts/requirements-for-running-office-add-ins?utm_source=chatgpt.com))
+
+Para mantener la filosofía **local-first**, deberíamos estudiar posteriormente dos alternativas:
+
+```text id="xabr7g"
+A. Jano ejecuta un pequeño servidor localhost
+   y el complemento se conecta localmente.
+
+B. Integración nativa/específica de escritorio
+   como hacen herramientas del tipo Zotero.
+```
+
+No cerraría todavía cuál utilizar. Merece un subpunto técnico propio porque afecta Windows/macOS, distribución y mantenimiento.
+
+---
+
+## Con esto redefiniría el Punto 14
+
+En lugar de:
+
+> **14. Sistema propio de anotaciones**
+
+lo escribiría como:
+
+> **14. Evidencia, anotaciones y flujo de escritura**
+
+con cinco componentes:
+
+1. **Annotation Core local:** highlights, comentarios, tags y notas son propiedad del proyecto Jano.
+2. **Evidence Model:** cada evidencia mantiene fuente original, traducción auxiliar, página, anclas, tags y procedencia.
+3. **Zotero Bridge:** sincronización opcional con Zotero sin volverlo dependencia.
+4. **Bibliographic Layer:** metadata mínima para que Jano pueda operar también sin Zotero.
+5. **Jano Writer:** integración con Word para buscar evidencias, insertar citas, recuperar fragmentos y regresar al documento original.
+
+Esto produce un ciclo bastante coherente:
+
+```text id="7u03g0"
+                 LEER
+                  │
+                  ▼
+              DESTACAR
+                  │
+                  ▼
+               ANOTAR
+                  │
+             tags / notas
+                  │
+                  ▼
+           BASE DE EVIDENCIA
+             LOCAL · JANO
+            ┌─────┴─────┐
+            │           │
+            ▼           ▼
+         ZOTERO        WORD
+            │           │
+      bibliografía   escritura
+            │           │
+            └─────┬─────┘
+                  ▼
+             PUBLICACIÓN
+```
+
+Y el elemento central deja de ser realmente el PDF. **El activo que Jano va construyendo es una red trazable entre fuente → fragmento → traducción → anotación → cita → texto producido.**
+
+Ese cambio merece quedar como parte central de la arquitectura, aunque **Jano Writer y la sincronización con Zotero sigan fuera del MVP 0.1**, donde ya habíamos decidido concentrarnos únicamente en demostrar que la lectura bilingüe sincronizada funciona bien. fileciteturn0file5L87-L123

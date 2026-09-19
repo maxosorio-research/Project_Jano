@@ -1,0 +1,55 @@
+Ya tenemos definidos los pilares: biblioteca original/traducción, representación por segmentos, alineación, lector dual, traducción opcional y conexión con Zotero. fileciteturn0file2L365-L397 Lo que falta ahora es convertir esa visión en decisiones concretas de producto y arquitectura.
+
+Propongo tratar los temas en este orden:
+
+1. **Definir el MVP exacto.** Qué entra en la primera versión utilizable y qué se pospone. Por ejemplo: PDF con texto seleccionable, dos carpetas, emparejamiento, visor 50/50, scroll sincronizado y selección por párrafos; dejando OCR, Zotero y traducción automática para después.
+
+2. **Modelo de proyecto y biblioteca.** Decidir si Jano trabaja con dos carpetas globales, proyectos independientes, bibliotecas múltiples o una combinación. También qué ocurre cuando un archivo se mueve, renombra o elimina.
+
+3. **Formato interno de Jano.** Definir qué contiene un archivo `.jano` o la base de datos local: `document_id`, rutas, segmentos, idiomas, traducciones, alineaciones, anotaciones, progreso de lectura, metadata, etc. Esto es importante porque ya vimos que no conviene modelar simplemente `PDF A ↔ PDF B`, sino `Document → Segments → Alignment → Viewer`. fileciteturn0file0L203-L225
+
+4. **Extracción y segmentación del PDF.** Cómo convertir un PDF en texto estructurado sin destruir títulos, párrafos, notas al pie, columnas, tablas, citas o ecuaciones. Aquí aparece también la pregunta de qué hacer con PDFs de dos columnas.
+
+5. **Sistema de alineación.** Probablemente el corazón técnico del programa. Hay que decidir cómo detectar relaciones `1→1`, `1→2`, `2→1`, etc., cómo guardar esa información y cómo corregir manualmente una alineación incorrecta. fileciteturn0file0L187-L201
+
+6. **Comportamiento del scroll sincronizado.** Qué significa exactamente “sincronizado”: mantener el segmento equivalente centrado, seguir proporcionalmente entre anclas, suspender temporalmente la sincronización cuando el usuario mueve solo un panel, etc.
+
+7. **Selección bilingüe.** Determinar qué ocurre cuando seleccionas una oración, varias oraciones o solo unas palabras. La primera versión podría seleccionar el segmento completo; más adelante se puede intentar alineación intra-segmento. La arquitectura actual ya permite que una selección en una lengua localice su contraparte. fileciteturn0file0L57-L85
+
+8. **Diseño de la interfaz de lectura.** Modos `50/50`, `70/30`, `100/0`, paneles redimensionables, navegación por páginas/secciones, búsqueda, zoom, tema oscuro, barra lateral, indicadores de alineación y atajos de teclado.
+
+9. **Sistema de traducción.** Definir el pipeline completo: extracción → agrupación contextual → traducción → validación → alineación → almacenamiento. Ya establecimos que conviene traducir bloques con contexto conservando IDs de segmentos, en vez de mandar párrafos aislados. fileciteturn0file2L206-L263
+
+10. **Proveedores de traducción y modelos locales.** Diseñar desde el comienzo una interfaz agnóstica al proveedor: OpenAI, Anthropic, Gemini, DeepL, Ollama u otros, sin que Jano dependa estructuralmente de ninguno. fileciteturn0file2L154-L204
+
+11. **Calidad de traducción académica.** Glosarios, terminología persistente, perfiles por disciplina, tratamiento de citas textuales, nombres propios, ecuaciones, tablas y notas al pie. También cómo detectar o marcar traducciones dudosas.
+
+12. **Proveniencia de las traducciones.** Diferenciar claramente traducción automática, propia, revisada y oficial. Esto es especialmente importante para Zotero y para evitar confundir una traducción de trabajo con texto publicado. fileciteturn0file1L218-L251
+
+13. **Integración con Zotero.** Hay que especificar exactamente qué ocurre al seleccionar una traducción: localizar original → crear highlight original → guardar traducción como comentario → asociar claves de Zotero → permitir “Abrir en Jano”. Ya tenemos bastante bien definido el modelo conceptual. fileciteturn0file1L196-L216
+
+14. **Sistema propio de anotaciones.** Decidir si Jano tendrá highlights, comentarios, tags y notas independientes de Zotero o si delegará casi todo en Zotero. También qué ocurre para usuarios que no utilizan Zotero.
+
+15. **OCR y PDFs problemáticos.** PDFs escaneados, páginas como imágenes, layouts irregulares, documentos antiguos, tablas rotadas y texto incrustado defectuoso. Conviene diseñarlo desde el principio aunque no entre en el MVP.
+
+16. **Seguridad y privacidad.** Gestión de API keys, almacén de credenciales del sistema, qué información puede salir del computador, advertencias antes de utilizar una API remota y opción verdaderamente offline con modelos locales. La arquitectura planteada ya parte de que las funciones centrales deben funcionar sin Internet. fileciteturn0file2L397-L405
+
+17. **Persistencia, backups y portabilidad.** Qué ocurre si alguien cambia de computador. Idealmente una biblioteca de Jano debería poder copiarse o exportarse sin perder alineaciones, traducciones, anotaciones o progreso.
+
+18. **Versionado de traducciones.** Puede que un usuario genere una traducción, luego la revise manualmente y más adelante quiera regenerarla con otro modelo. Hay que decidir si Jano conserva versiones y cómo mantiene las anotaciones alineadas entre ellas.
+
+19. **Rendimiento.** Un paper de 15 páginas es fácil; un libro de 900 páginas no. Hay que decidir qué se procesa bajo demanda, qué se indexa previamente, cómo manejar memoria y cómo evitar renderizar documentos completos innecesariamente.
+
+20. **Arquitectura de plugins.** No solo Zotero. Si Jano es open-source, sería interesante permitir extensiones futuras para Obsidian, Logseq, Calibre, gestores de referencias, traductores adicionales, exportadores, etc., sin modificar el núcleo.
+
+21. **Formato abierto e interoperabilidad.** Sería conveniente que la información importante no quedara encerrada exclusivamente en una base de datos propietaria. Por ejemplo, JSON/SQLite con esquema documentado y exportación de alineaciones y anotaciones.
+
+22. **Licencia open-source.** MIT, Apache-2.0, GPL, AGPL u otra. Esto afecta qué puede hacer otra gente con el proyecto, especialmente si terceros quisieran integrar Jano en software comercial.
+
+23. **Distribución.** Windows primero o multiplataforma desde el inicio; instalador, actualizaciones automáticas, aplicación portable, firma de ejecutables y eventualmente package managers.
+
+24. **Testing con documentos reales.** Crear desde temprano un pequeño corpus de papers problemáticos: una columna, dos columnas, tablas, matemáticas, notas, escaneados, traducciones más largas/cortas, etc. Será fundamental para no optimizar Jano exclusivamente para documentos “perfectos”.
+
+25. **Arquitectura final y roadmap.** Solo después de resolver lo anterior conviene cerrar tecnologías, módulos, dependencias y fases `0.1 → 0.2 → 0.5 → 1.0`.
+
+Yo empezaría por el **punto 1: definir exactamente qué consideraremos Jano 0.1/MVP**. Es la decisión que condicionará casi todas las demás y evitará que intentemos construir simultáneamente visor, OCR, traductor, Zotero y gestor bibliográfico.

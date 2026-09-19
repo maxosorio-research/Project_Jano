@@ -1,0 +1,325 @@
+Para el **Punto 7**, adoptaría precisamente esa lógica: Jano no debería intentar “traducir visualmente” cada palabra seleccionada, sino **proyectar la selección hacia el fragmento equivalente por significado y contexto**. Eso es más coherente con el modelo de segmentos que ya definimos, donde la correspondencia puede ser `1→1`, `1→2` o `2→1` y no necesariamente conserva la estructura literal. fileciteturn0file0L187-L201
+
+Lo definiría como **selección contextual bilingüe**.
+
+Por ejemplo, si en la traducción seleccionas:
+
+```text id="a1pno0"
+las instituciones políticas inclusivas
+```
+
+y el original dice:
+
+```text id="apngr2"
+political institutions that distribute power broadly across society
+```
+
+Jano no tendría que intentar encontrar:
+
+```text id="kinwkf"
+instituciones = institutions
+políticas = political
+inclusivas = inclusive
+```
+
+porque quizás esa equivalencia literal ni siquiera existe. En cambio, debería mostrar como contraparte el fragmento contextual que expresa esa misma idea.
+
+Visualmente:
+
+```text id="wugkvd"
+ORIGINAL                           TRADUCCIÓN
+
+Political institutions that      Las instituciones políticas
+distribute power broadly         inclusivas generan...
+across society generate...
+██████████████████████            ██████████████████
+        ↑                                  ↑
+    contraparte                     selección real
+```
+
+La distinción importante sería que **solo una de las dos selecciones es la selección real del usuario**. La otra es una **selección proyectada** por Jano.
+
+Eso permitiría representarlas de manera ligeramente distinta:
+
+```text id="jah6u8"
+Selección del usuario
+██████████████████
+
+Correspondencia contextual
+░░░░░░░░░░░░░░░░░░
+```
+
+Así queda claro que Jano está diciendo:
+
+> “Este es el fragmento correspondiente”.
+
+y no:
+
+> “Estas palabras son una traducción exacta de aquellas palabras”.
+
+### Cómo debería funcionar internamente
+
+Cuando seleccionas texto, Jano podría seguir esta secuencia:
+
+```text id="2iajlg"
+selección del usuario
+        ↓
+identificar segmentos afectados
+        ↓
+identificar posición dentro del segmento
+        ↓
+consultar alineación bilingüe
+        ↓
+estimar contraparte contextual
+        ↓
+resaltar contraparte
+```
+
+Esto aprovecha directamente algo que ya decidimos: la representación interna no es simplemente `PDF A ↔ PDF B`, sino `Document → Blocks → Segments → Alignment → Viewer`. fileciteturn0file0L203-L225
+
+### Tendría tres niveles de precisión
+
+No intentaría que todas las selecciones tengan la misma calidad.
+
+**Nivel 1 — segmento completo**
+
+Es la opción segura:
+
+```text id="9yxj2q"
+Original:
+[The entire aligned paragraph...]
+
+Traducción:
+[Todo el párrafo correspondiente...]
+```
+
+Si Jano no sabe con suficiente precisión qué subfragmento corresponde, muestra el segmento completo.
+
+**Nivel 2 — selección contextual**
+
+Es el comportamiento que estás describiendo.
+
+```text id="ufip2o"
+Original:
+The institutional framework [shapes incentives and constrains
+the strategic choices available to political actors].
+
+Traducción:
+El marco institucional [condiciona los incentivos y limita
+las alternativas estratégicas de los actores políticos].
+```
+
+No importa que las palabras o límites sintácticos sean distintos. Importa que ambos spans representen esencialmente el mismo contenido.
+
+**Nivel 3 — correspondencia muy precisa**
+
+Cuando Jano tiene suficiente información:
+
+```text id="5qryrn"
+path dependence
+      ↕
+dependencia de trayectoria
+```
+
+Pero sería una optimización, no la regla general.
+
+El orden debería ser:
+
+\[
+\text{significado} >
+\text{frase} >
+\text{palabra}
+\]
+
+no al revés.
+
+### Esto cambia ligeramente el concepto de `Alignment`
+
+Hasta ahora hablábamos principalmente de:
+
+```text id="8ma8l5"
+segment_148_EN ↔ segment_151_ES
+```
+
+La selección contextual requiere añadir una segunda capa.
+
+Algo parecido a:
+
+```text id="b0cmwj"
+Segment alignment
+
+seg_en_148
+    ↕
+seg_es_151
+```
+
+y, opcionalmente:
+
+```text id="xqfaxy"
+Context spans
+
+seg_en_148 [chars 42–116]
+        ↕
+seg_es_151 [chars 37–103]
+```
+
+No significa que necesitemos generar todos esos spans previamente. Podrían calcularse cuando el usuario selecciona algo y luego almacenarse en caché.
+
+Eso evitaría intentar prealinear palabra por palabra todo un libro.
+
+### Selecciones que cruzan varios segmentos
+
+También debería funcionar.
+
+Imagina que seleccionas dos párrafos:
+
+```text id="zu6las"
+Traducción
+
+████████████████████
+████████████████████
+
+████████████████████
+```
+
+y la estructura original resulta ser tres párrafos.
+
+Jano podría proyectar:
+
+```text id="njwkzj"
+TRADUCCIÓN                 ORIGINAL
+
+seg_es_81  ─────────┬──── seg_en_78
+                    ├──── seg_en_79
+seg_es_82  ─────────┴──── seg_en_80
+```
+
+y resaltar los tres.
+
+Esto encaja con la idea que ya teníamos de permitir relaciones no estrictamente `1:1`. fileciteturn0file0L194-L201
+
+### También debería ser completamente bidireccional
+
+Exactamente la misma lógica:
+
+```text id="llt24y"
+selección original
+        ↓
+contraparte traducida
+```
+
+y:
+
+```text id="3do6uf"
+selección traducción
+        ↓
+contraparte original
+```
+
+Esto es especialmente importante porque el flujo de Zotero depende de ello. Si seleccionas texto traducido, Jano necesita localizar el fragmento original correspondiente para guardar la evidencia sobre la fuente canónica. Ese flujo ya lo habíamos planteado como `selección ES → alignment → segmento original → highlight Zotero`. fileciteturn0file1L84-L109
+
+### Añadiría un pequeño detalle de UX
+
+Al seleccionar:
+
+```text id="twaeoe"
+“The institutional framework shapes...”
+```
+
+podría aparecer el toolbar contextual:
+
+```text id="gbi9n1"
+Copiar · Destacar · Ver contraparte · ⋯
+```
+
+Pero la contraparte se resaltaría **automáticamente** en el otro panel.
+
+`Ver contraparte` serviría simplemente para centrarla si estuviese fuera del viewport.
+
+Por ejemplo:
+
+```text id="bnxxbb"
+┌───────────────────────────────────────────────────────┐
+│ ORIGINAL                    │ TRADUCCIÓN              │
+│                             │                         │
+│ ...                         │ ...                     │
+│ ███████████████████         │ ░░░░░░░░░░░░░░░        │
+│ ███████████████             │ ░░░░░░░░░░░            │
+│                             │                         │
+└───────────────────────────────────────────────────────┘
+```
+
+Esto encaja también con la interfaz que ya definimos: herramientas contextuales y divulgación progresiva en vez de llenar permanentemente el lector de controles. fileciteturn0file6L91-L124
+
+### Hay un caso que debemos contemplar explícitamente
+
+Puede que Jano **no tenga suficiente confianza** para determinar la contraparte exacta.
+
+Por ejemplo:
+
+```text id="coy4vx"
+selección:
+"the problem is substantially more complex"
+
+traducción:
+"la cuestión presenta varias dificultades adicionales"
+```
+
+Semánticamente puede corresponder, pero no hay una traducción obvia.
+
+En ese caso, nunca inventaría una precisión falsa.
+
+Podríamos mostrar:
+
+```text id="3qbifw"
+Correspondencia aproximada
+```
+
+y resaltar todo el segmento relacionado.
+
+Internamente:
+
+```text id="e9dess"
+confidence = high
+→ span preciso
+
+confidence = medium
+→ oración / cláusula
+
+confidence = low
+→ segmento completo
+```
+
+No hace falta mostrar porcentajes al usuario normalmente; solo modificar la granularidad de la selección.
+
+### Cerraría entonces el Punto 7 con esta regla
+
+\[
+\boxed{
+\text{La selección bilingüe de Jano es semántica y contextual,
+no léxica}
+}
+\]
+
+Más formalmente:
+
+```text id="v5ga3e"
+PUNTO 7 — SELECCIÓN BILINGÜE
+
+1. La selección funciona desde cualquiera de los dos documentos.
+2. La selección realizada por el usuario permanece intacta.
+3. Jano proyecta una correspondencia visual en el otro documento.
+4. La correspondencia se basa en alineación semántica/contextual.
+5. No se exige equivalencia palabra por palabra.
+6. Puede abarcar uno o varios segmentos.
+7. Si la precisión es insuficiente, Jano amplía el resaltado
+   al contexto correspondiente.
+8. El sistema distingue visualmente selección real y
+   selección proyectada.
+9. La proyección sirve también como base para anotaciones,
+   Zotero y recuperación de evidencia.
+```
+
+Esto reemplaza la formulación inicial del Punto 7, que planteaba decidir entre oración, varias oraciones o palabras, por una regla más clara: **el usuario puede seleccionar cualquier extensión; Jano decide dinámicamente qué extensión contextual corresponde en el otro idioma**. fileciteturn0file3L15-L18
+
+Consideraría así el **Punto 7 conceptualmente cerrado**. La cuestión técnica pendiente, que realmente pertenece al **Punto 5 — sistema de alineación**, será decidir cómo calculamos esos *context spans* de forma rápida, local y suficientemente fiable.

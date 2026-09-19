@@ -1,0 +1,328 @@
+Para el **Punto 2**, cerraría el modelo de biblioteca casi exactamente como lo propones, pero añadiendo una capa interna de identidad y recuperación. La organización por proyecto conserva la sencillez de “carpetas normales” y mantiene el principio original de comparar originales y traducciones por pares. fileciteturn0file0L12-L34
+
+1. **Cada proyecto sería una carpeta autónoma.** Al crear `Proyecto`, Jano generaría automáticamente una estructura como:
+
+   ```text
+   Proyecto/
+   ├── Proyecto_orig/
+   │   ├── paper_a.pdf
+   │   ├── paper_b.pdf
+   │   └── Capítulo 1/
+   │       └── paper_c.pdf
+   │
+   ├── Proyecto_trad/
+   │   ├── paper_a.pdf
+   │   ├── paper_b.pdf
+   │   └── Capítulo 1/
+   │       └── paper_c.pdf
+   │
+   └── .jano/
+       ├── project.json
+       └── index.sqlite
+   ```
+
+   `.jano` sería administrado automáticamente. Ahí quedarían configuración, parejas, IDs, alineaciones, progreso de lectura, etc. El usuario solo necesita preocuparse por `orig` y `trad`.
+
+2. **Permitiría subcarpetas libremente dentro de ambos lados.** Esto recoge precisamente la lógica que te gusta de Obsidian. Por ejemplo:
+
+   ```text
+   Tesis/
+   ├── Tesis_orig/
+   │   ├── Marco teórico/
+   │   ├── Instituciones/
+   │   └── Métodos/
+   │
+   └── Tesis_trad/
+       ├── Marco teórico/
+       ├── Instituciones/
+       └── Métodos/
+   ```
+
+   Por defecto Jano intentaría mantener una estructura espejo, pero no obligaría al usuario a hacerlo manualmente.
+
+3. **Al importar dos archivos homónimos, Jano crea una pareja permanente.** Por ejemplo:
+
+   ```text
+   Acemoglu2001.pdf
+          ↕
+   Acemoglu2001.pdf
+   ```
+
+   pero internamente podría convertirse en:
+
+   ```text
+   document_id: 7f2a...
+   original_path: /Tesis_orig/Instituciones/Acemoglu2001.pdf
+   translation_path: /Tesis_trad/Instituciones/Acemoglu2001.pdf
+   ```
+
+   Esto retoma algo que ya habíamos identificado: un `document_id` estable es más robusto que utilizar exclusivamente el nombre del archivo. fileciteturn0file2L333-L363
+
+4. **Renombrar desde Jano debería ofrecer sincronización automática.** Si haces:
+
+   ```text
+   Acemoglu2001.pdf
+        ↓
+   Acemoglu - Colonial Origins.pdf
+   ```
+
+   aparecería:
+
+   ```text
+   Renombrar documento
+
+   Se cambiará:
+   Acemoglu2001.pdf
+   → Acemoglu - Colonial Origins.pdf
+
+   También existe una traducción asociada.
+
+   ☑ Renombrar también el archivo traducido
+
+   ☐ Recordar esta decisión para este proyecto
+
+   [Cancelar]            [Renombrar]
+   ```
+
+   Yo pondría marcada por defecto la sincronización.
+
+5. **“Recordar esta decisión” debería ser específica de cada tipo de operación.** No tendría una única preferencia genérica. Habría, por ejemplo:
+
+   ```text
+   Al renombrar:
+   ● renombrar también la contraparte
+   ○ preguntar siempre
+   ○ renombrar solamente este archivo
+   ```
+
+   y una configuración independiente para mover y eliminar.
+
+6. **Si el archivo se renombra desde fuera de Jano, intentaría reconocerlo antes de declararlo perdido.** Un file watcher puede detectar cambios dentro del proyecto. Además, Jano puede guardar información como tamaño, fecha y eventualmente un hash del archivo. Entonces puede concluir razonablemente que:
+
+   ```text
+   /orig/Smith2020.pdf
+   ```
+
+   se convirtió en:
+
+   ```text
+   /orig/Smith - Democracy 2020.pdf
+   ```
+
+   sin tratarlo inmediatamente como un documento nuevo.
+
+   En ese caso podría mostrar:
+
+   ```text
+   ⚠ Se detectó un cambio de nombre
+
+   Smith2020.pdf
+   → Smith - Democracy 2020.pdf
+
+   Su traducción todavía se llama:
+   Smith2020.pdf
+
+   [Renombrar traducción]
+   [Mantener nombres distintos]
+   ```
+
+7. **Mover dentro del mismo proyecto no debería romper la trazabilidad.** Aquí modificaría ligeramente tu propuesta. Si mueves:
+
+   ```text
+   Proyecto_orig/paper.pdf
+   ```
+
+   a:
+
+   ```text
+   Proyecto_orig/Instituciones/paper.pdf
+   ```
+
+   Jano sabe que sigue siendo el mismo `document_id`. No hay razón para perder la pareja.
+
+   Podría preguntar:
+
+   ```text
+   El original fue movido a:
+   /Instituciones/
+
+   ¿Mover también su traducción
+   a /Instituciones/?
+
+   ☐ Recordar esta decisión
+   ```
+
+   Así la organización espejo se mantiene casi automáticamente.
+
+8. **Mover el archivo fuera del proyecto sí lo dejaría como no disponible.** Por ejemplo:
+
+   ```text
+   ⚠ Original no encontrado
+
+   Acemoglu - Colonial Origins.pdf
+
+   Traducción disponible
+   Original no disponible
+
+   [Localizar original]
+   [Eliminar vínculo]
+   ```
+
+   No borraría el registro inmediatamente. Conservaría alineaciones, anotaciones, progreso y metadata por si el usuario vuelve a enlazar el archivo.
+
+9. **Eliminar requiere reglas más conservadoras que renombrar.** Si eliminas un original desde Jano:
+
+   ```text
+   Eliminar original
+
+   Este documento tiene una traducción asociada.
+
+   ○ Eliminar solamente el original
+   ○ Eliminar original y traducción
+
+   ☐ Mover a la Papelera del sistema
+
+   [Cancelar]               [Eliminar]
+   ```
+
+   Aquí **no permitiría recordar automáticamente “eliminar siempre ambos”**. Es demasiado destructivo para convertirlo accidentalmente en comportamiento permanente.
+
+   Sí permitiría recordar:
+
+   > “Al eliminar, conservar siempre la contraparte.”
+
+10. **Usaría la Papelera del sistema siempre que sea posible.** Jano no debería hacer un `delete` irreversible por defecto. Esto es especialmente importante si estamos hablando de bibliotecas académicas que pueden tener cientos de documentos.
+
+11. **Los estados deberían ser más ricos que verde/rojo.** Algo como:
+
+   ```text
+   ✓  Pareja completa
+
+   !  Falta traducción
+
+   !  Falta original
+
+   ↗  Archivo movido / ruta perdida
+
+   ≠  Nombres distintos pero vinculados
+
+   ⚠  Conflicto de pareja
+
+   ⟳  Traducción en proceso
+   ```
+
+   Utilizaría también texto/iconos, no solo color.
+
+12. **Permitiría reparar manualmente una pareja.** Por ejemplo:
+
+   ```text
+   🔴 North1990.pdf
+      Falta traducción
+
+      [Buscar traducción]
+   ```
+
+   y el usuario podría seleccionar:
+
+   ```text
+   North - Institutions ES.pdf
+   ```
+
+   aunque el nombre sea completamente distinto.
+
+   Desde entonces:
+
+   ```text
+   North1990.pdf
+          ↕
+   North - Institutions ES.pdf
+   ```
+
+   pertenecerían al mismo `document_id`.
+
+13. **El nombre homónimo sería una convención, no una obligación perpetua.** Esta me parece la distinción fundamental. Al importar:
+
+   ```text
+   smith.pdf ↔ smith.pdf
+   ```
+
+   es una forma excelente de detectar automáticamente las parejas.
+
+   Pero después de establecida la relación:
+
+   ```text
+   document_id = abc123
+   ```
+
+   debería convertirse en la verdadera fuente de la relación.
+
+14. **La base `.jano` nunca debería contener los PDFs.** Solo referencias y datos derivados:
+
+   ```text
+   document_id
+   original_path
+   translation_path
+
+   source_language
+   target_language
+
+   hashes
+   segments
+   alignments
+
+   reading_position
+   annotations
+
+   zotero_keys
+   translation_metadata
+   ```
+
+   Esto mantiene Jano local y evita apropiarse de la biblioteca del usuario. Además encaja con la arquitectura que ya venimos definiendo, donde el documento posee segmentos y alineaciones independientemente de cómo se represente visualmente. fileciteturn0file0L203-L225
+
+15. **El proyecto debería seguir funcionando aunque Jano desaparezca.** Este criterio me parece importante para un proyecto open-source. Si alguien desinstala Jano, debería quedarse simplemente con:
+
+   ```text
+   Proyecto/
+   ├── Proyecto_orig/
+   └── Proyecto_trad/
+   ```
+
+   es decir, archivos normales organizados en carpetas normales. No queremos que los documentos terminen encerrados dentro de una biblioteca opaca.
+
+Con esto, el **modelo de biblioteca del Punto 2** queda bastante definido conceptualmente:
+
+```text id="7j17bn"
+JANO
+│
+├── Proyecto A
+│   ├── Proyecto A_orig/
+│   ├── Proyecto A_trad/
+│   └── .jano/
+│
+├── Proyecto B
+│   ├── Proyecto B_orig/
+│   ├── Proyecto B_trad/
+│   └── .jano/
+│
+└── Proyecto C
+    ├── Proyecto C_orig/
+    ├── Proyecto C_trad/
+    └── .jano/
+```
+
+Y la regla interna sería:
+
+\[
+\boxed{
+\text{nombre del archivo} \rightarrow
+\text{descubrir la pareja}
+\rightarrow
+\text{document\_id}
+\rightarrow
+\text{mantener la pareja}
+}
+\]
+
+Eso resuelve además una tensión importante: **para el usuario Jano sigue siendo tan comprensible como explorar carpetas; para el programa existe una estructura mucho más robusta por debajo.**
+
+Consideraría entonces el **Punto 2 conceptualmente cerrado**, dejando para el Punto 3 decidir exactamente qué guardan `project.json`, `index.sqlite` y, si queremos usarlo, un eventual formato `.jano`.

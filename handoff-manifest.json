@@ -1,0 +1,32 @@
+{
+  "package": "jano-codex-handoff",
+  "purpose": "Canonical MVP handoff package for Codex or another coding agent",
+  "files": [
+    "AGENTS.md",
+    "README.md",
+    "docs/ARCHITECTURE.md",
+    "docs/CODEX-START.md",
+    "docs/DATA-MODEL.md",
+    "docs/DECISION-STATUS.md",
+    "docs/IMPLEMENTATION-PLAN.md",
+    "docs/LICENSE-POLICY.md",
+    "docs/MVP-0.1.md",
+    "docs/OPEN-QUESTIONS.md",
+    "docs/PRODUCT.md",
+    "docs/ROADMAP.md",
+    "docs/SOURCE-MAP.md",
+    "docs/UX.md",
+    "docs/adr/0001-local-first.md",
+    "docs/adr/0002-portable-projects.md",
+    "docs/adr/0003-segment-first-model.md",
+    "docs/adr/0004-pdf-markdown-reader.md",
+    "docs/adr/0005-semantic-scroll.md",
+    "docs/adr/0006-contextual-selection.md",
+    "docs/adr/0007-license-direction.md",
+    "docs/adr/0008-plugin-boundary-future.md",
+    "docs/adr/0009-versioned-json-persistence.md",
+    "docs/adr/0010-conditional-ocr-translation-pipeline.md",
+    "docs/adr/0011-ollama-local-runtime-spike.md",
+    "docs/adr/0012-local-document-processing-pipeline.md"
+  ]
+}

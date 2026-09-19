@@ -1,0 +1,312 @@
+Sí. Y esa integración con Zotero puede ser una de las partes más fuertes del proyecto, porque resuelve un problema metodológico real: **usar la traducción para leer, pero mantener el original como fuente de verdad académica**.
+
+La operación correcta sería esta:
+
+```text id="b8a23w"
+Tú seleccionas en la traducción:
+
+«Las instituciones son las reglas del juego
+en una sociedad...»
+
+            ↓ alineación
+
+Jano identifica en el original:
+
+“Institutions are the rules of the game
+in a society...”
+                 North, p. 3
+
+            ↓ Guardar en Zotero
+
+ZOTERO
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+North (1990), p. 3
+
+Original:
+“Institutions are the rules of the game
+in a society...”
+
+Traducción de trabajo:
+«Las instituciones son las reglas del juego
+en una sociedad...»
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+```
+
+La **anotación estaría hecha sobre el PDF original**, no sobre la traducción.
+
+Esto encaja perfectamente con el modelo de alineación que ya definimos para el visor: si cada segmento traducido conoce su segmento original correspondiente, seleccionar la traducción permite recuperar automáticamente el pasaje original. fileciteturn0file0L57-L85
+
+### Y Zotero ya tiene casi toda la infraestructura necesaria
+
+Actualmente Zotero guarda las anotaciones del lector PDF en su propia base de datos, no necesariamente dentro del archivo PDF. Eso permite que una anotación tenga texto, comentario, posición, página y relación con el documento, y que luego se sincronice como parte de la biblioteca. ([zotero.org](https://www.zotero.org/support/kb/annotations_in_database?utm_source=chatgpt.com))
+
+Además, cuando una anotación se lleva a una nota de Zotero, Zotero puede incluir automáticamente **el texto destacado, la cita bibliográfica y el comentario de la anotación**. Su plantilla predeterminada para highlights conceptualmente es:
+
+```text id="xnafdi"
+{{highlight}} {{citation}} {{comment}}
+```
+
+([zotero.org](https://www.zotero.org/support/note_templates?utm_source=chatgpt.com))
+
+Eso coincide casi exactamente con lo que necesitas.
+
+Yo aprovecharía esa estructura en lugar de inventar un formato propietario.
+
+Por ejemplo:
+
+```text id="hx3yex"
+Zotero annotation
+
+annotationText:
+"Institutions are the rules of the game in a society..."
+
+annotationComment:
+"Traducción de trabajo:
+«Las instituciones son las reglas del juego en una sociedad...»"
+
+page:
+3
+
+source:
+North, Institutions, Institutional Change
+and Economic Performance
+
+position:
+[coordenadas del texto dentro del PDF]
+```
+
+Así, **Zotero considera que el highlight es el original**.
+
+La traducción simplemente acompaña a la anotación.
+
+### Esto tiene una consecuencia excelente
+
+Imagina que estás leyendo exclusivamente el lado español porque estás cansado del inglés.
+
+Seleccionas:
+
+> «Los costos de transacción constituyen…»
+
+y haces clic en:
+
+**Guardar cita en Zotero**
+
+Jano no guarda ese texto como la cita.
+
+Hace internamente:
+
+```text id="mhe4mu"
+selección ES
+    ↓
+segment_id = 348
+    ↓
+alignment
+    ↓
+segment_id_original = 351
+    ↓
+posición PDF original
+    ↓
+crear highlight Zotero
+```
+
+Y podrías recibir una pequeña confirmación:
+
+```text id="fvw7mc"
+✓ Guardado en Zotero
+
+Original
+“Transaction costs constitute...”
+
+North (1990), p. 27
+
+Traducción asociada
+«Los costos de transacción constituyen...»
+```
+
+Ni siquiera necesitarías cambiar mentalmente al panel inglés.
+
+### Pero haría una distinción importante en la interfaz
+
+No llamaría al botón simplemente **“Citar”**, porque realmente estás creando una anotación que posteriormente puede utilizarse para citar.
+
+Usaría algo como:
+
+**Guardar en Zotero**
+
+y un menú:
+
+```text id="sgcadp"
+Guardar en Zotero
+────────────────────────
+Destacar original
+Destacar + guardar traducción
+Añadir a nota
+Copiar cita
+```
+
+Zotero ya permite convertir anotaciones en notas, mantener enlaces que regresan a la página exacta del PDF y añadir posteriormente esas citas mediante sus integraciones con procesadores de texto. ([zotero.org](https://www.zotero.org/support/pdf_reader?utm_source=chatgpt.com))
+
+### Incluso podríamos hacerlo bidireccional
+
+Ahí la integración empieza a ser bastante más interesante.
+
+Supongamos que meses después estás en Zotero revisando esto:
+
+```text id="g9j2rn"
+North (1990)
+
+🟨 “Institutions are the rules of the game...”
+
+    Traducción:
+    «Las instituciones son las reglas del juego...»
+```
+
+El plugin podría añadir:
+
+**Abrir en Jano**
+
+Y Jano abriría directamente:
+
+```text id="6s4bg8"
+página 3
+
+ORIGINAL                       TRADUCCIÓN
+─────────────────             ─────────────────
+
+...                           ...
+
+Institutions are █████        Las instituciones █████
+the rules...                  son las reglas...
+
+...                           ...
+```
+
+Es decir:
+
+\[
+\text{Zotero annotation}
+\longleftrightarrow
+\text{Jano alignment}
+\]
+
+No sería simplemente “exportar cosas a Zotero”.
+
+Sería una integración real.
+
+### Guardaría tres niveles de información
+
+El **original** pertenece a Zotero y es el objeto citable.
+
+La **traducción** se almacena como información auxiliar legible y sincronizable.
+
+Y Jano conserva información técnica adicional:
+
+```text id="dkw7ii"
+alignment_id
+original_segment_id
+translation_segment_id
+zotero_item_key
+zotero_attachment_key
+zotero_annotation_key
+translation_language = es
+translation_origin = user | machine | official
+alignment_confidence = 0.97
+```
+
+No intentaría meter todos esos datos técnicos dentro del comentario visible de Zotero. Mantendría en Zotero solo lo que le interesa al investigador, y la metadata de alineación quedaría en la base de datos de Jano.
+
+### Añadiría además una distinción crucial
+
+La traducción debería llevar siempre una indicación explícita de procedencia.
+
+Por ejemplo:
+
+```text id="jd5va6"
+Traducción de trabajo
+Traducción propia
+Traducción automática
+Traducción revisada
+Traducción publicada
+```
+
+Especialmente si después utilizas esas notas meses más tarde.
+
+Así nunca ocurre algo como:
+
+> «¿Esto lo dijo el autor exactamente así o esta frase la traduje yo?»
+
+La interfaz podría mostrar:
+
+```text id="rx37zn"
+ORIGINAL
+“Political institutions determine...”
+Acemoglu & Robinson, p. 41
+
+TRADUCCIÓN
+«Las instituciones políticas determinan...»
+
+Origen: traducción propia
+```
+
+Y si algún día incorporas una **traducción oficial publicada**, ahí sí podría asociarse como una segunda fuente bibliográfica legítima.
+
+### Técnicamente también es viable
+
+Zotero admite plugins que se ejecutan dentro de la aplicación y pueden interactuar con su API JavaScript y modificar elementos de la interfaz. Incluso existen APIs específicas para intervenir en el lector, añadir opciones a menús contextuales y reaccionar a selecciones y anotaciones. ([zotero.org](https://www.zotero.org/support/dev/client_coding/plugin_development?utm_source=chatgpt.com))
+
+Además, Zotero 10 expone una API local en `localhost` para que programas instalados en el mismo computador se comuniquen con Zotero; las modificaciones locales aparecen inmediatamente en la interfaz y posteriormente entran al sistema normal de sincronización. ([zotero.org](https://www.zotero.org/support/dev/web_api/v3/local_api?utm_source=chatgpt.com))
+
+Por eso yo dividiría la integración en dos componentes:
+
+```text id="r4226g"
+┌─────────────────────────────────────────────┐
+│                   JANO                      │
+│                                             │
+│ PDF original  ↔ alineación ↔ traducción    │
+│      │                                      │
+│      └── selección original                 │
+└─────────────────┬───────────────────────────┘
+                  │
+                  │ comunicación local
+                  ▼
+┌─────────────────────────────────────────────┐
+│             JANO FOR ZOTERO                 │
+│                                             │
+│ • crear anotación                           │
+│ • guardar traducción                        │
+│ • localizar fuente                          │
+│ • abrir selección en Jano                   │
+│ • mostrar metadata bilingüe                 │
+└─────────────────┬───────────────────────────┘
+                  │
+                  ▼
+               ZOTERO
+```
+
+Eso es preferible a intentar convertir todo Jano en un enorme plugin de Zotero.
+
+**Jano sigue siendo el lector especializado. Zotero sigue siendo el gestor bibliográfico.** El plugin es el puente entre ambos.
+
+Y cambia bastante cómo definiría el proyecto completo. Ya no sería solamente:
+
+> lector bilingüe sincronizado.
+
+Sería más bien un **entorno de lectura académica bilingüe conectado al sistema de evidencia del investigador**.
+
+El principio central podría resumirse como:
+
+\[
+\boxed{
+\text{Lees la traducción}
+\rightarrow
+\text{seleccionas la traducción}
+\rightarrow
+\text{guardas el original}
+\rightarrow
+\text{citas el original}
+}
+\]
+
+mientras la traducción permanece asociada para acelerar la lectura y recuperación posterior.
+
+Ese flujo me parece bastante más interesante que la aplicación inicial por sí sola.

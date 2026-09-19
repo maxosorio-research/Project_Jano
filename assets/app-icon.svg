@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" role="img" aria-label="Jano placeholder icon">
+  <rect width="512" height="512" rx="112" fill="#101617" />
+  <rect x="96" y="104" width="136" height="304" rx="28" fill="#4f9da0" />
+  <rect x="280" y="104" width="136" height="304" rx="28" fill="#b19055" />
+  <path d="M216 256h80" stroke="#e8eded" stroke-width="24" stroke-linecap="round" />
+</svg>

@@ -1,0 +1,483 @@
+Para el **Punto 23** tomaría una decisión bastante concreta: **arquitectura multiplataforma desde el inicio, lanzamiento primero en Windows, macOS como segunda plataforma prioritaria y Linux después**. No diseñaría una versión Windows para “portarla” más adelante.
+
+No encontré evidencia sólida que permita afirmar que una amplia mayoría de investigadores use macOS de forma general. Puede haber una presencia de Mac muy alta en determinadas disciplinas, universidades o países, pero las estadísticas globales de escritorio siguen mostrando a Windows como plataforma dominante; StatCounter sitúa Windows en torno al 63 % mundial en agosto de 2026. ([gs.statcounter.com](https://gs.statcounter.com/os-market-share/desktop?utm_source=chatgpt.com)) Por tanto, no utilizaría esa hipótesis como fundamento técnico.
+
+### 23.1. Multiplataforma desde el primer día
+
+Esto encaja además con una decisión que ya veníamos tomando: Tauri + React/TypeScript permite que la mayor parte del lector sea común a todos los sistemas. fileciteturn0file0L144-L169
+
+La estructura sería aproximadamente:
+
+```text id="367ddn"
+JANO
+│
+├── Core
+│   ├── documentos
+│   ├── segmentación
+│   ├── alineación
+│   ├── anotaciones
+│   ├── traducción
+│   └── proyectos
+│
+├── UI
+│   └── React / TypeScript
+│
+└── Platform adapters
+    ├── Windows
+    ├── macOS
+    └── Linux
+```
+
+Lo importante es que nunca aparezcan cosas como:
+
+```ts id="vy9vtz"
+"C:\\Users\\Max\\..."
+```
+
+dentro de la lógica de Jano.
+
+Ni tampoco:
+
+```ts id="tfyykt"
+"/Users/Max/..."
+```
+
+Todo acceso a rutas, ventanas, credenciales, diálogos y comportamiento específico del sistema pasa por abstracciones.
+
+Esto además coincide con lo que ya decidimos sobre proyectos portables: las rutas internas deberían ser relativas y copiar una carpeta de proyecto debería bastar para moverla entre equipos. fileciteturn0file9L36-L73
+
+### 23.2. Pero probaría primero en Windows
+
+Aquí sí reduciría deliberadamente el alcance inicial.
+
+La secuencia sería:
+
+```text id="nlowv8"
+Jano 0.1
+Windows x64
+
+      ↓
+
+Jano 0.2 / primeras betas
+Windows x64
+macOS Apple Silicon / Universal
+
+      ↓
+
+Jano posterior
+Windows
+macOS
+Linux
+```
+
+No significa que macOS aparezca como una reescritura posterior. Desde el principio el código tendría que compilar allí.
+
+Simplemente **Windows sería la plataforma de referencia durante el MVP**:
+
+```text id="ft6lhy"
+desarrollo diario
+        ↓
+Windows
+
+CI
+├── Windows build
+└── macOS build
+```
+
+Así una modificación que accidentalmente rompa macOS se detectaría pronto, aunque inicialmente el instalador público sea solo Windows.
+
+### 23.3. ¿Por qué Windows primero?
+
+Por tres razones prácticas.
+
+Primero, probablemente será la plataforma con la que resulte más sencillo probar entre conocidos y equipos heterogéneos.
+
+Segundo, Tauri tiene soporte directo para generar instaladores Windows tanto `.msi` como ejecutables NSIS. ([v2.tauri.app](https://v2.tauri.app/distribute/windows-installer/?utm_source=chatgpt.com))
+
+Tercero, podemos concentrarnos inicialmente en:
+
+```text id="r4aykk"
+Windows 10/11
+x86_64
+```
+
+sin tener que probar simultáneamente:
+
+```text id="jaipgv"
+Windows x64
+Windows ARM
+macOS Intel
+macOS Apple Silicon
+Linux Ubuntu
+Linux Fedora
+...
+```
+
+Tauri permite también generar binarios ARM64 para Windows, pero no lo trataría como objetivo de Jano 0.1. ([v2.tauri.app](https://v2.tauri.app/distribute/windows-installer/?utm_source=chatgpt.com))
+
+### 23.4. Instalador Windows
+
+Para el usuario normal distribuiría:
+
+```text id="i20zdp"
+Jano-0.1.0-windows-x64.exe
+```
+
+mediante **NSIS**, no empezaría con MSI.
+
+La experiencia debería ser simplemente:
+
+```text id="7hsz6h"
+Descargar Jano
+      ↓
+Jano-0.1.0-windows-x64.exe
+      ↓
+Instalar
+      ↓
+Abrir proyecto
+```
+
+También podríamos terminar ofreciendo una versión portable:
+
+```text id="ruqbuc"
+Jano-0.1.0-portable.zip
+```
+
+pero no la convertiría en la distribución principal inicialmente.
+
+### 23.5. Hay un problema que debemos aceptar: SmartScreen
+
+Una aplicación nueva descargada desde Internet puede activar:
+
+> Windows protegió su PC
+
+especialmente si no está firmada.
+
+Microsoft explica que SmartScreen considera tanto la reputación del archivo como la del editor; los ejecutables no firmados generan advertencias y cada versión nueva tiene que reconstruir reputación. Incluso los binarios correctamente firmados pueden mostrar inicialmente advertencias hasta acumular reputación. ([learn.microsoft.com](https://learn.microsoft.com/en-us/windows/apps/package-and-deploy/smartscreen-reputation?utm_source=chatgpt.com))
+
+Así que diferenciaría dos etapas:
+
+```text id="6tmo5u"
+ALPHA / amigos
+────────────────────
+binarios posiblemente sin firma
+advertencia documentada
+
+BETA PÚBLICA
+────────────────────
+firma de código
+editor identificable
+releases verificables
+```
+
+No gastaría dinero en certificados cuando Jano todavía sea un prototipo que utilizan cinco personas.
+
+Sí resolvería la firma antes de intentar distribuirlo a una audiencia académica mayor.
+
+### 23.6. macOS sería prioritario inmediatamente después
+
+Aquí sí lo trataría como plataforma de primera clase, especialmente porque la estética de Jano que ya decidimos toma macOS como lenguaje visual de referencia sin depender de APIs propietarias de Apple. fileciteturn0file6L1-L14
+
+Distribuiría directamente:
+
+```text id="0ra35f"
+Jano-0.2.0.dmg
+```
+
+y **no utilizaría inicialmente la Mac App Store**.
+
+La razón no es solo simplicidad. Jano quiere poder:
+
+- acceder a carpetas elegidas por el usuario;
+- trabajar con proyectos portables;
+- comunicarse localmente con Zotero;
+- tener plugins;
+- lanzar eventualmente modelos/procesos locales.
+
+Una distribución directa encaja mejor con ese modelo.
+
+Tauri admite distribución directa mediante DMG. Para que la experiencia normal de macOS no choque con Gatekeeper, las aplicaciones distribuidas fuera de la App Store deben estar firmadas y notarizadas. ([v2.tauri.app](https://v2.tauri.app/distribute/?utm_source=chatgpt.com)) Apple también indica que Gatekeeper verifica el Developer ID y, por defecto, las versiones modernas de macOS exigen notarización para software descargado fuera de la tienda. ([support.apple.com](https://support.apple.com/es-es/102445?utm_source=chatgpt.com))
+
+Esto convierte a la firma de macOS en una prioridad cuando lleguemos a una beta pública.
+
+### 23.7. Apple Silicon e Intel
+
+Intentaría distribuir un único:
+
+```text id="q3f1u4"
+Jano-macOS-universal.dmg
+```
+
+capaz de cubrir Apple Silicon e Intel mientras resulte razonable mantener ambas arquitecturas.
+
+Tauri dispone de soporte para binarios universales de macOS mediante el target `universal-apple-darwin`. ([v2.tauri.app](https://v2.tauri.app/release/tauri-cli/v1.0.0-rc.0/?utm_source=chatgpt.com))
+
+Más adelante, si mantener Intel deja de tener sentido, podremos reconsiderarlo sin afectar el formato de proyectos de Jano.
+
+---
+
+## 23.8. Sobre las actualizaciones: cambiaría ligeramente tu propuesta
+
+No construiría ningún servidor de Jano.
+
+Pero tampoco obligaría permanentemente a los usuarios a visitar manualmente la web para descubrir que existe una versión nueva.
+
+Haría un sistema **híbrido y local-first**.
+
+Por defecto:
+
+```text id="tzcmgn"
+Jano
+Configuración
+└── Actualizaciones
+
+    ● Buscar manualmente
+    ○ Avisarme cuando exista una nueva versión
+
+    Versión instalada:
+    0.3.1
+
+    [ Buscar actualizaciones ]
+```
+
+La opción predeterminada durante las primeras versiones sería:
+
+**Buscar manualmente.**
+
+Al pulsarla:
+
+```text id="lvkw9t"
+Jano
+  ↓
+consulta latest.json
+  ↓
+GitHub Releases
+```
+
+Nada más.
+
+No hay:
+
+```text id="nxiyrk"
+cuenta Jano
+servidor Jano
+telemetría
+base de usuarios
+login
+daemon de actualización
+```
+
+### Y aquí Tauri nos simplifica muchísimo las cosas
+
+Su sistema de actualización **no requiere un servidor dinámico**.
+
+Puede consultar directamente un archivo JSON estático, incluso alojado en GitHub Releases:
+
+```text id="fxegdw"
+GitHub Release
+│
+├── Jano-0.4.0-windows-x64.exe
+├── Jano-0.4.0-macos-universal.dmg
+│
+├── firmas
+│
+└── latest.json
+```
+
+Tauri documenta explícitamente esta modalidad y permite usar como endpoint algo equivalente a un `latest.json` publicado en GitHub. ([v2.tauri.app](https://v2.tauri.app/plugin/updater/?utm_source=chatgpt.com))
+
+Por tanto, podemos tener **actualizaciones sin infraestructura propia**.
+
+### 23.9. En las primeras versiones no actualizaría automáticamente
+
+No haría:
+
+```text id="fufvu1"
+Jano detectó 0.5
+↓
+descargando...
+↓
+instalando...
+```
+
+sin intervención.
+
+Preferiría:
+
+```text id="2vrfal"
+Nueva versión disponible
+Jano 0.5.0
+
+• mejora alineación
+• corrige apertura de PDFs grandes
+• nuevo exportador
+
+[Ver cambios]       [Descargar]
+```
+
+Y eventualmente:
+
+```text id="4ke94d"
+☑ Descargar e instalar automáticamente
+```
+
+como preferencia voluntaria.
+
+Esto mantiene una propiedad importante del proyecto: **Jano nunca necesita comunicarse con Internet para funcionar**. Las capas centrales ya estaban definidas precisamente bajo ese principio. fileciteturn0file2L397-L405
+
+Si alguien nunca quiere que Jano haga una petición externa:
+
+```text id="lo0mku"
+Actualizaciones
+● No comprobar automáticamente
+```
+
+y descarga manualmente cuando quiera.
+
+---
+
+## 23.10. Página oficial y GitHub
+
+Tendría dos superficies distintas:
+
+```text id="xzkrok"
+jano.../
+    página sencilla
+    documentación
+    descargar
+
+GitHub
+    código
+    issues
+    releases
+    changelog
+```
+
+Pero **GitHub Releases sería inicialmente la infraestructura real de distribución**.
+
+La página de Jano simplemente apuntaría a la release oficial correspondiente.
+
+De ese modo no necesitamos mantener:
+
+```text id="r2gpiu"
+servidor de descargas
+backend
+CDN propio
+API de versiones
+base de datos
+```
+
+Un sitio estático incluso podría alojarse gratuitamente.
+
+Esto encaja además bastante bien con la filosofía que ya fijamos para los plugins: instalaciones locales y ninguna dependencia de un marketplace o servidor de Jano. fileciteturn0file8L389-L429
+
+---
+
+## 23.11. Las releases deberían ser verificables
+
+Cada release debería contener algo parecido a:
+
+```text id="hvzp1q"
+Jano v0.6.0
+────────────────────────────────
+
+Windows
+Jano-0.6.0-windows-x64.exe
+SHA256: ...
+
+macOS
+Jano-0.6.0-macos-universal.dmg
+SHA256: ...
+
+CHANGELOG.md
+checksums.txt
+```
+
+Y el mecanismo de actualización utilizaría los artefactos firmados que Tauri genera precisamente para verificar actualizaciones. ([v2.tauri.app](https://v2.tauri.app/plugin/updater/?utm_source=chatgpt.com))
+
+Esto importa especialmente porque Jano terminará manejando:
+
+```text id="w0jnli"
+papers
+anotaciones
+API keys
+Zotero
+plugins
+```
+
+No queremos que un binario modificado pueda presentarse fácilmente como una actualización legítima.
+
+---
+
+# Decisión final del Punto 23
+
+Lo dejaría especificado así:
+
+```text id="mgl5dd"
+PUNTO 23 — DISTRIBUCIÓN
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+Arquitectura
+✓ multiplataforma desde el inicio
+
+Plataformas prioritarias
+1. Windows
+2. macOS
+3. Linux
+
+Primera release
+Windows 10/11
+x86_64
+NSIS .exe
+
+Segunda plataforma
+macOS
+Apple Silicon + Intel cuando sea viable
+DMG directo
+firma + notarización para distribución pública
+
+Posteriormente
+Linux
+probablemente AppImage + otros paquetes
+
+Distribución
+GitHub Releases
++
+web oficial estática
+
+Servidor Jano
+✗ ninguno
+
+Cuenta Jano
+✗ ninguna
+
+Actualizaciones
+✓ comprobación manual
+✓ actualización manual
+✓ aviso opcional de nuevas versiones
+○ instalación automática opcional en el futuro
+
+Actualizaciones alojadas
+GitHub Releases + latest.json
+
+Telemetría
+✗ no necesaria
+
+Firma
+alpha privada → opcional
+beta pública → recomendada/requerida según plataforma
+```
+
+Y fijaría una regla adicional de desarrollo:
+
+\[
+\boxed{
+\text{Windows-first en pruebas}
+\neq
+\text{Windows-only en arquitectura}
+}
+\]
+
+Es una diferencia importante. Si respetamos esto desde el comienzo, macOS no debería convertirse después en un “port” costoso: debería ser principalmente **compilar, ajustar integración del sistema y probar**, mientras que proyectos, alineaciones, PDFs, plugins y base de datos siguen siendo exactamente los mismos.
+
+Con esto consideraría el **Punto 23 — distribución y actualizaciones conceptualmente cerrado**.

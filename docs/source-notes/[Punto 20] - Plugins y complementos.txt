@@ -1,0 +1,537 @@
+Sí. Para Jano encaja mejor un modelo **“drop-in plugins” completamente local**, sin marketplace, cuentas ni infraestructura de distribución. Además, mantendría esto fuera del MVP 0.1, tal como habíamos planteado, y lo diseñaría ahora solamente a nivel arquitectónico. fileciteturn0file5L87-L110
+
+La idea base sería:
+
+```text id="modmbf"
+Jano/
+└── plugins/
+    ├── zotero/
+    ├── obsidian-export/
+    ├── deepl-translator/
+    └── citation-tools/
+```
+
+Al iniciar, Jano inspecciona esa carpeta, valida cada complemento y carga únicamente los habilitados.
+
+### 1. No usaría directamente el sistema de plugins de Tauri
+
+Esto es importante.
+
+Tauri tiene su propio concepto de plugins, pero están pensados principalmente como componentes que forman parte de la aplicación y se integran con Rust durante su construcción. Además, el propio modelo de seguridad de Tauri señala que el código ejecutado en el core o en plugins nativos posee acceso completo a los recursos disponibles del sistema. ([v2.tauri.app](https://v2.tauri.app/security/?utm_source=chatgpt.com))
+
+Por tanto, no querría que:
+
+```text id="fc45v9"
+plugin aleatorio
+      ↓
+biblioteca Rust dinámica
+      ↓
+acceso completo al computador
+```
+
+Jano debería tener **su propio Plugin API**, por encima de Tauri:
+
+```text id="67c5eo"
+Sistema operativo
+       │
+     Tauri
+       │
+   Jano Core
+       │
+ ┌─────┴─────┐
+ │ Plugin API │
+ └─────┬─────┘
+       │
+   Plugins Jano
+```
+
+Eso permite controlar qué puede hacer cada extensión.
+
+### 2. Cada plugin sería una carpeta autocontenida
+
+Por ejemplo:
+
+```text id="xrz723"
+plugins/
+└── zotero-jano/
+    ├── manifest.json
+    ├── main.js
+    ├── icon.svg
+    └── README.md
+```
+
+Y `manifest.json` podría ser:
+
+```json id="zr6xkt"
+{
+  "id": "org.example.zotero",
+  "name": "Zotero Integration",
+  "version": "1.2.0",
+
+  "janoApi": "1",
+
+  "entry": "main.js",
+
+  "permissions": [
+    "document:read",
+    "selection:read",
+    "annotations:write",
+    "network:localhost"
+  ],
+
+  "contributes": {
+    "commands": [
+      {
+        "id": "zotero.saveAnnotation",
+        "title": "Guardar en Zotero"
+      }
+    ]
+  }
+}
+```
+
+Esto toma una idea útil de sistemas como VS Code: separar el **manifest**, los puntos donde el plugin se integra y el código que implementa esas funciones. VS Code utiliza precisamente manifests y *contribution points* para permitir que las extensiones agreguen comandos y otras capacidades sin modificar el núcleo. ([code.visualstudio.com](https://code.visualstudio.com/api/get-started/extension-anatomy?utm_source=chatgpt.com))
+
+### 3. Los plugins no deberían tocar directamente las entrañas de Jano
+
+Por ejemplo, prohibiría como arquitectura:
+
+```text id="h2wmb4"
+plugin
+   ↓
+.jano/index.sqlite
+   ↓
+UPDATE alignments ...
+```
+
+Porque cualquier cambio interno de Jano rompería cientos de plugins.
+
+En cambio:
+
+```javascript id="10ibpp"
+const selection = await jano.selection.get();
+
+await jano.annotations.create({
+    documentId: selection.documentId,
+    segmentId: selection.segmentId,
+    comment: "..."
+});
+```
+
+Jano controla la operación.
+
+Esto permite cambiar internamente:
+
+```text id="npplv9"
+SQLite v1
+   ↓
+SQLite v2
+   ↓
+otra estructura
+```
+
+sin romper necesariamente la API pública.
+
+### 4. Definiría una API pequeña y estable
+
+Podríamos terminar teniendo namespaces como:
+
+```text id="358y98"
+jano.app
+jano.documents
+jano.projects
+jano.reader
+jano.selection
+jano.alignment
+jano.translations
+jano.annotations
+jano.commands
+jano.ui
+jano.storage
+jano.network
+jano.secrets
+```
+
+Por ejemplo:
+
+```javascript id="3jkysp"
+const doc = await jano.documents.current();
+
+const selection = await jano.selection.get();
+
+const counterpart =
+    await jano.alignment.getCounterpart(selection);
+
+await jano.ui.showNotification(
+    `Segmento equivalente: ${counterpart.text}`
+);
+```
+
+El objetivo sería que un programador pueda hacer cosas interesantes sin conocer el código interno de Jano.
+
+### 5. Usaría eventos
+
+Esto permitiría crear plugins bastante potentes:
+
+```javascript id="4vxmoa"
+jano.events.on("document:opened", ...)
+jano.events.on("selection:changed", ...)
+jano.events.on("translation:created", ...)
+jano.events.on("annotation:created", ...)
+jano.events.on("project:opened", ...)
+```
+
+Por ejemplo, un plugin de Obsidian podría escuchar:
+
+```text id="rhkiby"
+annotation:created
+        ↓
+convertir a Markdown
+        ↓
+guardar en Vault
+```
+
+Mientras que Zotero podría hacer:
+
+```text id="fjtfqf"
+selection:save
+       ↓
+buscar original
+       ↓
+crear highlight en Zotero
+```
+
+Esto conserva perfectamente la separación que ya habíamos planteado: Jano sigue siendo el lector y las integraciones son capas externas. fileciteturn0file1L259-L288
+
+### 6. Crearía “puntos de contribución” definidos
+
+No permitiría inicialmente que un plugin modificara cualquier parte de la interfaz.
+
+Definiría zonas autorizadas:
+
+```text id="pjdddu"
+contributes:
+
+commands
+contextMenus
+readerToolbar
+sidebarPanels
+settings
+translationProviders
+exporters
+annotationActions
+documentProcessors
+```
+
+Un plugin podría declarar:
+
+```json id="ggtd9z"
+{
+  "contributes": {
+    "contextMenus": [
+      {
+        "location": "reader.selection",
+        "command": "zotero.save",
+        "title": "Guardar en Zotero"
+      }
+    ]
+  }
+}
+```
+
+Y aparecería:
+
+```text id="r9ojn4"
+texto seleccionado
+
+╭──────────────────────────────╮
+│ Copiar                       │
+│ Destacar                     │
+│ Guardar en Zotero            │ ← plugin
+│ Exportar a Obsidian          │ ← plugin
+│ ⋯                            │
+╰──────────────────────────────╯
+```
+
+Eso también encaja bien con la interfaz basada en divulgación progresiva que definimos para Jano. fileciteturn0file6L91-L124
+
+### 7. Los traductores serían plugins de primera clase
+
+Esto puede simplificar bastante Jano.
+
+En vez de implementar en el núcleo:
+
+```text id="728i6j"
+OpenAI
+Anthropic
+Gemini
+DeepL
+Ollama
+...
+```
+
+el núcleo podría definir solamente:
+
+```ts id="0rznvc"
+interface TranslationProvider {
+    translate(request: TranslationRequest):
+        Promise<TranslationResult>;
+}
+```
+
+Entonces:
+
+```text id="hrpdn1"
+plugins/
+├── openai/
+├── anthropic/
+├── deepl/
+├── gemini/
+└── ollama/
+```
+
+Esto llevaría hasta sus últimas consecuencias la abstracción de proveedores que ya habíamos planteado. fileciteturn0file2L154-L204
+
+Jano podría incluso distribuirse **sin ningún proveedor comercial incorporado**.
+
+### 8. Necesitamos un sistema serio de permisos
+
+Aunque los plugins sean instalados manualmente, siguen siendo código de terceros.
+
+Al activarlo por primera vez:
+
+```text id="y9ii6n"
+Activar «Zotero Integration»
+
+
+Este complemento solicita:
+
+✓ Leer el documento actualmente abierto
+✓ Leer selecciones de texto
+✓ Crear anotaciones
+✓ Conectarse a localhost
+
+No puede:
+
+— leer otros archivos
+— ejecutar programas
+— acceder a Internet
+— acceder a API keys
+
+
+[Cancelar]                [Permitir]
+```
+
+Esto es conceptualmente muy compatible con el modelo de capacidades de Tauri, que permite restringir comandos y acceso a recursos mediante permisos y scopes. ([v2.tauri.app](https://v2.tauri.app/es/security/capabilities/?utm_source=chatgpt.com))
+
+Dentro de Jano establecería permisos como:
+
+```text id="9kr0by"
+document:read
+document:write
+
+translation:read
+translation:write
+
+annotations:read
+annotations:write
+
+filesystem:project-read
+filesystem:project-write
+
+network:localhost
+network:internet
+
+secrets:read-provider
+
+shell:execute
+```
+
+Y especialmente:
+
+```text id="iezmwk"
+shell:execute
+filesystem:outside-project
+secrets:*
+```
+
+serían permisos de alto riesgo.
+
+### 9. No permitiría código nativo arbitrario inicialmente
+
+Este sería uno de mis límites de diseño.
+
+Un plugin que incluya:
+
+```text id="9v2av7"
+plugin.dll
+plugin.dylib
+plugin.so
+```
+
+básicamente puede convertirse en código nativo ejecutándose dentro del computador.
+
+Para las primeras versiones admitiría principalmente plugins escritos en JavaScript/TypeScript ejecutados mediante un entorno limitado por Jano.
+
+A más largo plazo, **WebAssembly** es particularmente interesante para plugins que necesiten hacer procesamiento intensivo. Wasmtime, por ejemplo, está diseñado explícitamente para ejecutar componentes WebAssembly aislados, y su propia documentación muestra un sistema que carga plugins `.wasm` directamente desde una carpeta local. ([docs.wasmtime.dev](https://docs.wasmtime.dev/security.html?utm_source=chatgpt.com))
+
+Podríamos terminar con:
+
+```text id="6nsh6z"
+plugin/
+├── manifest.json
+├── main.wasm
+└── assets/
+```
+
+pero no lo introduciría hasta que realmente sea necesario.
+
+### 10. La instalación sería deliberadamente primitiva y transparente
+
+El usuario descarga:
+
+```text id="nzymdq"
+jano-zotero.zip
+```
+
+lo descomprime en:
+
+```text id="tw6na0"
+Jano/plugins/jano-zotero/
+```
+
+y abre Jano.
+
+También pondría:
+
+```text id="8epjtz"
+Configuración
+└── Plugins
+    ├── [Abrir carpeta de plugins]
+    ├── ☑ Zotero Integration
+    ├── ☑ Obsidian Export
+    └── ☐ DeepL Translator
+```
+
+Y quizás:
+
+```text id="zrwm0r"
+[Recargar plugins]
+```
+
+Sin:
+
+```text id="8on1e6"
+Marketplace
+Cuenta Jano
+Login
+Servidor de plugins
+Telemetría obligatoria
+```
+
+### 11. Incluso podríamos crear un formato `.jano-plugin`
+
+Más adelante un plugin podría distribuirse como:
+
+```text id="jp9yl1"
+zotero-integration-1.4.0.jano-plugin
+```
+
+que internamente sería simplemente un ZIP estandarizado:
+
+```text id="lotztk"
+manifest.json
+main.js
+assets/
+LICENSE
+README.md
+```
+
+Al hacer doble clic:
+
+```text id="2tuhb1"
+Instalar plugin
+
+Zotero Integration
+v1.4.0
+
+Desarrollador: ...
+Licencia: MIT
+
+Permisos solicitados:
+• document:read
+• selection:read
+• network:localhost
+
+[Cancelar]       [Instalar]
+```
+
+Jano simplemente lo descomprime en la carpeta local.
+
+No aparece ningún servidor en el proceso.
+
+### 12. Las actualizaciones serían igualmente manuales
+
+El plugin podría mostrar:
+
+```text id="9kw0co"
+Zotero Integration
+1.4.0
+
+Origen:
+https://github.com/usuario/jano-zotero
+
+[Deshabilitar]
+[Desinstalar]
+```
+
+Pero no comprobaría actualizaciones automáticamente salvo que el usuario explícitamente habilitara esa posibilidad.
+
+La comunidad podría perfectamente mantener algo como:
+
+```text id="84hups"
+awesome-jano-plugins
+```
+
+en GitHub con enlaces a proyectos comunitarios, pero **Jano no dependería de ese repositorio para funcionar**.
+
+Eso conserva el principio que ya establecimos para el resto del proyecto: incluso sin infraestructura externa, los componentes esenciales deben seguir funcionando completamente en local. fileciteturn0file2L397-L405
+
+### La arquitectura que cerraría para el Punto 20
+
+```text id="qf02m0"
+                    JANO CORE
+                        │
+                ┌───────┴────────┐
+                │ Plugin Host/API │
+                └───────┬────────┘
+                        │
+       ┌────────────────┼────────────────┐
+       │                │                │
+     events         commands       contribution
+       │                │             points
+       │                │                │
+       └────────────────┼────────────────┘
+                        │
+                 Permission layer
+                        │
+              ┌─────────┴─────────┐
+              │                   │
+        Local plugins       Jano services
+              │
+       ~/Jano/plugins/
+              │
+     ┌────────┼─────────┬───────────┐
+     │        │         │           │
+   Zotero  Obsidian   DeepL     community
+```
+
+Y establecería cinco principios para la especificación del sistema:
+
+1. **Jano nunca necesita un servidor de plugins.**
+2. **Los plugins se instalan y eliminan como archivos locales.**
+3. **Los plugins interactúan con Jano mediante una API pública, nunca directamente con su base de datos.**
+4. **Cada plugin declara explícitamente sus permisos y puntos de integración.**
+5. **Instalar un plugin no implica confiarle automáticamente todo el computador.**
+
+Con eso considero el **Punto 20 — Arquitectura de plugins** conceptualmente resuelto. La decisión técnica crítica para cuando llegue el momento de implementarlo será escoger el *runtime* exacto —probablemente TypeScript/JavaScript inicialmente y eventualmente WebAssembly—, pero la arquitectura pública puede definirse desde mucho antes. fileciteturn0file3L43-L45

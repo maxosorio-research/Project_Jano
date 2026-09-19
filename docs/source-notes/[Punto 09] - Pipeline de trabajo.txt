@@ -1,0 +1,331 @@
+Me parece un pipeline sólido, pero haría algunos ajustes importantes para que sea más robusto y, sobre todo, para que no obligue a Jano a reconstruir información que ya tenía antes de traducir.
+
+Tu idea encaja con la arquitectura que venimos definiendo: el original permanece como fuente canónica, mientras extracción, traducción y alineación son capas derivadas. fileciteturn0file2L365-L421 Además, ya habíamos establecido que Jano debería trabajar internamente con segmentos y alineaciones, no simplemente con dos archivos visuales. fileciteturn0file0L203-L225
+
+Lo dejaría así:
+
+```text id="uuolh5"
+Abrir archivo / carpeta / proyecto
+            ↓
+Inspeccionar archivos
+            ↓
+Detectar formato y capacidades
+            ↓
+¿Existe texto extraíble de calidad?
+      ┌─────┴─────┐
+     Sí           No / deficiente
+      │                 │
+extracción           OCR progresivo
+directa                  │
+      └─────────┬────────┘
+                ↓
+     normalización del texto
+                ↓
+        segmentación + IDs
+                ↓
+      representación fuente
+                ↓
+        traducción contextual
+                ↓
+ traducción conservando IDs
+                ↓
+     generar vista Markdown
+                ↓
+        construir alineación
+                ↓
+guardar original + traducción
+         + metadata Jano
+```
+
+Haría seis modificaciones concretas a tu propuesta:
+
+1. **No ejecutaría OCR realmente sobre todo el documento desde el comienzo.** Primero intentaría extracción nativa. Un PDF puede tener una capa textual perfectamente utilizable aunque visualmente parezca complejo. El flujo debería ser progresivo:
+
+```text id="ulw1q3"
+Nivel 0
+detectar capa de texto
+
+Nivel 1
+evaluar su calidad
+
+Nivel 2
+OCR solo en páginas sospechosas
+
+Nivel 3
+OCR exhaustivo del documento
+solo si es necesario
+```
+
+Esto será mucho más rápido para papers digitales normales y reserva el procesamiento costoso para escaneos, texto corrupto o páginas problemáticas. Ya habíamos marcado precisamente los PDFs escaneados y con texto defectuoso como un caso separado que Jano debe contemplar. fileciteturn0file3L31-L34
+
+2. **Sí generaría un TXT, pero no lo convertiría en la representación interna principal.** El `.txt` es excelente como artefacto transparente:
+
+```text id="1eidex"
+paper.pdf
+→ paper.txt
+```
+
+pero pierde información importante: página, párrafo, posición, sección y relaciones entre bloques.
+
+Internamente Jano necesitaría conservar algo como:
+
+```text id="smisoh"
+segment_id: seg_00421
+page: 17
+type: paragraph
+text: "Political institutions determine..."
+```
+
+Eso puede vivir dentro de `.jano`, mientras que el usuario puede seguir teniendo un `.txt` perfectamente normal si quiere inspeccionarlo. Este enfoque conserva la separación que ya definimos entre representación estructurada y visualización. fileciteturn0file0L114-L142
+
+3. **La segmentación debería ocurrir antes de traducir, no después.** Esta sería probablemente la modificación más importante.
+
+En vez de:
+
+```text id="bsj1k5"
+texto
+↓
+traducir texto
+↓
+intentar descubrir qué corresponde a qué
+```
+
+haría:
+
+```text id="xqx6fd"
+texto
+↓
+segmentos con IDs
+↓
+traducir manteniendo esos IDs
+```
+
+Por ejemplo:
+
+```json id="hco5a8"
+[
+  {
+    "id": "seg_148",
+    "text": "Institutions shape incentives..."
+  },
+  {
+    "id": "seg_149",
+    "text": "These incentives affect..."
+  }
+]
+```
+
+El traductor devuelve:
+
+```json id="5snv7l"
+[
+  {
+    "id": "seg_148",
+    "translation": "Las instituciones configuran los incentivos..."
+  },
+  {
+    "id": "seg_149",
+    "translation": "Estos incentivos afectan..."
+  }
+]
+```
+
+Entonces para traducciones generadas por Jano ya tenemos:
+
+```text id="1r7c4b"
+seg_148_EN ↔ seg_148_ES
+seg_149_EN ↔ seg_149_ES
+```
+
+Prácticamente gratis.
+
+El Alignment Engine complejo sigue siendo necesario para **traducciones externas preexistentes**, pero Jano no debería tener que adivinar después una correspondencia que podía preservar desde el principio. Esto coincide además con lo que habíamos planteado sobre enviar bloques contextuales grandes a traducción manteniendo IDs de segmentos. fileciteturn0file2L206-L263
+
+4. **Me parece correcta tu decisión de no recrear tablas.** Intentar reconstruir una tabla académica traducida introduce layout, celdas fusionadas, gráficos, notas, símbolos y muchos otros problemas que no son centrales para Jano.
+
+Pero no eliminaría las tablas silenciosamente. Pondría un marcador:
+
+```text id="8lj2qb"
+...texto anterior.
+
+[Tabla 3 — no traducida. Consultar documento original, p. 27]
+
+Continúa el texto...
+```
+
+Lo mismo podría hacerse inicialmente con ciertos elementos difíciles:
+
+```text id="wx0iie"
+[Figura 2 — consultar original]
+
+[Ecuación — consultar original]
+```
+
+Esto evita dos problemas: que parezca que el autor nunca incluyó esa información y que dos párrafos originalmente separados por una tabla terminen artificialmente unidos.
+
+Podríamos incluso conservar títulos simples:
+
+```text id="m0axhq"
+Tabla 3. Resultados de la regresión
+[Contenido tabular omitido — ver original]
+```
+
+sin traducir/reconstruir las celdas.
+
+5. **El `.md` traducido me parece mejor que generar otro PDF.** De hecho, simplifica muchísimo Jano.
+
+Tendríamos:
+
+```text id="8k305e"
+ORIGINAL
+paper.pdf
+
+TRADUCCIÓN
+paper.es.md
+```
+
+El panel izquierdo necesita un verdadero visor PDF.
+
+El derecho necesita solamente un renderer de Markdown/texto:
+
+```text id="q4nfjd"
+┌────────────────────────┬────────────────────────┐
+│ PDF original           │ texto traducido        │
+│                        │                        │
+│ diseño publicado       │ lectura limpia         │
+│ figuras                │ tipografía cómoda      │
+│ tablas                 │ sin reconstruir layout │
+│ ecuaciones             │                        │
+└────────────────────────┴────────────────────────┘
+```
+
+Eso además refuerza que **la traducción es una herramienta de lectura**, no una falsificación visual del documento publicado.
+
+Una precisión: Markdown **no contiene una fuente tipográfica**. El `.md` sigue siendo texto. Es Jano quien podría renderizarlo con:
+
+```css id="acltfo"
+font-family:
+  "Times New Roman",
+  "Times",
+  "Liberation Serif",
+  serif;
+```
+
+o permitir seleccionar:
+
+```text id="p45527"
+Tipografía de lectura
+● Serif académica
+○ Sans-serif
+○ Times New Roman
+○ Personalizada
+```
+
+Así tampoco dependemos de que Times New Roman exista en todos los sistemas.
+
+6. **Separaría “alineación estructural” y “alineación contextual”.** Si Jano genera la traducción, los IDs nos dan inmediatamente la primera:
+
+```text id="w5g37z"
+segmento 148 ↔ segmento 148
+```
+
+Después puede existir una segunda capa mucho más fina:
+
+```text id="m19e0q"
+seg_148 EN [chars 42–91]
+              ↕
+seg_148 ES [chars 37–86]
+```
+
+Esta segunda capa es la que necesitaríamos para la selección contextual bilingüe que definimos en el Punto 7. fileciteturn0file11L136-L168
+
+Por tanto, yo reformularía tu pipeline definitivo del **Punto 9** así:
+
+```text id="pfv2hk"
+PUNTO 9 — PIPELINE DE TRADUCCIÓN
+
+archivo / carpeta / proyecto
+            ↓
+inspección de formato
+            ↓
+detección de texto existente
+            ↓
+extracción directa
+        o
+OCR progresivo
+            ↓
+texto normalizado
+            ↓
+segmentación estructural
++ página
++ bloques
++ IDs
+            ↓
+─────────────────────────────
+FUENTE INTERMEDIA
+TXT visible
++
+estructura interna .jano
+─────────────────────────────
+            ↓
+agrupación de segmentos
+en bloques contextuales
+            ↓
+traducción académica
+manteniendo IDs
+            ↓
+validación
+• no faltan segmentos
+• no se resumió contenido
+• IDs conservados
+• orden conservado
+            ↓
+generación de Markdown
+            ↓
+tablas / figuras:
+referencia al original,
+no reconstrucción
+            ↓
+alineación estructural
+automática por IDs
+            ↓
+alineación contextual fina
+cuando sea necesaria
+            ↓
+guardar
+```
+
+Y el resultado podría ser:
+
+```text id="n9pp3v"
+Proyecto/
+├── Proyecto_orig/
+│   └── North1990.pdf
+│
+├── Proyecto_trad/
+│   └── North1990.es.md
+│
+└── .jano/
+    └── documents/
+        └── <document_id>/
+            ├── source.txt
+            ├── segments.json
+            ├── translation.json
+            └── alignment.json
+```
+
+Esto exige cambiar ligeramente una decisión anterior: **los archivos emparejados ya no necesitan tener la misma extensión**, solo el mismo `document_id`/nombre base. Eso ya era compatible con nuestra decisión de que el nombre sirva para descubrir la pareja y el `document_id` sea después la identidad real. fileciteturn0file4L243-L280
+
+En concreto:
+
+```text id="hleceg"
+North1990.pdf
+      ↕
+North1990.es.md
+```
+
+sería una pareja completamente válida.
+
+La consecuencia más útil de este diseño es que el panel derecho deja de intentar ser una réplica visual del PDF. **Es una versión optimizada exclusivamente para leer**. Y eso reduce mucho la complejidad de OCR, traducción, renderizado, tablas y almacenamiento sin sacrificar la función central de Jano.
+
+Consideraría con esto el **Punto 9 bastante definido conceptualmente**. La cuestión técnica que queda íntimamente asociada es el **Punto 4 — extracción y segmentación**, porque de la calidad de ese paso dependerán OCR, traducción, scroll, selección y alineación posteriores.

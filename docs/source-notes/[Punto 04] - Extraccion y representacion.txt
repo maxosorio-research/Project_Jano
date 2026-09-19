@@ -1,0 +1,367 @@
+Sí. Para el **Punto 4** me parece una decisión especialmente buena porque reduce muchísimo la complejidad de Jano sin perjudicar su propósito. De hecho, consolidaría una separación clara:
+
+\[
+\text{original} = \text{fidelidad documental}
+\qquad
+\text{traducción} = \text{comodidad de lectura}
+\]
+
+El original conserva diagramación, tablas, figuras, columnas y cualquier elemento editorial; la traducción deja de intentar imitarlo y se convierte en una representación textual limpia.
+
+Esto además es coherente con una decisión que ya veníamos tomando: Jano debe separar **representación estructurada** y **visualización**, en vez de considerar ambos archivos como dos PDFs equivalentes. fileciteturn0file0L114-L142
+
+### 1. No recrearía la maquetación del PDF
+
+Especialmente en papers de dos o tres columnas.
+
+Intentar transformar:
+
+```text id="xh5utx"
+┌─────────────┬─────────────┐
+│ columna A   │ columna B   │
+│             │             │
+│ figura      │ ecuación    │
+│             │             │
+└─────────────┴─────────────┘
+```
+
+en otro documento visualmente idéntico introduce problemas que no aportan demasiado a la función de Jano.
+
+El lado traducido podría simplemente mostrar:
+
+```text id="uy331j"
+Título de sección
+
+Primer párrafo completo del texto.
+
+Segundo párrafo completo del texto.
+
+Tercer párrafo completo del texto.
+```
+
+Es decir, Jano reconstruye el **orden lógico de lectura**, no el layout.
+
+Eso también simplifica el scroll sincronizado, porque ya establecimos que queremos sincronizar posiciones semánticas y no páginas o coordenadas equivalentes. fileciteturn0file13L241-L256
+
+### 2. Markdown me parece el formato correcto de salida
+
+Usaría:
+
+```text id="rh12zo"
+paper.pdf
+      ↕
+paper.es.md
+```
+
+El `.md` tendría únicamente estructura útil para leer:
+
+```markdown id="ft4tv9"
+# Título
+
+## Introducción
+
+Primer párrafo...
+
+Segundo párrafo...
+
+### Antecedentes
+
+Otro párrafo...
+```
+
+No necesitamos reproducir:
+
+```text id="mpnutx"
+posición X/Y
+tipografía del journal
+número de columnas
+anchos exactos
+saltos visuales
+```
+
+Eso ya está en el PDF de la izquierda.
+
+De hecho, esto coincide directamente con el pipeline que ya habíamos esbozado: el PDF original queda intacto y la traducción puede convertirse en Markdown optimizado para lectura. fileciteturn0file14L175-L202
+
+### 3. Haría una distinción: el Markdown no debería ser la estructura interna de Jano
+
+Este matiz sí lo mantendría.
+
+Para el usuario:
+
+```text id="nqtky4"
+North1990.es.md
+```
+
+Pero internamente:
+
+```text id="sa3xr9"
+segment_id
+page_original
+section
+paragraph
+source_text
+translated_text
+```
+
+Por ejemplo:
+
+```json id="t9wnge"
+{
+  "id": "seg_184",
+  "page": 12,
+  "type": "paragraph",
+  "source": "Institutions affect...",
+  "translation": "Las instituciones afectan..."
+}
+```
+
+Porque necesitamos conservar la relación con el PDF original para selección, scroll, Zotero y alineación. Ya habíamos llegado precisamente a esta arquitectura de `Document → Text blocks → Segments → Alignment → Viewer`. fileciteturn0file0L203-L225
+
+El Markdown sería entonces una **vista/exportación legible** de esos segmentos.
+
+### 4. Tablas y figuras: fuera, pero no invisibles
+
+Aquí introduciría solo una modificación a tu propuesta.
+
+Estoy de acuerdo en no traducirlas ni reconstruirlas. Pero no las eliminaría completamente del flujo textual, porque entonces podrían ocurrir cosas como:
+
+```text id="r9458y"
+párrafo A
+
+párrafo B
+```
+
+cuando en realidad el original era:
+
+```text id="ue543k"
+párrafo A
+
+FIGURA 4
+
+párrafo B
+```
+
+y el lector no sabría que hay algo importante entre ambos.
+
+Por tanto, usaría marcadores discretos:
+
+```markdown id="85bdzp"
+Párrafo anterior.
+
+> Figura 4 — consultar documento original, p. 17.
+
+Párrafo siguiente.
+```
+
+o:
+
+```markdown id="qg826l"
+> Tabla 2 — consultar documento original, p. 23.
+```
+
+Nada más.
+
+Esto ya lo habíamos considerado en el pipeline de traducción: preservar la existencia y posición aproximada de esos elementos, sin intentar reconstruir su contenido. fileciteturn0file14L144-L173
+
+### 5. Incluso permitiría hacer clic en esos marcadores
+
+Esto podría resultar muy útil.
+
+```text id="i3y9o4"
+TRADUCCIÓN
+
+...como muestran los resultados anteriores.
+
+┌────────────────────────────────┐
+│ Tabla 3 · Ver original · p. 27 │
+└────────────────────────────────┘
+
+Estos resultados sugieren...
+```
+
+Al hacer clic:
+
+```text id="sanq29"
+panel original
+       ↓
+ir a página 27
+       ↓
+centrar Tabla 3
+```
+
+Eso convierte una limitación deliberada en una característica bastante elegante.
+
+### 6. Sí preservaría algunos elementos no estrictamente narrativos
+
+Aunque dejemos fuera lo gráfico, no descartaría:
+
+- títulos y subtítulos;
+- listas;
+- citas textuales;
+- referencias dentro del texto;
+- notas al pie;
+- captions de tablas/figuras cuando puedan extraerse limpiamente;
+- encabezados de anexos.
+
+Porque todos ellos contienen información lingüística relevante.
+
+En cambio:
+
+```text id="hw32d8"
+gráficos
+imágenes
+tablas complejas
+diagramas
+layout editorial
+```
+
+se quedan exclusivamente en el original.
+
+Las ecuaciones probablemente merezcan una categoría intermedia: **no traducirlas**, pero conservarlas o marcarlas para no romper la continuidad argumentativa.
+
+### 7. El gran problema técnico pasa a ser el orden de lectura
+
+Y esto es mucho mejor que intentar reproducir el diseño.
+
+Para un PDF multicolumna, Jano necesita descubrir:
+
+```text id="3eepa0"
+columna izquierda
+  párrafo 1
+  párrafo 2
+  párrafo 3
+       ↓
+columna derecha
+  párrafo 4
+  párrafo 5
+```
+
+y evitar errores como:
+
+```text id="ijmijo"
+línea columna izquierda
+línea columna derecha
+línea columna izquierda
+línea columna derecha
+```
+
+Por tanto, el **Punto 4** no debería definirse realmente como “extraer texto del PDF”, sino como:
+
+> **Reconstruir localmente el flujo lógico de lectura del documento.**
+
+Eso es más preciso.
+
+### 8. La visualización traducida sería deliberadamente distinta
+
+Podríamos fijar una especie de estándar de lectura Jano:
+
+```text id="nn06sk"
+TRADUCCIÓN · ES
+
+        ancho máximo de lectura
+      ┌───────────────────────┐
+      │                       │
+      │   Texto justificado   │
+      │   con espacio cómodo  │
+      │   entre párrafos.     │
+      │                       │
+      │   Segundo párrafo...  │
+      │                       │
+      └───────────────────────┘
+```
+
+Con algo parecido a:
+
+```text id="3uxoix"
+ancho: 65–85 caracteres
+márgenes amplios
+interlineado: ~1.5
+espacio entre párrafos
+texto justificado opcional
+tipografía configurable
+```
+
+Yo haría el **justificado configurable**, no obligatorio. En algunas pantallas estrechas puede generar espacios muy irregulares; permitir:
+
+```text id="ua8grr"
+Alineación
+● Izquierda
+○ Justificada
+```
+
+es trivial y evita imponer una preferencia.
+
+### 9. Esto simplifica considerablemente Jano
+
+Antes:
+
+```text id="ql6dcw"
+PDF original
+     ↕
+PDF traducido reconstruido
+```
+
+implicaba dos motores de documentos complejos.
+
+Ahora:
+
+```text id="9fd879"
+PDF original
+     ↓
+extracción local
+     ↓
+texto estructurado
+     ↓
+segmentos
+     ↓
+traducción
+     ↓
+Markdown
+
+PDF Viewer        Markdown Reader
+```
+
+Mucho más limpio.
+
+Y además preserva el principio que ya fijamos en el sistema de traducción: segmentar antes de traducir y conservar IDs, de modo que las traducciones generadas por Jano nazcan ya alineadas. fileciteturn0file14L81-L142
+
+### Punto 4 — definición que dejaría cerrada
+
+```text id="nnobkk"
+PUNTO 4 — EXTRACCIÓN Y REPRESENTACIÓN
+
+1. El PDF original conserva toda la representación documental.
+
+2. Jano no intenta reconstruir el layout del original
+   en la traducción.
+
+3. La extracción busca recuperar el flujo lógico del texto,
+   no reproducir posiciones visuales.
+
+4. Los documentos multicolumna se linealizan.
+
+5. El contenido textual se divide en párrafos/segmentos
+   manteniendo referencias al PDF original.
+
+6. Figuras, gráficos y tablas no se traducen ni reconstruyen.
+
+7. Su existencia se conserva mediante marcadores:
+   [Figura 3 — consultar original, p. 17].
+
+8. Títulos, subtítulos, notas y otros elementos textuales
+   relevantes sí se preservan.
+
+9. La traducción visible se almacena/renderiza como Markdown.
+
+10. El Markdown usa una presentación optimizada para lectura:
+    márgenes amplios, tipografía cómoda, interlineado adecuado
+    y alineación configurable.
+
+11. La representación interna sigue siendo estructurada:
+    segment_id + página + tipo + texto + metadata.
+
+12. Todo el proceso de extracción debe poder ejecutarse localmente.
+```
+
+Me parece que con esta decisión el **Punto 4 queda conceptualmente casi cerrado**. Y además reduce bastante el alcance técnico: ya no necesitamos un motor capaz de “reconstruir papers traducidos”; necesitamos un buen **extractor de flujo textual + segmentador**, que es un problema considerablemente más manejable y encaja mejor con el objetivo real de Jano.

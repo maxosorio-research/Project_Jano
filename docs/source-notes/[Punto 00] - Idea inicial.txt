@@ -1,0 +1,229 @@
+La idea tiene bastante sentido y, bien planteada, no es solo un “visor de dos archivos”: es un **lector bilingüe sincronizado**. La diferencia es importante porque el problema interesante no está en mostrar dos documentos, sino en mantener una relación explícita entre el texto original y su traducción.
+
+### Cómo lo estructuraría
+
+La aplicación tendría una vista principal dividida verticalmente al 50%:
+
+**izquierda:** documento original  
+**derecha:** traducción
+
+Ambos paneles podrían redimensionarse, pero inicialmente quedarían mitad y mitad.
+
+Al abrir un proyecto, el usuario escogería dos directorios:
+
+```text id="0r6f4m"
+/proyecto
+    /original
+        smith_2024.pdf
+        chapter_01.pdf
+        notes.pdf
+
+    /traducciones
+        smith_2024.pdf
+        chapter_01.pdf
+```
+
+El programa compara el nombre base de los archivos. En el explorador interno aparecería algo así:
+
+```text id="ny40vh"
+✓ smith_2024.pdf
+✓ chapter_01.pdf
+🔴 notes.pdf          Sin traducción
+```
+
+Y naturalmente funcionaría en ambas direcciones: si existe una traducción sin original, también se marca.
+
+### La pieza clave: no sincronizar páginas, sino segmentos
+
+Aquí está el aspecto más importante de tu idea.
+
+No conviene hacer:
+
+```text id="k6as1a"
+Original página 12  ↔  Traducción página 12
+```
+
+porque una traducción puede ocupar más o menos páginas.
+
+Tampoco conviene sincronizar simplemente:
+
+```text id="076cku"
+scroll original = 42%
+scroll traducción = 42%
+```
+
+porque los textos pueden tener distinta extensión.
+
+La aplicación debería internamente representar el documento como **segmentos alineados**:
+
+```text id="n57sis"
+SEGMENTO 184
+
+ORIGINAL
+"The relationship between economic inequality and political
+polarization has received increasing attention..."
+
+↕
+
+TRADUCCIÓN
+"La relación entre la desigualdad económica y la polarización
+política ha recibido una atención creciente..."
+```
+
+Entonces el visor sabe que:
+
+```text id="ncmg0p"
+segmento 184 EN ↔ segmento 184 ES
+```
+
+Eso resuelve casi todo.
+
+Si haces scroll hasta el segmento 184 en inglés, el programa coloca el segmento 184 en español aproximadamente a la misma altura.
+
+Si seleccionas una oración dentro del segmento 184, puede resaltar automáticamente el segmento correspondiente en español.
+
+Si haces clic en un párrafo de la traducción, el original se mueve hasta el párrafo correspondiente.
+
+### Selección sincronizada
+
+Yo distinguiría dos niveles.
+
+**Versión inicial:** selección por párrafo o segmento. Es relativamente sencilla y robusta.
+
+```text id="df12gm"
+┌──────────────────────┬────────────────────────┐
+│ Original             │ Traducción             │
+│                      │                        │
+│ [highlight párrafo]  │ [highlight párrafo]    │
+│                      │                        │
+└──────────────────────┴────────────────────────┘
+```
+
+**Versión avanzada:** correspondencia frase por frase e incluso palabra por palabra.
+
+Por ejemplo:
+
+```text id="78r1xa"
+political polarization
+        ↕
+polarización política
+```
+
+Eso requiere un sistema de *text alignment*, pero permitiría una experiencia muy potente.
+
+### Un detalle de diseño que puede simplificar muchísimo el programa
+
+Yo no usaría necesariamente el PDF traducido como “fuente de verdad”.
+
+Mantendría internamente algo parecido a:
+
+```json id="kc6ody"
+{
+  "document": "smith_2024",
+  "segments": [
+    {
+      "id": 1,
+      "source": "Economic inequality has increased...",
+      "translation": "La desigualdad económica ha aumentado..."
+    },
+    {
+      "id": 2,
+      "source": "Several explanations have been proposed...",
+      "translation": "Se han propuesto varias explicaciones..."
+    }
+  ]
+}
+```
+
+Además se puede guardar la posición del texto original dentro del PDF.
+
+Eso desacopla **contenido** de **visualización**.
+
+El usuario sigue viendo el PDF original, pero debajo existe una representación estructurada del documento.
+
+### Arquitectura que usaría
+
+Actualmente consideraría seriamente **Tauri 2 + React/TypeScript** para hacerlo como aplicación de escritorio. Tauri permite construir aplicaciones de escritorio multiplataforma utilizando un frontend web y lógica nativa cuando sea necesaria, con una aplicación considerablemente más liviana que muchas alternativas basadas enteramente en Chromium. ([v2.tauri.app](https://v2.tauri.app/es/?utm_source=chatgpt.com))
+
+Para visualizar PDFs, **PDF.js** encaja especialmente bien porque ya proporciona renderizado, viewer y selección de texto, precisamente varias de las cosas que necesitarías modificar para construir este sistema. PDF.js sigue activamente mantenido y sus versiones recientes incluyen mejoras específicas de selección de texto y del viewer. ([github.com](https://github.com/mozilla/pdf.js/releases?utm_source=chatgpt.com))
+
+Conceptualmente:
+
+```text id="c6ugcw"
+┌──────────────────────────────────────────────────────┐
+│                    TAURI                             │
+│                                                      │
+│  ┌─────────────────┐     ┌────────────────────────┐ │
+│  │ React / TS      │     │ Backend local          │ │
+│  │                 │     │                        │ │
+│  │ Viewer original │     │ filesystem             │ │
+│  │ Viewer traduc.  │     │ extracción de texto    │ │
+│  │ navegación      │     │ alineación              │ │
+│  │ resaltado       │     │ índice documentos      │ │
+│  └────────┬────────┘     └───────────┬────────────┘ │
+│           │                          │              │
+│           └──────── alignment ───────┘              │
+└──────────────────────────────────────────────────────┘
+```
+
+Y todo podría funcionar **100 % local**, sin subir los papers a ningún servidor.
+
+### Yo separaría el desarrollo en estas versiones
+
+1. **MVP.** Selección de carpeta original + carpeta traducida, emparejamiento por nombre, archivos faltantes en rojo, visor 50/50, PDF/TXT y scroll sincronizado aproximadamente.
+
+2. **Versión 0.2.** Extracción de texto y división en párrafos; correspondencia `original ↔ traducción`; scroll sincronizado por párrafo y clic para ir al párrafo equivalente.
+
+3. **Versión 0.3.** Selección sincronizada. Seleccionas un párrafo u oración en inglés y se destaca automáticamente la traducción.
+
+4. **Versión 0.4.** Funciones orientadas realmente a lectura académica: búsqueda simultánea, modo solo original/solo traducción/bilingüe, zoom independiente, recordar dónde quedaste, historial de documentos, favoritos y anotaciones.
+
+5. **Versión 1.0.** Alineación automática cuando las traducciones no traen información de correspondencia, OCR para PDFs escaneados, soporte DOCX/EPUB/HTML y eventualmente traducción integrada opcional.
+
+La parte especialmente interesante es que **no necesitas resolver IA, OCR, traducción y alineación perfecta desde el principio**. Un primer prototipo podría funcionar suponiendo PDFs con texto seleccionable y traducciones que mantienen aproximadamente la estructura de párrafos.
+
+### Hay además una función que incorporaría desde el comienzo
+
+Un pequeño indicador lateral de alineación:
+
+```text id="v5hhbz"
+Original                         Traducción
+
+──── Introduction ────      ─── Introducción ───
+
+│ paragraph 1        │──────│ párrafo 1          │
+│ paragraph 2        │──────│ párrafo 2          │
+│ paragraph 3        │──────│ párrafo 3          │
+│ paragraph 4        │──┐   │ párrafo 4          │
+│                    │  └───│ párrafo 5          │
+```
+
+Así el sistema podría admitir relaciones **1→1, 1→2, 2→1**, etc. Eso es importante porque una buena traducción no necesariamente conserva exactamente las fronteras de cada oración.
+
+De hecho, yo haría de esa representación de correspondencias el núcleo del programa:
+
+```text id="vjgf52"
+Document
+   ↓
+Pages
+   ↓
+Text blocks
+   ↓
+Segments
+   ↓
+Alignment
+   ↓
+Viewer
+```
+
+En vez de:
+
+```text id="pz5g2c"
+PDF A ↔ PDF B
+```
+
+Ese cambio conceptual hace que después sea mucho más sencillo agregar traducción automática, comparación de versiones, anotaciones y otros idiomas.
+
+Y hay una extensión especialmente interesante para tu caso de lectura académica: que al presionar una tecla puedas pasar temporalmente de `50/50` a `80/20` o `100/0`. Así podrías leer principalmente el inglés y consultar la traducción solamente cuando una sección se vuelva difícil, evitando depender permanentemente del texto traducido.
+
+En términos de producto, lo definiría como **“un lector académico bilingüe local con alineación de documentos”**. Ese alcance es suficientemente concreto como para construir un MVP y, al mismo tiempo, deja una arquitectura bastante potente para evolucionarlo.

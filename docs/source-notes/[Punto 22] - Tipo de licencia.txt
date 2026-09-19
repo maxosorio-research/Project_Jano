@@ -1,0 +1,309 @@
+Para el **Punto 22**, hay una decisión jurídica central: si la prohibición de comercialización es absoluta, Jano no puede ser “open source” en el sentido formal de la Open Source Initiative. La OSI exige permitir libre redistribución, incluida la venta, y prohíbe restringir campos de uso como el comercial. ([opensource.org](https://opensource.org/osd?utm_source=chatgpt.com)) Eso no contradice la filosofía que estamos construyendo; simplemente significa que el término técnicamente correcto sería **software de código fuente disponible para uso no comercial** (*source-available, non-commercial*).
+
+Esto además es coherente con el principio que ya establecimos de que Jano no debe encerrar los documentos del usuario: incluso si Jano desaparece, originales y traducciones siguen siendo archivos normales y utilizables. fileciteturn0file4L282-L290
+
+### Qué derechos debería conceder Jano
+
+Yo convertiría tu intención en estas reglas:
+
+1. Cualquiera puede descargar y examinar todo el código fuente.
+2. Cualquiera puede utilizar Jano gratuitamente para uso personal, académico, educativo, científico o institucional no comercial.
+3. Cualquiera puede modificar tanto la arquitectura como la interfaz.
+4. Universidades, centros de investigación, bibliotecas, organismos públicos y otras instituciones no comerciales pueden mantener versiones propias.
+5. Esas versiones pueden distribuirse internamente o a sus comunidades.
+6. Se pueden publicar forks y modificaciones no comerciales.
+7. No se puede vender Jano, un fork de Jano ni un producto derivado basado sustancialmente en su código.
+8. No se puede ofrecer Jano como servicio comercial.
+9. No se puede incorporar Jano a un producto comercial.
+10. El nombre, logotipo e identidad oficial de **Jano** permanecen separados de la licencia del código.
+
+Ese punto 22 originalmente estaba abierto precisamente porque MIT, Apache, GPL o AGPL producen consecuencias muy distintas sobre redistribución y comercialización. fileciteturn0file3L45-L49
+
+### GPL y AGPL no cumplen tu objetivo
+
+Aunque GPL/AGPL son copyleft fuerte, **permiten expresamente vender el software y versiones modificadas**. El receptor debe conservar determinadas libertades y, según el caso, recibir código fuente, pero cobrar por la distribución es legal. ([gnu.org](https://www.gnu.org/licenses/gpl-faq.html?utm_source=chatgpt.com))
+
+Por tanto:
+
+| Licencia | Modificar | Redistribuir | Uso comercial | Vender forks | Encaja con Jano |
+|---|---:|---:|---:|---:|---:|
+| MIT | Sí | Sí | Sí | Sí | No |
+| Apache-2.0 | Sí | Sí | Sí | Sí | No |
+| GPLv3 | Sí | Sí | Sí | Sí | No |
+| AGPLv3 | Sí | Sí | Sí | Sí | No |
+| **PolyForm Noncommercial 1.0.0** | Sí | Sí | No | No | **Muy cercana** |
+
+### La opción que mejor encaja actualmente: PolyForm Noncommercial
+
+**PolyForm Noncommercial 1.0.0** está diseñada precisamente para permitir uso, modificación y distribución mientras restringe los usos comerciales. Además contiene algo particularmente apropiado para Jano: considera expresamente permitido el uso por **instituciones educativas, organizaciones benéficas, organismos públicos y organizaciones públicas de investigación**, independientemente de su fuente de financiación. ([polyformproject.org](https://polyformproject.org/licenses/noncommercial/1.0.0?utm_source=chatgpt.com))
+
+Eso permitiría, por ejemplo:
+
+```text id="rld03o"
+JANO
+│
+├── Jano upstream
+│   └── versión oficial
+│
+├── Universidad A
+│   └── fork institucional
+│       ├── colores propios
+│       ├── integración con biblioteca
+│       └── plugins propios
+│
+├── Centro de investigación B
+│   └── fork institucional
+│       ├── workflow propio
+│       └── interfaz modificada
+│
+└── Investigador individual
+    └── fork personal
+        ├── atajos propios
+        └── cambios de UI
+```
+
+Todo eso sería compatible con la filosofía que describes, siempre que permanezca dentro de los usos permitidos. PolyForm clasifica precisamente su licencia Noncommercial como una licencia que permite **uso + modificación + distribución**, limitada al ámbito no comercial. ([polyformproject.org](https://polyformproject.org/licenses?utm_source=chatgpt.com))
+
+Pero hay una consecuencia: SPDX incluye `PolyForm-Noncommercial-1.0.0`, pero no la identifica como aprobada por la OSI. ([spdx.org](https://spdx.org/licenses/PolyForm-Noncommercial-1.0.0.html?utm_source=chatgpt.com)) En la documentación pública de Jano yo evitaría entonces afirmar simplemente “OSI Open Source” y diría algo como:
+
+> **Source available · free for personal, academic, educational and non-commercial institutional use.**
+
+### Vanilla e institucionales
+
+Formalizaría además dos conceptos.
+
+**Jano Vanilla** sería el *upstream* oficial:
+
+```text id="m44yx1"
+github.com/.../jano
+```
+
+Contendría:
+
+```text id="ia00s2"
+Jano Core
+Jano Reader
+Plugin API
+interfaz estándar
+documentación
+plugins oficiales
+```
+
+Las instituciones podrían hacer:
+
+```text id="59a60o"
+Jano Vanilla
+      │
+      ├──── fork ──── Universidad X
+      │               └── edición institucional
+      │
+      ├──── fork ──── Instituto Y
+      │               └── edición institucional
+      │
+      └──── fork ──── usuario
+                      └── edición personal
+```
+
+Esto combina especialmente bien con la arquitectura modular que ya definimos: los plugins interactúan con una API pública y no deberían depender de las entrañas de la base de datos. fileciteturn0file7L95-L170 Una universidad podría por tanto cambiar mucho Jano sin mantener una bifurcación enorme del núcleo.
+
+### Separaría código y marca
+
+Tendría como mínimo:
+
+```text id="yo2xm1"
+LICENSE
+TRADEMARKS.md
+CONTRIBUTING.md
+THIRD_PARTY_LICENSES.md
+```
+
+`LICENSE` regula **el código**.
+
+`TRADEMARKS.md` regula:
+
+```text id="2p7rwe"
+Jano
+logotipo de Jano
+icono
+identidad gráfica oficial
+```
+
+Por ejemplo, una universidad podría crear libremente:
+
+```text id="9zl1ck"
+Athena
+Basado en Jano
+Universidad X
+```
+
+pero no debería poder publicar sin autorización:
+
+```text id="0oyw7h"
+Jano Pro™
+$49.99/mes
+```
+
+ni hacerse pasar por una distribución oficial.
+
+Incluso sería razonable reservar expresiones como:
+
+```text id="cdmfm7"
+Jano
+Official Jano
+Jano Vanilla
+```
+
+y permitir que los forks utilicen:
+
+```text id="nwsxap"
+Basado en Jano
+Powered by Jano
+Fork de Jano
+```
+
+La licencia de software y la autorización de uso de marca son jurídicamente cuestiones distintas.
+
+### Hay otro límite importante
+
+Una licencia puede impedir que alguien tome **el código de Jano** y lo venda en contra de sus términos.
+
+No puede impedir, en términos generales, que otra persona estudie la idea y programe independientemente otra aplicación que haga:
+
+```text id="xh4vas"
+PDF original ↔ traducción
+scroll sincronizado
+alineación
+Zotero
+```
+
+El copyright protege la implementación concreta —código, determinados elementos gráficos, documentación, etc.—, no el concepto abstracto de un lector bilingüe.
+
+Por tanto, el objetivo jurídicamente realista es:
+
+\[
+\text{No comercializar Jano ni derivados de su código}
+\]
+
+no:
+
+\[
+\text{Nadie puede crear jamás un producto conceptualmente parecido}
+\]
+
+Para impedir esto último entraríamos en territorios como patentes, que además encajarían bastante mal con el espíritu abierto y académico del proyecto.
+
+### Hay una decisión que dejaría marcada para más adelante
+
+PolyForm Noncommercial permite modificaciones y distribución, pero **no es una licencia copyleft del tipo “si distribuyes una modificación, debes publicar también su código fuente”**.
+
+Tenemos entonces dos filosofías posibles:
+
+```text id="lfjn10"
+A. Non-commercial abierto
+Institución modifica Jano
+        ↓
+puede usar/distribuir su versión
+        ↓
+no puede comercializarla
+```
+
+o:
+
+```text id="k9ttuy"
+B. Non-commercial recíproco
+Institución modifica Jano
+        ↓
+puede usar/distribuir su versión
+        ↓
+no puede comercializarla
+        +
+si la distribuye debe publicar
+sus modificaciones
+```
+
+Por lo que has planteado hasta ahora, **B parece conceptualmente más cercana a la ética de Jano**, porque las mejoras institucionales podrían volver a beneficiar a investigadores y comunidad.
+
+El problema es que no existe una alternativa tan estándar y ampliamente reconocida como GPL que combine exactamente *copyleft fuerte + prohibición comercial*. Se podría redactar una licencia específica, pero eso aumenta considerablemente la complejidad jurídica y la incompatibilidad con otros proyectos. Incluso la FSF desaconseja crear variantes modificadas de la GPL precisamente por los problemas de compatibilidad que generan. ([gnu.org](https://www.gnu.org/licenses/gpl-faq.en.html?utm_source=chatgpt.com))
+
+Por ello, para las primeras versiones elegiría **PolyForm Noncommercial 1.0.0 sin modificar**, y dejaría el requisito de reciprocidad para revisarlo antes de una versión estable 1.0.
+
+### También condiciona las dependencias
+
+Esto tendrá que entrar en la revisión técnica.
+
+No podremos simplemente incorporar cualquier biblioteca open-source y después ponerle encima las restricciones de Jano. Las dependencias conservan sus propias licencias. Especialmente cualquier dependencia copyleft deberá analizarse antes de distribuir el producto combinado.
+
+Establecería desde el principio:
+
+```text id="t4n5ak"
+Preferidas
+──────────
+MIT
+BSD
+ISC
+Apache-2.0
+
+Revisión obligatoria
+────────────────────
+GPL
+AGPL
+LGPL
+MPL
+licencias source-available
+licencias personalizadas
+```
+
+Así evitamos descubrir cuando Jano ya tenga miles de líneas que una dependencia fundamental es incompatible con nuestro modelo de distribución.
+
+### Finalmente, las contribuciones
+
+Si Jano empieza a recibir contribuciones externas, `CONTRIBUTING.md` debería establecer expresamente que toda contribución se entrega bajo la misma licencia del proyecto.
+
+Más adelante habría que decidir entre un sistema ligero tipo DCO o un acuerdo de contribución más formal. Esto importa porque, si participan decenas de autores distintos, el copyright termina repartido entre múltiples contribuyentes y cualquier cambio futuro de licencia puede complicarse.
+
+Por ahora no introduciría burocracia excesiva; simplemente diseñaría el repositorio pensando en que esto llegará.
+
+### Cerraría el Punto 22 así
+
+**Modelo de licencia de Jano:**
+
+```text id="tk2gqb"
+JANO
+──────────────────────────────────────────
+
+Código fuente:
+PolyForm Noncommercial 1.0.0
+
+Permitido:
+✓ uso personal
+✓ investigación
+✓ enseñanza
+✓ uso académico
+✓ instituciones educativas
+✓ organismos públicos
+✓ investigación pública
+✓ estudiar el código
+✓ modificarlo
+✓ forks personales
+✓ forks institucionales
+✓ redistribución no comercial
+
+Prohibido:
+✗ vender Jano
+✗ vender forks
+✗ incluirlo en productos comerciales
+✗ ofrecerlo como servicio comercial
+✗ explotación comercial del código
+
+Marca:
+«Jano» + logo reservados por separado
+
+Principio:
+las instituciones pueden adaptar Jano;
+nadie puede apropiarse comercialmente
+del trabajo comunitario.
+```
+
+Con una precisión terminológica: **Jano sería completamente público y modificable, pero jurídicamente “source-available non-commercial”, no OSI Open Source.** Si la prohibición de venta es un principio irrenunciable, esa distinción es inevitable y conviene asumirla explícitamente desde el comienzo. ([opensource.org](https://opensource.org/osd?utm_source=chatgpt.com))
+
+Con esto consideraría **Punto 22 — Licencia y filosofía de distribución conceptualmente resuelto**, dejando dos subdecisiones para antes de 1.0: si los forks distribuidos deben estar obligados a publicar sus modificaciones y la política definitiva de marca.

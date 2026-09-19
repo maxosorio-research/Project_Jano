@@ -1,0 +1,161 @@
+Entonces conviene tomar **macOS/iOS como lenguaje visual de referencia**, pero sin convertir Jano en una imitación literal de una app de Apple. Para este proyecto encaja especialmente bien porque ese lenguaje favorece interfaces silenciosas, jerarquías claras, iconografía ligera y mucho protagonismo para el contenido.
+
+Yo fijaría estas reglas para la identidad de interfaz de Jano:
+
+- **Tipografía:** sans-serif de sistema. En macOS usar la fuente del sistema; en Windows/Linux, una pila equivalente (`system-ui`, Segoe UI, Inter como fallback). Así se obtiene una sensación cercana a macOS sin depender de una fuente propietaria.
+- **Iconografía:** trazos finos, redondeados y simples, similares conceptualmente a SF Symbols. Para mantener Jano multiplataforma usaría una biblioteca como **Lucide**, modificando tamaños y pesos para que toda la interfaz sea coherente.
+- **Formas:** esquinas redondeadas moderadas, evitando tanto los rectángulos completamente cuadrados como el exceso de “pastillas”. Aproximadamente `8–10 px` en paneles y `6–8 px` en controles pequeños.
+- **Superficies:** varios niveles de carbón en vez de bordes muy marcados. Los paneles se distinguen más por contraste de fondo que por líneas.
+- **Separadores:** extremadamente discretos, gris azulado con baja opacidad.
+- **Sombras:** muy suaves. En modo oscuro casi deberían percibirse más como separación tonal que como sombra.
+- **Botones:** pocos botones sólidos. La mayoría deberían ser iconos o controles secundarios; reservar el teal para acciones seleccionadas/importantes.
+- **Controles:** toggles y segmented controls al estilo macOS funcionan especialmente bien para `50/50 · 70/30 · 100/0`, sincronización, modos de lectura, etc.
+- **Animaciones:** cortas y naturales: abrir sidebar, cambiar proporción de paneles, mostrar una selección equivalente, etc. Nada llamativo.
+- **Densidad:** bastante compacta. Jano es una herramienta de escritorio, no una app móvil ampliada.
+
+La barra superior también la cambiaría respecto al primer prototipo. En vez de una gran cabecera, pensaría en algo mucho más cercano a una ventana nativa:
+
+```text id="4erwm7"
+┌────────────────────────────────────────────────────────────────────┐
+│ ● ● ●     Jano — Proyecto Tesis               ⌕      ⚙      ⋯    │
+├──────────────┬───────────────────────────────────────┬─────────────┤
+│              │                                       │             │
+│ Documentos   │          área de lectura              │ Alineación  │
+│              │                                       │             │
+```
+
+El nombre del proyecto podría incluso integrarse en el centro de la barra, como hacen muchas aplicaciones macOS.
+
+### Sidebar
+
+Aquí tomaría bastante inspiración de Finder, Notes y Mail:
+
+```text id="43t3jv"
+Biblioteca
+
+▾ Marco teórico
+   ✓ North 1990
+   ✓ Ostrom 1990
+   ! Olson 1965
+
+▾ Instituciones
+   ✓ Acemoglu 2001
+
+────────────────
+
+＋ Importar
+⚙ Configuración
+```
+
+Sin cajas alrededor de cada documento. Solo el elemento seleccionado tendría un fondo redondeado teal muy oscuro.
+
+Algo como:
+
+```text id="tw0eer"
+      North 1990
+╭────────────────────────╮
+│ ▣  Acemoglu 2001       │  ← seleccionado
+╰────────────────────────╯
+      Ostrom 1990
+```
+
+Eso produciría una interfaz bastante menos pesada que la primera imagen.
+
+### Visor
+
+Los paneles centrales deberían parecer casi completamente **contenido**, no dos tarjetas gigantes.
+
+```text id="we1rnn"
+ ORIGINAL · EN                           TRADUCCIÓN · ES
+──────────────────────────────────────────────────────────
+
+              paper                                 paper
+              paper                                 paper
+              paper                                 paper
+
+                       │
+                       │ alineación
+                       │
+
+              paper                                 paper
+```
+
+Las herramientas podrían aparecer en una pequeña toolbar contextual:
+
+```text id="7y9uju"
+Original · EN            −  110%  +    ⌕   ⤢
+```
+
+y no ocupar permanentemente espacio visual.
+
+### Una característica muy Apple que sí adoptaría
+
+La **divulgación progresiva**.
+
+En lugar de mostrar veinte controles simultáneamente:
+
+```text id="7ics9i"
+zoom
+página
+búsqueda
+alineación
+idioma
+proporción
+sync
+...
+```
+
+mostrar solo lo necesario y revelar el resto cuando corresponde.
+
+Por ejemplo, al seleccionar texto:
+
+```text id="cmxtvq"
+                    ╭──────────────────────────────╮
+texto seleccionado  │ Copiar   Destacar   ⋯       │
+                    ╰──────────────────────────────╯
+```
+
+Y más adelante:
+
+```text id="cvil2d"
+Copiar · Destacar · Guardar en Zotero · ⋯
+```
+
+Eso encaja especialmente bien con Jano porque **el texto debe ser el protagonista**.
+
+### Color
+
+También reduciría significativamente la cantidad de teal mostrada permanentemente.
+
+En una estética más macOS:
+
+```text id="ubprxr"
+90 %   carbón / gris / blanco
+ 7 %   teal
+ 2 %   cyan
+ 1 %   ámbar
+```
+
+El teal debería señalar principalmente:
+
+- elemento seleccionado;
+- control activo;
+- foco;
+- enlaces;
+- progreso.
+
+El ámbar:
+
+- alineación;
+- vínculo entre textos;
+- sincronización.
+
+Y el cyan de traducción debería ser todavía más discreto.
+
+### Dirección visual que fijaría
+
+**macOS académico**, no “cyberpunk académico”.
+
+Eso implicaría abandonar gradientes intensos, brillos teal y bordes luminosos. La identidad de Jano debería venir de la **composición, proporciones, iconos y pequeños acentos de color**, no de llenar la pantalla de su color corporativo.
+
+Creo que esta dirección encaja bastante mejor con una aplicación que potencialmente vas a tener abierta **varias horas leyendo**.

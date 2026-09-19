@@ -1,0 +1,311 @@
+<svg xmlns="http://www.w3.org/2000/svg">
+<symbol id="jano-par-completo" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+        stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">
+  <rect x="3" y="5" width="18" height="14" rx="3"/>
+  <path d="M12 5V19"/>
+  <path d="M6 5H12V19H6A3 3 0 0 1 3 16V8A3 3 0 0 1 6 5Z" fill="currentColor" stroke="none"/>
+</symbol>
+<symbol id="jano-falta-traduccion" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+        stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">
+  <path d="M6 5H12V19H6A3 3 0 0 1 3 16V8A3 3 0 0 1 6 5Z" fill="currentColor" stroke="none"/>
+  <path d="M12 5H18A3 3 0 0 1 21 8V16A3 3 0 0 1 18 19H12" stroke-dasharray="2 2.4"/>
+  <path d="M12 5V19"/>
+</symbol>
+<symbol id="jano-falta-original" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+        stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">
+  <path d="M12 5H18A3 3 0 0 1 21 8V16A3 3 0 0 1 18 19H12Z" fill="currentColor" stroke="none"/>
+  <path d="M12 5H6A3 3 0 0 0 3 8V16A3 3 0 0 0 6 19H12" stroke-dasharray="2 2.4"/>
+  <path d="M12 5V19"/>
+</symbol>
+<symbol id="jano-ruta-perdida" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+        stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">
+  <rect x="3" y="5" width="18" height="14" rx="3" stroke-dasharray="2.2 2.4"/>
+  <path d="M13.4 12.9L18 8.3"/>
+  <path d="M19.6 6.4V10.6L15.4 6.4Z" fill="currentColor" stroke="none"/>
+</symbol>
+<symbol id="jano-vinculo-manual" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+        stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">
+  <path d="M10 8.2H8.2A3.8 3.8 0 0 0 8.2 15.8H10"/>
+  <path d="M14 8.2H15.8A3.8 3.8 0 0 1 15.8 15.8H14"/>
+  <rect x="8.6" y="11" width="6.8" height="2" rx="1" fill="currentColor" stroke="none"/>
+</symbol>
+<symbol id="jano-conflicto-pareja" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+        stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">
+  <rect x="3" y="5" width="12" height="10" rx="2.5"/>
+  <rect x="9" y="9" width="12" height="10" rx="2.5"/>
+  <rect x="9" y="9" width="6" height="6" fill="currentColor" stroke="none"/>
+</symbol>
+<symbol id="jano-traduccion-en-proceso" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+        stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">
+  <path d="M6 5H12V19H6A3 3 0 0 1 3 16V8A3 3 0 0 1 6 5Z" fill="currentColor" stroke="none"/>
+  <path d="M12 5H18A3 3 0 0 1 21 8V16A3 3 0 0 1 18 19H12"/>
+  <path d="M12 5V19"/>
+  <circle cx="14.9" cy="12" r="0.95" fill="currentColor" stroke="none"/>
+  <circle cx="16.8" cy="12" r="0.95" fill="currentColor" stroke="none"/>
+  <circle cx="18.7" cy="12" r="0.95" fill="currentColor" stroke="none"/>
+</symbol>
+<symbol id="jano-carpeta" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+        stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">
+  <path d="M3 7.5A2 2 0 0 1 5 5.5H9.4A2 2 0 0 1 10.9 6.2L12.6 8H19A2 2 0 0 1 21 10V16.5A2 2 0 0 1 19 18.5H5A2 2 0 0 1 3 16.5Z"/>
+  <path d="M3 7.5A2 2 0 0 1 5 5.5H9.4A2 2 0 0 1 10.9 6.2L12.6 8H3Z" fill="currentColor" stroke="none"/>
+</symbol>
+<symbol id="jano-biblioteca" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+        stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">
+  <path d="M7 5H17"/>
+  <path d="M5 8.6H19"/>
+  <rect x="3" y="12" width="18" height="7" rx="2.5" fill="currentColor" stroke="none"/>
+</symbol>
+<symbol id="jano-importar" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+        stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">
+  <path d="M4 14V17A2 2 0 0 0 6 19H18A2 2 0 0 0 20 17V14"/>
+  <path d="M12 4V12.6"/>
+  <path d="M8.6 10.6H15.4L12 15.2Z" fill="currentColor" stroke="none"/>
+</symbol>
+<symbol id="jano-alineacion" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+        stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">
+  <path d="M12 4.5V19.5"/>
+  <path d="M3 7.5H9"/>
+  <path d="M15 7.5H21"/>
+  <path d="M3 16.5H9"/>
+  <path d="M15 16.5H21"/>
+  <rect x="3" y="10.9" width="7.5" height="2.2" rx="1.1" fill="currentColor" stroke="none"/>
+  <rect x="13.5" y="10.9" width="7.5" height="2.2" rx="1.1" fill="currentColor" stroke="none"/>
+</symbol>
+<symbol id="jano-sync-scroll" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+        stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">
+  <path d="M8.5 5V17"/>
+  <path d="M15.5 5V17"/>
+  <path d="M8.5 9.25H15.5"/>
+  <path d="M5.4 14.1H11.6L8.5 18.6Z" fill="currentColor" stroke="none"/>
+  <path d="M12.4 14.1H18.6L15.5 18.6Z" fill="currentColor" stroke="none"/>
+</symbol>
+<symbol id="jano-realinear" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+        stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">
+  <path d="M12 4.5V19.5"/>
+  <path d="M3.5 12H8.4"/>
+  <path d="M8.2 9.6L11.4 12L8.2 14.4Z" fill="currentColor" stroke="none"/>
+  <path d="M20.5 12H15.6"/>
+  <path d="M15.8 9.6L12.6 12L15.8 14.4Z" fill="currentColor" stroke="none"/>
+</symbol>
+<symbol id="jano-proporcion-igual" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+        stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">
+  <rect x="2.5" y="6.5" width="19.0" height="11" rx="2.5"/>
+  <path d="M12 6.5V17.5"/>
+  <path d="M5 6.5H12V17.5H5A2.5 2.5 0 0 1 2.5 15V9A2.5 2.5 0 0 1 5 6.5Z" fill="currentColor" stroke="none"/>
+</symbol>
+<symbol id="jano-proporcion-original" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+        stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">
+  <rect x="2.5" y="6.5" width="19.0" height="11" rx="2.5"/>
+  <path d="M15 6.5V17.5"/>
+  <path d="M5 6.5H15V17.5H5A2.5 2.5 0 0 1 2.5 15V9A2.5 2.5 0 0 1 5 6.5Z" fill="currentColor" stroke="none"/>
+</symbol>
+<symbol id="jano-proporcion-traduccion" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+        stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">
+  <rect x="2.5" y="6.5" width="19.0" height="11" rx="2.5"/>
+  <path d="M9 6.5V17.5"/>
+  <path d="M5 6.5H9V17.5H5A2.5 2.5 0 0 1 2.5 15V9A2.5 2.5 0 0 1 5 6.5Z" fill="currentColor" stroke="none"/>
+</symbol>
+<symbol id="jano-solo-original" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+        stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">
+  <rect x="2.5" y="6.5" width="19.0" height="11" rx="2.5" fill="currentColor" stroke="none"/>
+</symbol>
+<symbol id="jano-solo-traduccion" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+        stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">
+  <rect x="2.5" y="6.5" width="19.0" height="11" rx="2.5"/>
+</symbol>
+<symbol id="jano-sidebar" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+        stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">
+  <rect x="3" y="5" width="18" height="14" rx="3"/>
+  <path d="M9 5V19"/>
+  <path d="M6 5H9V19H6A3 3 0 0 1 3 16V8A3 3 0 0 1 6 5Z" fill="currentColor" stroke="none"/>
+</symbol>
+<symbol id="jano-buscar" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+        stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">
+  <circle cx="10.5" cy="10.5" r="6.25"/>
+  <path d="M15.2 15.2L19.9 19.9" stroke-width="2.6"/>
+</symbol>
+<symbol id="jano-tamano-texto" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+        stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">
+  <path d="M3.5 18.5L8.5 5.5L13.5 18.5"/>
+  <path d="M5.6 14H11.4"/>
+  <path d="M16 18.5L18.75 10.5L21.5 18.5"/>
+  <path d="M17.15 15.5H20.35"/>
+</symbol>
+<symbol id="jano-destacar" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+        stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">
+  <path d="M4 6.5H20"/>
+  <path d="M4 17.5H14"/>
+  <rect x="3" y="9.9" width="16" height="4.2" rx="2.1" fill="currentColor" stroke="none"/>
+</symbol>
+<symbol id="jano-comentario" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+        stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">
+  <rect x="3.5" y="4.5" width="17" height="12" rx="3"/>
+  <path d="M7 16.5H12L7 20.6Z" fill="currentColor" stroke="none"/>
+</symbol>
+<symbol id="jano-etiqueta" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+        stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">
+  <path d="M12.4 3.4H5.4A2 2 0 0 0 3.4 5.4V12.4A2 2 0 0 0 3.99 13.81L10.19 20.01A2 2 0 0 0 13.01 20.01L20.01 13.01A2 2 0 0 0 20.01 10.19L13.81 3.99A2 2 0 0 0 12.4 3.4Z"/>
+  <circle cx="7.9" cy="7.9" r="1.45" fill="currentColor" stroke="none"/>
+</symbol>
+<symbol id="jano-nota" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+        stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">
+  <path d="M5 4.5H14.5L19.5 9.5V18A1.5 1.5 0 0 1 18 19.5H5A1.5 1.5 0 0 1 3.5 18V6A1.5 1.5 0 0 1 5 4.5Z"/>
+  <path d="M14.5 4.5L19.5 9.5H14.5Z" fill="currentColor" stroke="none"/>
+  <path d="M7 12.8H15.5"/>
+  <path d="M7 15.8H12.5"/>
+</symbol>
+<symbol id="jano-cita" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+        stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">
+  <rect x="3" y="5" width="2.6" height="14" rx="1.3" fill="currentColor" stroke="none"/>
+  <path d="M9 8H21"/>
+  <path d="M9 12H21"/>
+  <path d="M9 16H16.5"/>
+</symbol>
+<symbol id="jano-segmento" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+        stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">
+  <path d="M7 5.5H4.5V18.5H7"/>
+  <path d="M17 5.5H19.5V18.5H17"/>
+  <rect x="8.6" y="10.9" width="6.8" height="2.2" rx="1.1" fill="currentColor" stroke="none"/>
+</symbol>
+<symbol id="jano-pagina" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+        stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">
+  <rect x="5" y="3.5" width="14" height="17" rx="2"/>
+  <path d="M8 8H16"/>
+  <path d="M8 11.5H16"/>
+  <path d="M5 15.5H19V18.5A2 2 0 0 1 17 20.5H7A2 2 0 0 1 5 18.5Z" fill="currentColor" stroke="none"/>
+</symbol>
+<symbol id="jano-traducir" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+        stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">
+  <rect x="2.5" y="7" width="6.5" height="10" rx="2.5" fill="currentColor" stroke="none"/>
+  <rect x="15" y="7" width="6.5" height="10" rx="2.5"/>
+  <path d="M10.2 12H12.4"/>
+  <path d="M12.2 9.9L14.6 12L12.2 14.1Z" fill="currentColor" stroke="none"/>
+</symbol>
+<symbol id="jano-ocr" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+        stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">
+  <path d="M3.5 8V6A2.5 2.5 0 0 1 6 3.5H8"/>
+  <path d="M16 3.5H18A2.5 2.5 0 0 1 20.5 6V8"/>
+  <path d="M20.5 16V18A2.5 2.5 0 0 1 18 20.5H16"/>
+  <path d="M8 20.5H6A2.5 2.5 0 0 1 3.5 18V16"/>
+  <rect x="7.5" y="9.4" width="9" height="1.9" rx="0.95" fill="currentColor" stroke="none"/>
+  <rect x="7.5" y="12.7" width="6" height="1.9" rx="0.95" fill="currentColor" stroke="none"/>
+</symbol>
+<symbol id="jano-modelo-local" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+        stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">
+  <rect x="7" y="7" width="10" height="10" rx="2.5"/>
+  <rect x="10.2" y="10.2" width="3.6" height="3.6" rx="1.2" fill="currentColor" stroke="none"/>
+  <path d="M12 3.5V7"/>
+  <path d="M12 17V20.5"/>
+  <path d="M3.5 12H7"/>
+  <path d="M17 12H20.5"/>
+</symbol>
+<symbol id="jano-par-idiomas" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+        stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">
+  <circle cx="12" cy="12" r="8.5"/>
+  <path d="M12 3.5V20.5"/>
+  <path d="M12 3.5A8.5 8.5 0 0 0 12 20.5Z" fill="currentColor" stroke="none"/>
+</symbol>
+<symbol id="jano-glosario" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+        stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">
+  <path d="M4 5.5A2 2 0 0 1 6 3.5H19A0.5 0.5 0 0 1 19.5 4V17.5A0.5 0.5 0 0 1 19 18H6A2 2 0 0 0 4 20V5.5Z"/>
+  <path d="M8.5 3.5H12.5V10.8L10.5 9.2L8.5 10.8Z" fill="currentColor" stroke="none"/>
+</symbol>
+<symbol id="jano-regenerar" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+        stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">
+  <path d="M17.5 6.5A7.8 7.8 0 1 1 6.5 6.5"/>
+  <path d="M8.2 4.8L7.21 9.47L3.53 5.79Z" fill="currentColor" stroke="none"/>
+</symbol>
+<symbol id="jano-ajustes" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+        stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">
+  <path d="M3.5 8.5H20.5"/>
+  <circle cx="9" cy="8.5" r="2.6" fill="currentColor" stroke="none"/>
+  <path d="M3.5 15.5H20.5"/>
+  <circle cx="15.5" cy="15.5" r="2.6" fill="currentColor" stroke="none"/>
+</symbol>
+<symbol id="jano-extensiones" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+        stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">
+  <rect x="3.5" y="3.5" width="7.8" height="7.8" rx="2.4"/>
+  <rect x="12.7" y="3.5" width="7.8" height="7.8" rx="2.4"/>
+  <rect x="3.5" y="12.7" width="7.8" height="7.8" rx="2.4"/>
+  <rect x="12.7" y="12.7" width="7.8" height="7.8" rx="2.4" fill="currentColor" stroke="none"/>
+</symbol>
+<symbol id="jano-clave-api" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+        stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">
+  <circle cx="8.6" cy="8.6" r="4.4"/>
+  <circle cx="8.6" cy="8.6" r="1.5" fill="currentColor" stroke="none"/>
+  <path d="M11.8 11.8L19.8 19.8"/>
+  <path d="M17.3 17.3L15.2 19.4"/>
+</symbol>
+<symbol id="jano-respaldo" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+        stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">
+  <path d="M4 14V17A2 2 0 0 0 6 19H18A2 2 0 0 0 20 17V14"/>
+  <path d="M12 15V6.4"/>
+  <path d="M8.6 8.4H15.4L12 3.8Z" fill="currentColor" stroke="none"/>
+</symbol>
+<symbol id="jano-privacidad-local" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+        stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">
+  <path d="M8 10.5V8A4 4 0 0 1 16 8V10.5"/>
+  <rect x="4.5" y="10.5" width="15" height="9.5" rx="2.5" fill="currentColor" stroke="none"/>
+</symbol>
+<symbol id="jano-gestor-bibliografico" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+        stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">
+  <rect x="3.5" y="3.5" width="13" height="17" rx="2"/>
+  <path d="M6.8 8.5H13.2"/>
+  <path d="M6.8 12H13.2"/>
+  <path d="M16.5 5.5H20.5V17L18.5 15.2L16.5 17Z" fill="currentColor" stroke="none"/>
+</symbol>
+<symbol id="jano-nuevo" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+        stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">
+  <path d="M12 5V19"/>
+  <path d="M5 12H19"/>
+</symbol>
+<symbol id="jano-cerrar" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+        stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">
+  <path d="M6.2 6.2L17.8 17.8"/>
+  <path d="M17.8 6.2L6.2 17.8"/>
+</symbol>
+<symbol id="jano-atras" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+        stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">
+  <path d="M14.5 5.5L8 12L14.5 18.5"/>
+</symbol>
+<symbol id="jano-mas-opciones" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+        stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">
+  <circle cx="12" cy="5.6" r="1.6" fill="currentColor" stroke="none"/>
+  <circle cx="12" cy="12" r="1.6" fill="currentColor" stroke="none"/>
+  <circle cx="12" cy="18.4" r="1.6" fill="currentColor" stroke="none"/>
+</symbol>
+<symbol id="jano-pagina-anterior" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" xmlns="http://www.w3.org/2000/svg"><rect x="5" y="4.2" width="14" height="2" rx="1" fill="currentColor" stroke="none" /><path d="M8 14.6L12 10.4L16 14.6" /></symbol>
+<symbol id="jano-pagina-siguiente" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" xmlns="http://www.w3.org/2000/svg"><path d="M8 9.4L12 13.6L16 9.4" /><rect x="5" y="17.8" width="14" height="2" rx="1" fill="currentColor" stroke="none" /></symbol>
+<symbol id="jano-zoom-mas" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" xmlns="http://www.w3.org/2000/svg"><circle cx="10.5" cy="10.5" r="6.25" /><path d="M15.2 15.2L19.9 19.9" stroke-width="2.6" /><rect x="9.6" y="7.1" width="1.8" height="6.8" rx="0.9" fill="currentColor" stroke="none" /><rect x="7.1" y="9.6" width="6.8" height="1.8" rx="0.9" fill="currentColor" stroke="none" /></symbol>
+<symbol id="jano-zoom-menos" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" xmlns="http://www.w3.org/2000/svg"><circle cx="10.5" cy="10.5" r="6.25" /><path d="M15.2 15.2L19.9 19.9" stroke-width="2.6" /><rect x="7.1" y="9.6" width="6.8" height="1.8" rx="0.9" fill="currentColor" stroke="none" /></symbol>
+<symbol id="jano-bloquear-panel" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" xmlns="http://www.w3.org/2000/svg"><rect x="2.5" y="5" width="11.5" height="10" rx="2.5" /><path d="M8.25 5V15" /><path d="M15.6 15.2V13.9A2.15 2.15 0 0 1 19.9 13.9V15.2" /><rect x="14.3" y="15.2" width="7" height="5.5" rx="1.6" fill="currentColor" stroke="none" /></symbol>
+<symbol id="jano-desbloquear-panel" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" xmlns="http://www.w3.org/2000/svg"><rect x="2.5" y="5" width="11.5" height="10" rx="2.5" /><path d="M8.25 5V15" /><path d="M15.6 15.2V13.9A2.15 2.15 0 0 1 19.9 13.9" /><rect x="14.3" y="15.2" width="7" height="5.5" rx="1.6" /></symbol>
+<symbol id="jano-localizar-documento" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" xmlns="http://www.w3.org/2000/svg"><circle cx="12" cy="12" r="6.6" /><circle cx="12" cy="12" r="2.2" fill="currentColor" stroke="none" /><path d="M12 2.6V5.4" /><path d="M12 18.6V21.4" /><path d="M2.6 12H5.4" /><path d="M18.6 12H21.4" /></symbol>
+<symbol id="jano-inicio" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" xmlns="http://www.w3.org/2000/svg"><path d="M3.5 10.2L12 3.5L20.5 10.2V18.5A2 2 0 0 1 18.5 20.5H5.5A2 2 0 0 1 3.5 18.5Z" /><path d="M9.6 20.5V14.8A1.2 1.2 0 0 1 10.8 13.6H13.2A1.2 1.2 0 0 1 14.4 14.8V20.5Z" fill="currentColor" stroke="none" /></symbol>
+<symbol id="jano-nuevo-proyecto" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" xmlns="http://www.w3.org/2000/svg"><rect x="2.5" y="5" width="11.5" height="10" rx="2.5" /><path d="M8.25 5V15" /><rect x="17.1" y="13.6" width="1.8" height="7" rx="0.9" fill="currentColor" stroke="none" /><rect x="14.5" y="16.2" width="7" height="1.8" rx="0.9" fill="currentColor" stroke="none" /></symbol>
+<symbol id="jano-abrir-proyecto" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" xmlns="http://www.w3.org/2000/svg"><path d="M15 5.5H19.5A2 2 0 0 1 21.5 7.5V16.5A2 2 0 0 1 19.5 18.5H15" /><path d="M3.5 12H12.4" /><path d="M12.2 9.1L16 12L12.2 14.9Z" fill="currentColor" stroke="none" /></symbol>
+<symbol id="jano-nueva-carpeta" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" xmlns="http://www.w3.org/2000/svg"><path d="M3 7.5A2 2 0 0 1 5 5.5H9.4A2 2 0 0 1 10.9 6.2L12.6 8H19A2 2 0 0 1 21 10V16.5A2 2 0 0 1 19 18.5H5A2 2 0 0 1 3 16.5Z" /><path d="M3 7.5A2 2 0 0 1 5 5.5H9.4A2 2 0 0 1 10.9 6.2L12.6 8H3Z" fill="currentColor" stroke="none" /><rect x="11.1" y="10.6" width="1.8" height="6.2" rx="0.9" fill="currentColor" stroke="none" /><rect x="8.9" y="12.8" width="6.2" height="1.8" rx="0.9" fill="currentColor" stroke="none" /></symbol>
+<symbol id="jano-quitar-de-jano" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" xmlns="http://www.w3.org/2000/svg"><rect x="2.5" y="5" width="11.5" height="10" rx="2.5" /><path d="M8.25 5V15" /><rect x="14.5" y="16.2" width="7" height="1.8" rx="0.9" fill="currentColor" stroke="none" /></symbol>
+<symbol id="jano-eliminar" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" xmlns="http://www.w3.org/2000/svg"><path d="M4 6.6H20" /><path d="M9.5 6.6V4.9A1.3 1.3 0 0 1 10.8 3.6H13.2A1.3 1.3 0 0 1 14.5 4.9V6.6" /><path d="M5.9 6.6H18.1L17.3 18.9A2 2 0 0 1 15.3 20.7H8.7A2 2 0 0 1 6.7 18.9Z" fill="currentColor" stroke="none" /></symbol>
+<symbol id="jano-restaurar" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" xmlns="http://www.w3.org/2000/svg"><path d="M9.2 6.1H14.8L12 2.6Z" fill="currentColor" stroke="none" /><path d="M12 4.4V9.6" /><path d="M5 11.6H19" /><path d="M6.9 11.6H17.1L16.4 18.8A2 2 0 0 1 14.4 20.6H9.6A2 2 0 0 1 7.6 18.8Z" /></symbol>
+<symbol id="jano-segmento-sin-alinear" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" xmlns="http://www.w3.org/2000/svg"><path d="M7 5.5H4.5V18.5H7" /><path d="M17 5.5H19.5V18.5H17" /><rect x="8.6" y="10.9" width="6.8" height="2.2" rx="1.1" stroke-dasharray="1.8 1.8" /></symbol>
+<symbol id="jano-problema-alineacion" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" xmlns="http://www.w3.org/2000/svg"><path d="M12 4.5V19.5" /><rect x="3" y="7.9" width="7.5" height="2.2" rx="1.1" fill="currentColor" stroke="none" /><rect x="13.5" y="13.9" width="7.5" height="2.2" rx="1.1" fill="currentColor" stroke="none" /></symbol>
+<symbol id="jano-vincular" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" xmlns="http://www.w3.org/2000/svg"><rect x="2.5" y="10.9" width="6.5" height="2.2" rx="1.1" fill="currentColor" stroke="none" /><rect x="15" y="10.9" width="6.5" height="2.2" rx="1.1" fill="currentColor" stroke="none" /><path d="M9.2 12A2.8 2.8 0 0 1 14.8 12" /></symbol>
+<symbol id="jano-desvincular" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" xmlns="http://www.w3.org/2000/svg"><rect x="2.5" y="10.9" width="6.5" height="2.2" rx="1.1" fill="currentColor" stroke="none" /><rect x="15" y="10.9" width="6.5" height="2.2" rx="1.1" fill="currentColor" stroke="none" /><path d="M9.2 12A2.8 2.8 0 0 1 10.9 9.4" /><path d="M13.1 9.4A2.8 2.8 0 0 1 14.8 12" /></symbol>
+<symbol id="jano-dividir" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" xmlns="http://www.w3.org/2000/svg"><rect x="2.5" y="10.9" width="5.5" height="2.2" rx="1.1" fill="currentColor" stroke="none" /><rect x="16" y="10.9" width="5.5" height="2.2" rx="1.1" fill="currentColor" stroke="none" /><path d="M12 5.5V18.5" stroke-dasharray="2 2.4" /><path d="M10.2 9.9V14.1L7.6 12Z" fill="currentColor" stroke="none" /><path d="M13.8 9.9V14.1L16.4 12Z" fill="currentColor" stroke="none" /></symbol>
+<symbol id="jano-unir" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" xmlns="http://www.w3.org/2000/svg"><rect x="2.5" y="10.9" width="5.5" height="2.2" rx="1.1" fill="currentColor" stroke="none" /><rect x="16" y="10.9" width="5.5" height="2.2" rx="1.1" fill="currentColor" stroke="none" /><path d="M12 5.5V18.5" /><path d="M8 9.9V14.1L10.6 12Z" fill="currentColor" stroke="none" /><path d="M16 9.9V14.1L13.4 12Z" fill="currentColor" stroke="none" /></symbol>
+<symbol id="jano-aceptar" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" xmlns="http://www.w3.org/2000/svg"><rect x="3.5" y="3.5" width="17" height="17" rx="4.5" /><path d="M8 12.2L11 15.2L16 8.8" /></symbol>
+<symbol id="jano-rechazar" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" xmlns="http://www.w3.org/2000/svg"><rect x="3.5" y="3.5" width="17" height="17" rx="4.5" /><path d="M8.8 8.8L15.2 15.2" /><path d="M15.2 8.8L8.8 15.2" /></symbol>
+<symbol id="jano-informacion" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" xmlns="http://www.w3.org/2000/svg"><circle cx="12" cy="12" r="8.5" /><circle cx="12" cy="7.9" r="1.15" fill="currentColor" stroke="none" /><rect x="11.1" y="10.6" width="1.8" height="6" rx="0.9" fill="currentColor" stroke="none" /></symbol>
+<symbol id="jano-advertencia" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" xmlns="http://www.w3.org/2000/svg"><path d="M10.7 4.6A1.5 1.5 0 0 1 13.3 4.6L21.3 18.6A1.5 1.5 0 0 1 20 20.8H4A1.5 1.5 0 0 1 2.7 18.6Z" /><rect x="11.1" y="9.4" width="1.8" height="5.4" rx="0.9" fill="currentColor" stroke="none" /><circle cx="12" cy="17.4" r="1.1" fill="currentColor" stroke="none" /></symbol>
+<symbol id="jano-error" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" xmlns="http://www.w3.org/2000/svg"><circle cx="12" cy="12" r="8.5" /><path d="M9.2 9.2L14.8 14.8" /><path d="M14.8 9.2L9.2 14.8" /></symbol>
+<symbol id="jano-exito" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" xmlns="http://www.w3.org/2000/svg"><circle cx="12" cy="12" r="8.5" /><path d="M8.2 12.2L11 15L16 9.6" /></symbol>
+<symbol id="jano-seleccionado" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" xmlns="http://www.w3.org/2000/svg"><circle cx="12" cy="12" r="8.5" /><circle cx="12" cy="12" r="4.4" fill="currentColor" stroke="none" /></symbol>
+<symbol id="jano-actualizar" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" xmlns="http://www.w3.org/2000/svg"><path d="M19.5 12A7.5 7.5 0 0 0 4.5 12" /><path d="M4.5 12A7.5 7.5 0 0 0 19.5 12" /><path d="M2 10.6H7L4.5 14.8Z" fill="currentColor" stroke="none" /><path d="M22 13.4H17L19.5 9.2Z" fill="currentColor" stroke="none" /></symbol>
+<symbol id="jano-ordenar" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" xmlns="http://www.w3.org/2000/svg"><path d="M3.5 6.5H14.5" /><path d="M3.5 12H11" /><path d="M3.5 17.5H7.5" /><path d="M19 5.8V15.4" /><path d="M16.2 14.2H21.8L19 19Z" fill="currentColor" stroke="none" /></symbol>
+<symbol id="jano-filtrar" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" xmlns="http://www.w3.org/2000/svg"><path d="M3.5 5.5H20.5L14 13.2V20L10 17.6V13.2Z" /></symbol>
+<symbol id="jano-colapsar-todo" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" xmlns="http://www.w3.org/2000/svg"><path d="M3.5 12H20.5" /><path d="M12 4V7" /><path d="M9.2 6.6H14.8L12 10.2Z" fill="currentColor" stroke="none" /><path d="M12 20V17" /><path d="M9.2 17.4H14.8L12 13.8Z" fill="currentColor" stroke="none" /></symbol>
+<symbol id="jano-expandir-carpeta" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" xmlns="http://www.w3.org/2000/svg"><path d="M5.8 9H18.2L12 16.4Z" fill="currentColor" stroke="none" /></symbol>
+<symbol id="jano-contraer-carpeta" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" xmlns="http://www.w3.org/2000/svg"><path d="M9 5.8V18.2L16.4 12Z" fill="currentColor" stroke="none" /></symbol>
+</svg>
+

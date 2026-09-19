@@ -1,0 +1,208 @@
+Sí. Para el **Punto 8** la dirección ya queda bastante clara y, además, es coherente con lo que veníamos definiendo: paneles redimensionables, lectura continua, interfaz oscura sobria y el texto como protagonista. La idea de proporciones `50/50`, `70/30`, `100/0` encaja especialmente bien con los controles segmentados que ya habíamos pensado. fileciteturn0file6L5-L14
+
+Yo haría un ajuste conceptual importante: el original PDF también debería leerse en **scroll vertical continuo**, no mediante navegación horizontal de página en página. Eso encaja mucho mejor con el sistema de sincronización semántica que ya definimos, donde Jano sigue el contenido visible y no el número de página. fileciteturn0file13L1-L40
+
+La pantalla principal la imaginaría aproximadamente así:
+
+```text id="yamdfb"
+┌──────────────────────────────────────────────────────────────────────┐
+│ Jano — Proyecto Tesis                  Buscar ⌕     ⚙      ⋯       │
+├──────────────────┬─────────────────────────┬─────────────────────────┤
+│ PROYECTO         │ ORIGINAL · EN           │ TRADUCCIÓN · ES        │
+│                  │                         │                         │
+│ ▾ Marco teórico  │       PDF               │   Markdown              │
+│   ✓ North 1990   │                         │                         │
+│   ✓ Ostrom 1990  │   scroll vertical       │   scroll vertical       │
+│   ! Olson 1965   │        ↓                │        ↓                │
+│                  │                         │                         │
+│ ▾ Instituciones  │                         │                         │
+│   ✓ Acemoglu     │                         │                         │
+│                  │                         │                         │
+├──────────────────┴─────────────────────────┴─────────────────────────┤
+│ 50/50 · 70/30 · 30/70 · Original · Traducción    🔗 Sync ON       │
+└──────────────────────────────────────────────────────────────────────┘
+```
+
+La **barra lateral tipo Obsidian** encaja particularmente bien con el modelo de proyectos que ya fijamos, porque Jano permite carpetas y subcarpetas normales dentro de `Proyecto_orig` y `Proyecto_trad`. fileciteturn0file4L24-L41 Yo no mostraría ambas estructuras duplicadas: presentaría una sola jerarquía lógica de documentos y usaría estados para indicar si existe original, traducción o ambos.
+
+Por ejemplo:
+
+```text id="djdqvh"
+▾ Instituciones
+   ✓ North 1990
+   ✓ Acemoglu 2001
+   ! Olson 1965
+      falta traducción
+```
+
+Eso mantiene la interfaz mucho más limpia.
+
+### Indicador de alineación
+
+Tu idea de hacerlo aparecer al interactuar con el `.md` me parece mejor que tener permanentemente un panel enorme de alineación.
+
+Cuando haces clic sobre un párrafo traducido:
+
+```text id="g9bzcm"
+TRADUCCIÓN
+
+Las instituciones constituyen...
+██████████████████████████
+```
+
+Jano identifica:
+
+```text id="2qpnyh"
+seg_es_184
+    ↕
+seg_en_181
+```
+
+y en el original podría aparecer una señal discreta:
+
+```text id="3x5co2"
+ORIGINAL
+
+Institutions constitute...
+░░░░░░░░░░░░░░░░░░░░░░
+│
+└─ alineado
+```
+
+Esto aprovecha exactamente la misma infraestructura que ya necesitamos para selección bilingüe: Jano distingue entre la selección real del usuario y la correspondencia proyectada en el otro documento. fileciteturn0file11L40-L58
+
+Si quieres inspeccionar más, al hacer clic en un pequeño indicador podría abrirse temporalmente:
+
+```text id="2b6emd"
+Alineación
+
+seg_en_181
+↕
+seg_es_184
+
+Tipo: 1 → 1
+Confianza: alta
+```
+
+Para un usuario normal eso permanecería oculto.
+
+### Búsqueda
+
+Aquí distinguiría dos comportamientos dentro del mismo buscador:
+
+```text id="fky8a4"
+⌕ institutions
+```
+
+Podría mostrar:
+
+```text id="g8afdt"
+Original      17 resultados
+Traducción    19 resultados
+```
+
+y permitir:
+
+```text id="a4tx1j"
+[ Ambos ] [ Original ] [ Traducción ]
+```
+
+Con `Enter` y `Shift+Enter` para siguiente/anterior resultado.
+
+Más adelante ese mismo buscador puede evolucionar a búsqueda sobre anotaciones y evidencias, pero para el lector inicial mantendría búsqueda textual convencional.
+
+### Paleta
+
+Mantendría la dirección visual que ya habíamos fijado: **teal como acento, no como fondo omnipresente**. La interfaz general debería apoyarse principalmente en carbón, azul grisáceo muy oscuro y blanco suave; el teal identifica selección, controles activos y foco. fileciteturn0file6L126-L159
+
+Algo conceptualmente así:
+
+```text id="9ieudi"
+Fondo principal       azul petróleo casi negro
+Panel secundario      carbón azulado
+Texto principal       blanco cálido / gris muy claro
+Texto secundario      gris azulado
+Teal                  selección / foco / controles
+Ámbar                 alineación / vínculo
+Rojo apagado          errores / archivo faltante
+```
+
+Evitaría blanco puro `#FFFFFF` sobre negro puro `#000000`, porque durante varias horas de lectura genera demasiado contraste.
+
+Y permitiría:
+
+```text id="1xh482"
+Tema
+● Jano Dark
+○ Jano Light
+○ Sistema
+○ Personalizado
+```
+
+aunque `Jano Dark` sería el predeterminado.
+
+### Atajos
+
+Conservaría todos los convencionales del sistema y añadiría muy pocos específicos de Jano:
+
+| Acción | Windows/Linux | macOS |
+|---|---|---|
+| Buscar | `Ctrl+F` | `⌘F` |
+| Copiar | `Ctrl+C` | `⌘C` |
+| Seleccionar todo | `Ctrl+A` | `⌘A` |
+| Abrir archivo/proyecto | `Ctrl+O` | `⌘O` |
+| Configuración | `Ctrl+,` | `⌘,` |
+| Mostrar/ocultar sidebar | `Ctrl+B` | `⌘B` |
+| Alternar sincronización | `Ctrl+Shift+S` | `⌘⇧S` |
+| Re-alinear visores | `Ctrl+Shift+L` | `⌘⇧L` |
+| 50/50 | `Ctrl+1` | `⌘1` |
+| Original dominante | `Ctrl+2` | `⌘2` |
+| Traducción dominante | `Ctrl+3` | `⌘3` |
+| Solo original | `Ctrl+Shift+1` | `⌘⇧1` |
+| Solo traducción | `Ctrl+Shift+2` | `⌘⇧2` |
+
+El comando de **re-alinear visores** ya lo habíamos identificado como especialmente útil cuando el usuario se mueve manualmente y quiere volver a colocar las contrapartes correspondientes. fileciteturn0file13L223-L229
+
+No añadiría muchos más inicialmente. Si Jano termina teniendo veinte combinaciones propias, empieza a competir mentalmente con los atajos del PDF, sistema operativo, Zotero y editor.
+
+Con esto dejaría el **Punto 8 prácticamente cerrado**:
+
+```text id="gxk5nx"
+PUNTO 8 — VISUALIZACIÓN
+
+Paneles
+✓ redimensionables manualmente
+✓ presets 50/50 · 70/30 · 30/70 · 100/0 · 0/100
+
+Lectura
+✓ vertical continua
+✓ sin paginación horizontal
+✓ original PDF + traducción Markdown
+
+Navegación
+✓ sidebar tipo Obsidian
+✓ proyectos → carpetas → subcarpetas → documentos
+✓ estados de original/traducción
+
+Búsqueda
+✓ original
+✓ traducción
+✓ ambos
+
+Alineación
+✓ indicador contextual
+✓ aparece al interactuar con segmentos
+✓ no ocupa permanentemente pantalla
+
+Tema
+✓ oscuro por defecto
+✓ azul petróleo / teal
+✓ texto blanco suave
+✓ configurable
+
+Atajos
+✓ convenciones del sistema
+✓ pocos comandos específicos de Jano
+```
+
+Solo dejaría una decisión menor abierta para la implementación: si la **barra de controles de proporción y sincronización** vive arriba o abajo del lector. Por la dirección visual que hemos definido, probablemente la haría una toolbar superior muy discreta y dejaría abajo únicamente información contextual o de estado.

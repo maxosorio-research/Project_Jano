@@ -1,0 +1,186 @@
+Sí. **Jano ya está en un punto adecuado para trasladarlo a Codex y empezar a construir el MVP.** De hecho, seguir diseñando indefinidamente antes de escribir código empezaría a dar rendimientos decrecientes.
+
+Ya existe una hipótesis concreta para Jano 0.1, criterios de terminado y una arquitectura mínima: sistema de archivos → emparejamiento → procesamiento documental → alineación → visor → scroll sincronizado. fileciteturn1file0L11-L45 fileciteturn1file3L366-L395 Además, ya definimos el núcleo conceptual como `Document → Pages → Text blocks → Segments → Alignment → Viewer`, en vez de limitarlo a «PDF A ↔ PDF B». fileciteturn1file8L690-L728
+
+## Pero no trasladaría los chats directamente como especificación
+
+Ese es el punto más importante.
+
+Tenemos bastante material, pero está distribuido entre conversaciones, decisiones posteriores que refinan decisiones anteriores y exploraciones de funcionalidades que ni siquiera corresponden al MVP. Si entregas a Codex veinte `.txt` y le dices «construye Jano», probablemente consiga algo, pero aumenta mucho la probabilidad de que mezcle versiones de la idea.
+
+Hay incluso **drift de especificación** que conviene resolver al hacer el traspaso. Por ejemplo, el documento original del MVP habla de dos PDFs, mientras que posteriormente decidimos que el modelo más limpio sería **PDF original + traducción Markdown**, manteniendo la estructura semántica internamente. fileciteturn1file0L15-L42 fileciteturn1file2L215-L251 También evolucionamos desde simples carpetas hacia proyectos autónomos con `orig`, `trad` y `.jano`, manteniendo un `document_id` estable. fileciteturn1file7L631-L677
+
+No es un problema. Es exactamente lo que ocurre durante el diseño de un producto. Pero significa que **antes de empezar a programar debemos compilar todo lo decidido en una especificación canónica**.
+
+## Cómo lo trasladaría
+
+Crearía un repositorio —probablemente GitHub— que sea desde ahora la **fuente de verdad de Jano**. Los chats dejan de ser la especificación activa y pasan a ser material histórico.
+
+La estructura inicial que usaría sería:
+
+```text id="e27imz"
+jano/
+│
+├── AGENTS.md
+├── README.md
+├── LICENSE
+│
+├── docs/
+│   ├── PRODUCT.md
+│   ├── MVP-0.1.md
+│   ├── ARCHITECTURE.md
+│   ├── DATA-MODEL.md
+│   ├── UX.md
+│   ├── ROADMAP.md
+│   │
+│   ├── adr/
+│   │   ├── 0001-local-first.md
+│   │   ├── 0002-document-segments.md
+│   │   ├── 0003-pdf-markdown-reader.md
+│   │   ├── 0004-project-layout.md
+│   │   └── ...
+│   │
+│   └── source-notes/
+│       ├── punto-01-mvp.md
+│       ├── punto-04-extraccion.md
+│       ├── punto-06-scroll.md
+│       ├── punto-07-seleccion.md
+│       └── ...
+│
+├── fixtures/
+│   └── documents/
+│
+├── src/
+│
+└── tests/
+```
+
+La idea es que **Codex lea `MVP-0.1.md`, no veinte conversaciones**.
+
+Los archivos actuales que hemos producido pueden conservarse íntegramente en `docs/source-notes/`. Sirven como documentación histórica y permiten volver a revisar por qué tomamos una decisión. Pero la implementación debe obedecer a `MVP-0.1.md`, `ARCHITECTURE.md` y los ADR.
+
+Esto además te hace independiente de Codex. Si mañana usas Claude Code, Gemini CLI, Copilot u otro agente, esos documentos siguen siendo el contexto canónico. Solo cambia el pequeño archivo específico del agente.
+
+## Qué pondría en cada archivo
+
+1. **`PRODUCT.md`**: qué es Jano y qué problema resuelve. Una definición breve: lector académico bilingüe local basado en documentos alineados.
+
+2. **`MVP-0.1.md`**: contrato estricto de implementación. Qué entra, qué no entra y qué significa «terminado». Particularmente importante: OCR, IA, Zotero, plugins, traducción automática y demás quedaron explícitamente fuera del MVP original. fileciteturn1file3L340-L376
+
+3. **`ARCHITECTURE.md`**: módulos y dependencias permitidas. Aquí quedarían `Document`, `Segment`, `Alignment`, viewer, filesystem, etc. La segmentación/alineación es estructural porque después alimenta scroll, selección y futuras integraciones. fileciteturn1file5L481-L589
+
+4. **`DATA-MODEL.md`**: `project_id`, `document_id`, rutas, hashes, segmentos, alineaciones y formato `.jano`.
+
+5. **`UX.md`**: sidebar, dos paneles, proporciones, controles, scroll continuo, colores y comportamiento de interacción.
+
+6. **`ROADMAP.md`**: cosas que existen conceptualmente pero que **Codex no debe implementar todavía**: OCR, traducción local, Zotero, evidencia académica, plugins, etc.
+
+7. **`docs/adr/`**: decisiones de arquitectura. Son especialmente útiles con agentes porque evitan que seis meses después una IA diga «sería más sencillo reconstruir la traducción como PDF» sin saber que ya descartamos deliberadamente esa solución.
+
+8. **`fixtures/`**: pequeño corpus de prueba. Esto es muy importante. Ya habíamos previsto probar documentos de una/dos columnas, tablas, matemáticas, escaneos y traducciones con diferente longitud. fileciteturn1file11L888-L902 Para el MVP reduciría el corpus a PDFs con texto seleccionable, pero desde el inicio habría documentos reales de prueba.
+
+## `AGENTS.md` es especialmente importante para Codex
+
+Codex soporta precisamente `AGENTS.md` como instrucciones persistentes del repositorio: puede indicarle cómo está organizado el código, qué comandos utilizar, convenciones y cómo probar los cambios. OpenAI recomienda proporcionar documentación clara, un entorno reproducible y pruebas fiables; además, las instrucciones `AGENTS.md` pueden aplicarse jerárquicamente dentro del repositorio. ([openai.com](https://openai.com/es-419/index/introducing-codex/?utm_source=chatgpt.com))
+
+Yo lo mantendría relativamente corto:
+
+```md id="ic57p3"
+# Jano development instructions
+
+Read before making changes:
+- docs/MVP-0.1.md
+- docs/ARCHITECTURE.md
+- docs/DATA-MODEL.md
+
+For architectural decisions, consult docs/adr/.
+
+Jano is local-first.
+The original document is canonical.
+Do not implement features outside MVP-0.1 unless explicitly requested.
+
+Run before completing a task:
+- npm test
+- npm run lint
+- npm run typecheck
+- cargo test
+```
+
+No pondría toda la historia de Jano en `AGENTS.md`. **Las instrucciones deben indicar dónde está el conocimiento, no duplicarlo.**
+
+Codex actualmente puede utilizarse desde ChatGPT, el IDE y terminal, y está pensado para trabajar sobre repositorios y realizar cambios completos, pruebas y refactorizaciones. ([openai.com](https://openai.com/es-419/codex/?utm_source=chatgpt.com))
+
+## Cómo empezaría a trabajar con Codex
+
+No le pediría inicialmente:
+
+> Construye Jano.
+
+Le daría tareas verticales muy pequeñas y verificables.
+
+Primero:
+
+```text id="2i4kfu"
+Lee AGENTS.md y docs/MVP-0.1.md.
+
+No implementes todavía funcionalidades del producto.
+
+Propón el scaffold mínimo del repositorio para Jano 0.1,
+basado en Tauri + React + TypeScript.
+
+Explica las decisiones y crea únicamente la estructura,
+tooling, tests y una ventana básica ejecutable.
+```
+
+Después una tarea como:
+
+```text id="pdrihg"
+Implementa el modelo Project y el descubrimiento de pares de
+documentos definido en docs/MVP-0.1.md y docs/DATA-MODEL.md.
+
+Añade tests.
+No implementes todavía el visor.
+```
+
+Luego:
+
+```text id="jsydh3"
+Implementa el visor original.
+```
+
+Luego extracción/segmentación.
+
+Luego alineación.
+
+Luego scroll sincronizado.
+
+Ese enfoque te permite **revisar el producto mientras nace**, en vez de recibir 20.000 líneas generadas de una vez y no saber qué funciona.
+
+## Y para cualquier otra IA
+
+Usaría exactamente el mismo repositorio. La parte verdaderamente portable no debería ser un enorme prompt, sino:
+
+```text id="4q2bm7"
+Repositorio Jano
+       │
+       ├── código
+       ├── pruebas
+       ├── especificación
+       ├── decisiones arquitectónicas
+       ├── fixtures
+       └── historial Git
+              ↓
+      cualquier agente
+```
+
+Para Codex tienes `AGENTS.md`. Para otro agente podrías añadir su archivo de instrucciones correspondiente, pero todos deberían apuntar a **los mismos documentos canónicos**.
+
+Esto evita uno de los peores problemas del desarrollo con varias IAs: que «Jano según ChatGPT», «Jano según Codex» y «Jano según Claude» terminen siendo tres proyectos conceptualmente distintos.
+
+### Qué haría ahora
+
+Yo haría **un último paso de diseño antes de abrir el editor**: convertir todo lo que hemos decidido en ese paquete de *handoff*, reconciliando las decisiones antiguas con las más recientes y dejando un `MVP-0.1.md` sin ambigüedades.
+
+Después de eso, sí pasaría directamente a Codex.
+
+De hecho, en tu caso **no empezaría pidiéndole código a Codex todavía**. El primer trabajo útil sería preparar el repositorio de Jano con `AGENTS.md + PRODUCT.md + MVP-0.1.md + ARCHITECTURE.md + DATA-MODEL.md + UX.md + ROADMAP.md + ADRs`, utilizando como fuentes todos los puntos que ya resolvimos. Ese sería el puente limpio entre este Proyecto y el desarrollo real.

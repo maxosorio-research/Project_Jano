@@ -1,0 +1,167 @@
+Cerraría el **Punto 1** así: Jano 0.1 debe ser deliberadamente pequeño y comprobar una sola hipótesis: **¿es cómodo leer un original y su traducción como si fueran un único documento bilingüe sincronizado?**
+
+### Jano 0.1 — MVP
+
+**Entrada**
+- Dos carpetas:
+  - `/original`
+  - `/traducciones`
+- Los archivos se emparejan por nombre base.
+- En esta primera versión, limitaría el soporte a **PDF con texto seleccionable**.
+- Si falta uno de los dos archivos, se muestra como no emparejado.
+
+**Interfaz**
+- Lista simple de documentos.
+- Estado:
+  - `✓` original + traducción encontrados.
+  - `⚠` falta original.
+  - `⚠` falta traducción.
+- Al abrir un par:
+  - original a la izquierda;
+  - traducción a la derecha;
+  - inicialmente `50/50`.
+
+Esto coincide con el diseño inicial de dos paneles y dos directorios separados. fileciteturn0file0L5-L34
+
+**Visor**
+- Renderizado del PDF.
+- Zoom.
+- Cambio de página.
+- Texto seleccionable.
+- Scroll independiente cuando la sincronización está desactivada.
+- Scroll sincronizado cuando está activada.
+
+**Alineamiento**
+Este es el único componente relativamente sofisticado que mantendría en el MVP.
+
+No sincronizaría simplemente:
+
+```text id="cll8ep"
+página 20 ↔ página 20
+```
+
+ni:
+
+```text id="0335gg"
+42 % del documento ↔ 42 % del documento
+```
+
+porque la traducción puede ocupar más o menos espacio. fileciteturn0file0L36-L79
+
+La unidad inicial sería el **párrafo o bloque de texto**:
+
+```text id="pg24xk"
+Original                     Traducción
+
+segmento 001  ─────────────  segmento 001
+segmento 002  ─────────────  segmento 002
+segmento 003  ─────────────  segmento 003
+segmento 004  ───────┬─────  segmento 004
+                     └─────  segmento 005
+```
+
+No intentaría todavía alineación palabra por palabra.
+
+**Scroll sincronizado**
+La lógica básica sería:
+
+```text id="m41x61"
+usuario hace scroll
+        ↓
+Jano detecta segmento visible principal
+        ↓
+busca segmento equivalente
+        ↓
+posiciona ese segmento en el otro panel
+```
+
+Eso debería hacer que ambos textos permanezcan conceptualmente juntos aunque tengan diferente paginación.
+
+**Selección**
+Mantendría dos comportamientos separados.
+
+El usuario puede seleccionar normalmente cualquier texto del PDF para copiarlo.
+
+Adicionalmente, cuando selecciona texto perteneciente a un segmento, Jano puede **resaltar visualmente el segmento correspondiente** en el otro documento. La correspondencia fina oración↔oración o palabra↔palabra quedaría fuera del MVP; ya habíamos identificado esa diferencia entre una versión inicial por segmentos y una posterior mucho más precisa. fileciteturn0file0L87-L112
+
+### Fuera de Jano 0.1
+
+Dejaría explícitamente fuera:
+
+- OCR.
+- Traducción automática.
+- API keys.
+- Zotero.
+- Anotaciones.
+- Notas.
+- Highlights persistentes.
+- Glosarios.
+- IA.
+- DOCX.
+- EPUB.
+- HTML.
+- múltiples idiomas por documento.
+- sincronización en la nube.
+- cuentas.
+- plugins.
+- búsqueda semántica.
+- alineamiento palabra por palabra.
+- edición de traducciones.
+
+Eso evita que el MVP se convierta prematuramente en todo el sistema que imaginamos después. De hecho, ya habíamos establecido que las primeras capas —biblioteca, procesamiento documental, alineación y lector— pueden funcionar completamente offline. fileciteturn0file2L365-L405
+
+### Qué debería demostrar el MVP
+
+Consideraría Jano 0.1 terminado si puede superar estas cinco pruebas:
+
+1. Selecciono dos carpetas con 20 papers.
+2. Jano identifica correctamente cuáles tienen traducción.
+3. Abro cualquier par.
+4. Puedo leer ambos PDFs lado a lado con texto seleccionable.
+5. Puedo recorrer un documento completo y ambos paneles permanecen razonablemente alineados.
+
+Si eso funciona bien, **ya existe un producto útil**, incluso sin Zotero, IA ni traducción automática.
+
+La arquitectura mínima quedaría:
+
+```text id="an3ndx"
+JANO 0.1
+
+Filesystem
+   ↓
+File matcher
+   ↓
+PDF parser
+   ↓
+Text blocks
+   ↓
+Alignment engine
+   ↓
+Dual PDF viewer
+   ↓
+Synchronized scroll
+```
+
+Y la interfaz podría ser casi austera:
+
+```text id="7bv4o4"
+┌──────────────────────────────────────────────────────────┐
+│ JANO                                      [⚙]            │
+├───────────────┬──────────────────────────────────────────┤
+│ Documents     │                                          │
+│               │                                          │
+│ ✓ North       │ ORIGINAL            │ TRADUCCIÓN        │
+│ ✓ Acemoglu    │                     │                   │
+│ ⚠ Olson       │     PDF             │     PDF           │
+│ ✓ Ostrom      │                     │                   │
+│               │                     │                   │
+│               │                     │                   │
+│               │                     │                   │
+├───────────────┴─────────────────────┴───────────────────┤
+│ páginas        12/48       🔗 Sync ON       zoom 110%   │
+└──────────────────────────────────────────────────────────┘
+```
+
+Eso me parece una definición suficientemente precisa de **Jano 0.1**.
+
+El **Punto 1 queda entonces cerrado**. El siguiente que conviene resolver es el **Punto 2: modelo de proyecto y biblioteca**, porque ahí tendremos que decidir exactamente cómo interpreta Jano esas dos carpetas y cómo empareja, recuerda y sigue los archivos.
