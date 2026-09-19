@@ -1,32 +1,22 @@
-import { forwardRef, useImperativeHandle, useRef, useState } from "react";
-import type { LocalTranslationRuntime } from "../../application/ports/LocalTranslationRuntime";
-import type { OcrEngine } from "../../application/ports/OcrEngine";
-import type { PdfDocumentAdapter } from "../../application/ports/PdfDocumentAdapter";
-import type { ProjectGateway } from "../../application/ports/ProjectGateway";
+import { forwardRef, useImperativeHandle, useRef } from "react";
 import type { SourceFileGateway } from "../../application/ports/SourceFileGateway";
 import type { ReaderSurfaceHandle } from "../../application/reader/semanticScroll";
-import { processPdfDocument } from "../../application/pipeline/processPdfDocument";
-import { userFacingPipelineError } from "../../application/pipeline/pipelineError";
-import type { PipelineProgress, ReaderDocument } from "../../domain/processing";
-import type { DocumentSummary, ProjectSnapshot } from "../../domain/project";
-import type { AppSettings } from "../../domain/settings";
+import type { BackgroundProcessingJob } from "../../application/pipeline/backgroundDocumentProcessing";
+import type { ReaderDocument } from "../../domain/processing";
+import type { DocumentSummary } from "../../domain/project";
 import { JanoIcon } from "../icons/JanoIcon";
 import { MarkdownReader } from "./MarkdownReader";
 
 type DocumentTranslationPanelProps = {
   document: DocumentSummary | null;
-  documentAdapter: PdfDocumentAdapter;
   fileGateway: SourceFileGateway;
   locked?: boolean;
-  ocrEngine: OcrEngine;
-  onProcessed(snapshot: ProjectSnapshot): void;
+  onProcess(): void;
   onUserIntent?(): void;
   onViewportChange?(): void;
-  projectGateway: ProjectGateway;
+  processingJob: BackgroundProcessingJob | null;
   readerDocument?: ReaderDocument | null;
   rootPath: string | null;
-  runtime: LocalTranslationRuntime;
-  settings: AppSettings;
 };
 
 export const DocumentTranslationPanel = forwardRef<
@@ -35,24 +25,21 @@ export const DocumentTranslationPanel = forwardRef<
 >(function DocumentTranslationPanel(
   {
     document,
-    documentAdapter,
     fileGateway,
     locked = false,
-    ocrEngine,
-    onProcessed,
+    onProcess,
     onUserIntent,
     onViewportChange,
-    projectGateway,
+    processingJob,
     readerDocument,
     rootPath,
-    runtime,
-    settings,
   }: DocumentTranslationPanelProps,
   ref,
 ) {
-  const [progress, setProgress] = useState<PipelineProgress | null>(null);
-  const [error, setError] = useState<string | null>(null);
   const readerRef = useRef<ReaderSurfaceHandle>(null);
+  const processing = processingJob?.phase === "running";
+  const progress = processing ? processingJob.progress : null;
+  const error = processingJob?.phase === "failed" ? processingJob.error : null;
 
   useImperativeHandle(
     ref,
@@ -64,30 +51,6 @@ export const DocumentTranslationPanel = forwardRef<
     [],
   );
 
-  async function process() {
-    if (!document?.original || !rootPath) return;
-    setError(null);
-    try {
-      const snapshot = await processPdfDocument({
-        documentId: document.documentId,
-        originalRelativePath: document.original.relativePath,
-        rootPath,
-        settings,
-        documentAdapter,
-        fileGateway,
-        ocrEngine,
-        projectGateway,
-        translationRuntime: runtime,
-        onProgress: setProgress,
-      });
-      onProcessed(snapshot);
-    } catch (caught) {
-      setError(userFacingPipelineError(caught));
-    } finally {
-      setProgress(null);
-    }
-  }
-
   if (rootPath && document?.translation) {
     if (
       document.translation.mediaType === "text/markdown" ||
@@ -96,22 +59,29 @@ export const DocumentTranslationPanel = forwardRef<
       return (
         <div className="translation-result">
           <div className="translation-result-toolbar">
-            <span>{progress?.message ?? "Markdown traducido y alineado"}</span>
+            <span>
+              {processing
+                ? (progress?.message ?? "Preparando procesamiento…")
+                : "Markdown traducido y alineado"}
+            </span>
             <button
               className="secondary-button button-with-icon"
-              disabled={Boolean(progress)}
-              onClick={() => void process()}
+              disabled={processing}
+              onClick={onProcess}
             >
-              {!progress ? <JanoIcon name="regenerar" size={16} /> : null}
-              <span>{progress ? "Procesando…" : "Regenerar traducción"}</span>
+              {!processing ? <JanoIcon name="regenerar" size={16} /> : null}
+              <span>{processing ? "Procesando…" : "Regenerar traducción"}</span>
             </button>
           </div>
-          {progress ? (
+          {processing ? (
             <div
               className="pipeline-progress translation-inline-progress"
               role="status"
             >
-              <progress max={progress.total} value={progress.current} />
+              <progress
+                max={progress?.total ?? 1}
+                value={progress?.current ?? 0}
+              />
             </div>
           ) : null}
           {error ? (
@@ -156,17 +126,20 @@ export const DocumentTranslationPanel = forwardRef<
         {document?.original ? (
           <button
             className="primary-button button-with-icon"
-            disabled={Boolean(progress)}
-            onClick={() => void process()}
+            disabled={processing}
+            onClick={onProcess}
           >
-            {!progress ? <JanoIcon name="traducir" size={17} /> : null}
-            <span>{progress ? "Procesando…" : "Extraer y traducir"}</span>
+            {!processing ? <JanoIcon name="traducir" size={17} /> : null}
+            <span>{processing ? "Procesando…" : "Extraer y traducir"}</span>
           </button>
         ) : null}
-        {progress ? (
+        {processing ? (
           <div className="pipeline-progress" role="status">
-            <span>{progress.message}</span>
-            <progress max={progress.total} value={progress.current} />
+            <span>{progress?.message ?? "Preparando procesamiento…"}</span>
+            <progress
+              max={progress?.total ?? 1}
+              value={progress?.current ?? 0}
+            />
           </div>
         ) : null}
         {error ? (

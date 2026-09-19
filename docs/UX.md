@@ -64,6 +64,8 @@ Project
 
 A document row shows pair state.
 
+When local processing is active, the same status position temporarily shows a processing indicator. The task continues when the user opens another document. On completion, only the document's persisted pair-state indicator changes to the completed color/state; Jano must not navigate back to the processed document. A failure remains attached to that document and is exposed through the indicator tooltip and its translation panel when reopened.
+
 Examples:
 
 ```text

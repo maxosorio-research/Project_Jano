@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from "react";
+import type { BackgroundProcessingJobs } from "../../application/pipeline/backgroundDocumentProcessing";
 import type { ProjectSnapshot } from "../../domain/project";
 import type { LibrarySort } from "../../domain/settings";
 import { JanoIcon } from "../icons/JanoIcon";
@@ -18,6 +19,7 @@ type ProjectLibraryProps = {
   onRemove(): void;
   onSelectDocument(documentId: string): void;
   onSortChange(sort: LibrarySort): void;
+  processingJobs: BackgroundProcessingJobs;
   selectedDocumentId: string | null;
   snapshot: ProjectSnapshot;
   sort: LibrarySort;
@@ -44,6 +46,7 @@ export function ProjectLibrary({
   onRemove,
   onSelectDocument,
   onSortChange,
+  processingJobs,
   selectedDocumentId,
   snapshot,
   sort,
@@ -146,6 +149,7 @@ export function ProjectLibrary({
             onActiveFolderChange={onActiveFolderChange}
             onFolderExpandedChange={onFolderExpandedChange}
             onSelectDocument={onSelectDocument}
+            processingJobs={processingJobs}
             selectedDocumentId={selectedDocumentId}
             snapshot={snapshot}
             sort={sort}
