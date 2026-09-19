@@ -12,9 +12,11 @@ type DocumentTranslationPanelProps = {
   fileGateway: SourceFileGateway;
   locked?: boolean;
   onProcess(): void;
+  onSelectionChange?(segmentIds: string[]): void;
   onUserIntent?(): void;
   onViewportChange?(): void;
   processingJob: BackgroundProcessingJob | null;
+  projectedSegmentIds?: string[];
   readerDocument?: ReaderDocument | null;
   rootPath: string | null;
 };
@@ -28,9 +30,11 @@ export const DocumentTranslationPanel = forwardRef<
     fileGateway,
     locked = false,
     onProcess,
+    onSelectionChange,
     onUserIntent,
     onViewportChange,
     processingJob,
+    projectedSegmentIds,
     readerDocument,
     rootPath,
   }: DocumentTranslationPanelProps,
@@ -93,8 +97,10 @@ export const DocumentTranslationPanel = forwardRef<
             fileGateway={fileGateway}
             key={`${document.translation.relativePath}:${document.translation.sha256}`}
             locked={locked}
+            onSelectionChange={onSelectionChange}
             onUserIntent={onUserIntent}
             onViewportChange={onViewportChange}
+            projectedSegmentIds={projectedSegmentIds}
             readerDocument={readerDocument}
             ref={readerRef}
             relativePath={document.translation.relativePath}

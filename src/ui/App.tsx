@@ -30,6 +30,10 @@ import {
   type ReaderSide,
   type ReaderSurfaceHandle,
 } from "../application/reader/semanticScroll";
+import {
+  projectedSegmentIds,
+  type SemanticSelection,
+} from "../application/reader/selectionProjection";
 import type { ReaderDocument } from "../domain/processing";
 import type { DiscoveredProject, ProjectSnapshot } from "../domain/project";
 import type { AppSettings } from "../domain/settings";
@@ -122,6 +126,9 @@ export function App({
     source: false,
     translation: false,
   });
+  const [semanticSelection, setSemanticSelection] = useState<
+    (SemanticSelection & { documentId: string }) | null
+  >(null);
   const [pdfViewState, setPdfViewState] = useState<PdfReaderViewState>({
     pageNumber: 1,
     pageCount: 0,
@@ -158,6 +165,20 @@ export function App({
     loadedReaderDocument?.documentId === activeDocumentId
       ? loadedReaderDocument.value
       : null;
+  const activeSemanticSelection =
+    semanticSelection?.documentId === activeDocumentId
+      ? semanticSelection
+      : null;
+  const projectedSourceSegmentIds = projectedSegmentIds(
+    readerDocument?.alignments ?? [],
+    activeSemanticSelection,
+    "source",
+  );
+  const projectedTranslationSegmentIds = projectedSegmentIds(
+    readerDocument?.alignments ?? [],
+    activeSemanticSelection,
+    "translation",
+  );
   const originalPanel = model.panels.find((panel) => panel.id === "original");
   const translationPanel = model.panels.find(
     (panel) => panel.id === "translation",
@@ -669,6 +690,24 @@ export function App({
     () => handleReaderScroll("translation"),
     [handleReaderScroll],
   );
+  const handleReaderSelection = useCallback(
+    (side: ReaderSide, segmentIds: string[]) => {
+      setSemanticSelection(
+        activeDocumentId && segmentIds.length
+          ? { documentId: activeDocumentId, side, segmentIds }
+          : null,
+      );
+    },
+    [activeDocumentId],
+  );
+  const handleSourceSelection = useCallback(
+    (segmentIds: string[]) => handleReaderSelection("source", segmentIds),
+    [handleReaderSelection],
+  );
+  const handleTranslationSelection = useCallback(
+    (segmentIds: string[]) => handleReaderSelection("translation", segmentIds),
+    [handleReaderSelection],
+  );
 
   const realignReaders = useCallback(() => {
     let leader = lastLeaderRef.current;
@@ -940,9 +979,11 @@ export function App({
               initialScale={settings.defaultZoom}
               key={`${snapshot.project.projectId}:${selectedDocument.documentId}:${selectedDocument.original.sha256}:${settings.defaultZoom}`}
               locked={panelLocks.source}
+              onSelectionChange={handleSourceSelection}
               onUserIntent={handleSourceIntent}
               onViewportChange={handleSourceScroll}
               onViewStateChange={setPdfViewState}
+              projectedSegmentIds={projectedSourceSegmentIds}
               ref={sourceReaderRef}
               segments={readerDocument?.segments}
               source={{
@@ -975,9 +1016,11 @@ export function App({
             key={selectedDocument?.documentId ?? "empty"}
             locked={panelLocks.translation}
             onProcess={processDocumentInBackground}
+            onSelectionChange={handleTranslationSelection}
             onUserIntent={handleTranslationIntent}
             onViewportChange={handleTranslationScroll}
             processingJob={selectedProcessingJob}
+            projectedSegmentIds={projectedTranslationSegmentIds}
             readerDocument={readerDocument}
             ref={translationReaderRef}
             rootPath={snapshot?.project.root ?? null}

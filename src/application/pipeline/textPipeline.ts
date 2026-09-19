@@ -154,7 +154,7 @@ export function translatedMarkdown(
   for (const segment of source) {
     if (segment.page !== currentPage) {
       currentPage = segment.page;
-      markdown.push(`------------[Página N° ${segment.page}]------------`);
+      markdown.push(pageMarker(segment.page));
     }
     const text = byId.get(segment.segmentId) ?? "";
     if (segment.blockType === "heading") markdown.push(`## ${text}`);
@@ -169,6 +169,10 @@ export function translatedMarkdown(
     } else markdown.push(text);
   }
   return markdown.join("\n\n");
+}
+
+export function pageMarker(page: number): string {
+  return `------------[Página N° ${page}]------------`;
 }
 
 export function stripReaderMetadata(markdown: string): string {

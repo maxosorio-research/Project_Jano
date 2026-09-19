@@ -107,6 +107,12 @@ Processed documents can now load their persisted source segments, translations, 
 
 This is the generated-translation vertical slice, not the final alignment solution. Precise PDF text-item/rectangle locators, external translation alignment, persisted reading position, and contextual span projection remain follow-up work.
 
+Whole-segment bilingual selection projection is now connected to the same
+alignment groups. Selected text uses Jano amber; the projected counterpart uses
+a quieter amber field with an edge marker so it remains distinguishable from
+the user's real browser selection. Precise contextual spans still remain future
+work.
+
 ## Implemented initial slice: conditional OCR and local translation
 
 At the user's explicit request, Jano now implements a manual local processing flow. It first inspects native PDF text and uses bundled English OCR only when text is absent or deficient. It then normalizes, segments, translates through loopback Ollama while preserving segment IDs, persists transparent artifacts, and renders generated Markdown. See `adr/0010-conditional-ocr-translation-pipeline.md` and `adr/0012-local-document-processing-pipeline.md`.

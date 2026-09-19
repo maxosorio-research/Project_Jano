@@ -99,6 +99,12 @@ Page numbers remain useful metadata in the original panel, but they are not the 
 
 The translation surface is optimized for reading, not publication layout reproduction.
 
+Generated translations show a visible separator at every original-page
+boundary, labeled `------------[Página N° X]------------`. The separator is
+rendered from structured segment locations as well as stored in the generated
+Markdown, so the reading surface does not lose it when structured alignment is
+available.
+
 Target characteristics:
 
 - comfortable margins;
@@ -146,13 +152,17 @@ can remain hidden from normal users.
 Distinguish visually:
 
 ```text
-user selection           = direct/solid treatment
-projected counterpart    = secondary/subtle treatment
+user selection           = direct amber highlight
+projected counterpart    = translucent amber field + edge marker
 ```
 
 Never imply that a projected span is a literal word-for-word translation.
 
 If precision is low, highlight the broader aligned segment.
+
+The initial implementation projects the complete aligned segment group in the
+opposite reader. The browser selection remains the user's real selection; the
+amber field in the other panel is only Jano's semantic correspondence.
 
 ## Synchronization control
 
