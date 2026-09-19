@@ -8,6 +8,8 @@ export type PdfPageVisualSummary = {
   vectorPathCount: number;
 };
 
+export const PDF_FOOTNOTE_BOUNDARY = "[[JANO_FOOTNOTES]]";
+
 export interface PdfPageRenderJob {
   finished: Promise<PdfPageDimensions>;
   cancel(): void;

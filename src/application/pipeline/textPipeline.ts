@@ -3,7 +3,10 @@ import type {
   SourceSegment,
   TranslatedSegment,
 } from "../../domain/processing";
-import type { PdfPageVisualSummary } from "../ports/PdfDocumentAdapter";
+import {
+  PDF_FOOTNOTE_BOUNDARY,
+  type PdfPageVisualSummary,
+} from "../ports/PdfDocumentAdapter";
 
 const MAX_SEGMENT_CHARACTERS = 1_400;
 const MAX_BATCH_CHARACTERS = 3_200;
@@ -48,17 +51,19 @@ export function normalizePageText(text: string): string {
 export function segmentExtractedPages(pages: ExtractedPage[]): SourceSegment[] {
   const segments: SourceSegment[] = [];
   for (const page of pages) {
-    const paragraphs = logicalPageBlocks(page.text);
+    const paragraphs = structuredPageBlocks(page.text);
     let hasVisualMarker = false;
-    for (const paragraph of paragraphs.flatMap(splitLongParagraph)) {
-      const blockType = classifyBlock(paragraph);
+    for (const paragraph of paragraphs.flatMap((block) =>
+      splitLongParagraph(block.text).map((text) => ({ ...block, text })),
+    )) {
+      const blockType = paragraph.blockType ?? classifyBlock(paragraph.text);
       hasVisualMarker ||=
         blockType === "figure-marker" || blockType === "table-marker";
       segments.push({
         segmentId: `seg_${String(segments.length + 1).padStart(5, "0")}`,
         page: page.page,
         blockType,
-        text: paragraph,
+        text: paragraph.text,
         extractionMethod: page.method,
       });
     }
@@ -137,7 +142,7 @@ export function sourceTextArtifact(pages: ExtractedPage[]): string {
   return pages
     .map(
       (page) =>
-        `--- Página ${page.page} · ${page.method.toUpperCase()} ---\n\n${normalizePageText(page.text)}`,
+        `--- Página ${page.page} · ${page.method.toUpperCase()} ---\n\n${normalizePageText(page.text).replaceAll(PDF_FOOTNOTE_BOUNDARY, footnoteMarker())}`,
     )
     .join("\n\n");
 }
@@ -151,28 +156,45 @@ export function translatedMarkdown(
   );
   const markdown: string[] = [];
   let currentPage: number | null = null;
+  let inFootnotes = false;
   for (const segment of source) {
     if (segment.page !== currentPage) {
       currentPage = segment.page;
+      inFootnotes = false;
       markdown.push(pageMarker(segment.page));
     }
     const text = byId.get(segment.segmentId) ?? "";
-    if (segment.blockType === "heading") markdown.push(`## ${text}`);
-    else if (segment.blockType === "figure-marker") {
+    if (segment.blockType === "footnote") {
+      if (!inFootnotes) markdown.push(footnoteMarker());
+      markdown.push(text);
+      inFootnotes = true;
+    } else if (segment.blockType === "heading") {
+      inFootnotes = false;
+      markdown.push(`## ${text}`);
+    } else if (segment.blockType === "figure-marker") {
+      inFootnotes = false;
       markdown.push(
         `> **Figura o gráfica en el original · página ${segment.page}.**\n>\n> ${text}`,
       );
     } else if (segment.blockType === "table-marker") {
+      inFootnotes = false;
       markdown.push(
         `> **Tabla en el original · página ${segment.page}.**\n>\n> ${text}`,
       );
-    } else markdown.push(text);
+    } else {
+      inFootnotes = false;
+      markdown.push(text);
+    }
   }
   return markdown.join("\n\n");
 }
 
 export function pageMarker(page: number): string {
   return `------------[Página N° ${page}]------------`;
+}
+
+export function footnoteMarker(): string {
+  return "[Notas al pie]:";
 }
 
 export function stripReaderMetadata(markdown: string): string {
@@ -199,6 +221,79 @@ function classifyBlock(text: string): SourceSegment["blockType"] {
   return looksLikeHeading(text) ? "heading" : "paragraph";
 }
 
+type StructuredPageBlock = {
+  text: string;
+  blockType?: SourceSegment["blockType"];
+};
+
+function structuredPageBlocks(text: string): StructuredPageBlock[] {
+  const blocks = logicalPageBlocks(text);
+  const boundaryIndex = blocks.indexOf(PDF_FOOTNOTE_BOUNDARY);
+  if (boundaryIndex >= 0) {
+    return [
+      ...blocks.slice(0, boundaryIndex).map((value) => ({ text: value })),
+      ...blocks
+        .slice(boundaryIndex + 1)
+        .flatMap((value) => splitFootnoteText(value, true).allText)
+        .map((value) => ({ text: value, blockType: "footnote" as const })),
+    ];
+  }
+
+  const last = blocks.at(-1);
+  if (!last) return [];
+  const fallback = splitFootnoteText(last, false);
+  if (!fallback.footnotes.length)
+    return blocks.map((value) => ({ text: value }));
+  return [
+    ...blocks.slice(0, -1).map((value) => ({ text: value })),
+    ...(fallback.body ? [{ text: fallback.body }] : []),
+    ...fallback.footnotes.map((value) => ({
+      text: value,
+      blockType: "footnote" as const,
+    })),
+  ];
+}
+
+export function splitFootnoteText(text: string, confirmed = false) {
+  const matches = [
+    ...text.matchAll(
+      /(^|\s)((?:\d{1,3}\s*[.)])|[*†‡])\s+(?=[\p{L}0-9«“"'(])/gu,
+    ),
+  ];
+  if (!matches.length) {
+    return {
+      body: confirmed ? null : text.trim(),
+      footnotes: confirmed && text.trim() ? [text.trim()] : [],
+      allText: text.trim() ? [text.trim()] : [],
+    };
+  }
+  const firstIndex = (matches[0].index ?? 0) + matches[0][1].length;
+  const candidate = text.slice(firstIndex);
+  if (!confirmed && !looksLikeCitation(candidate)) {
+    return { body: text.trim(), footnotes: [], allText: [text.trim()] };
+  }
+  const body = text.slice(0, firstIndex).trim() || null;
+  const footnotes = matches.map((match, index) => {
+    const start = (match.index ?? 0) + match[1].length;
+    const next = matches[index + 1];
+    const end = next
+      ? (next.index ?? text.length) + next[1].length
+      : text.length;
+    return text.slice(start, end).trim();
+  });
+  return {
+    body,
+    footnotes,
+    allText: [...(body ? [body] : []), ...footnotes],
+  };
+}
+
+function looksLikeCitation(text: string): boolean {
+  return /(?:\b(?:18|19|20)\d{2}\b|https?:\/\/|\bdoi\b|["'«»“”].+["'«»“”]|\b(?:press|ediciones|editorial|revista|journal|vol\.|pp?\.|documento|informe|universidad|university)\b)/iu.test(
+    text,
+  );
+}
+
 function logicalPageBlocks(text: string): string[] {
   const prepared = text
     .replace(/\r\n?/g, "\n")
@@ -217,6 +312,10 @@ function logicalPageBlocks(text: string): string[] {
     const line = rawLine.replace(/\s+/g, " ").trim();
     if (!line) {
       flushProse();
+      captionIndex = null;
+    } else if (line === PDF_FOOTNOTE_BOUNDARY) {
+      flushProse();
+      blocks.push(PDF_FOOTNOTE_BOUNDARY);
       captionIndex = null;
     } else if (looksLikeFigureCaption(line) || looksLikeTableCaption(line)) {
       flushProse();

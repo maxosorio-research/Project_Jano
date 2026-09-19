@@ -1,14 +1,17 @@
 import { describe, expect, it } from "vitest";
 import {
   batchSegments,
+  footnoteMarker,
   hasUsableNativeText,
   normalizePageText,
   segmentExtractedPages,
+  sourceTextArtifact,
   stripReaderMetadata,
   translatedMarkdown,
   validateStableTokens,
   validateTranslations,
 } from "./textPipeline";
+import { PDF_FOOTNOTE_BOUNDARY } from "../ports/PdfDocumentAdapter";
 
 describe("text pipeline", () => {
   it("rejects empty or corrupt native text and accepts academic prose", () => {
@@ -92,6 +95,87 @@ describe("text pipeline", () => {
       blockType: "figure-marker",
       text: "Visual content detected in the original document.",
     });
+  });
+
+  it("classifies spatially detected footnotes before translation", () => {
+    const segments = segmentExtractedPages([
+      {
+        page: 4,
+        method: "native",
+        text: [
+          "The body cites several sources.",
+          "",
+          PDF_FOOTNOTE_BOUNDARY,
+          "",
+          "3. First Author: Cited work, 2016. 4. Second Author: Another work, 2011.",
+        ].join("\n"),
+      },
+    ]);
+
+    expect(segments.map((segment) => segment.blockType)).toEqual([
+      "paragraph",
+      "footnote",
+      "footnote",
+    ]);
+    expect(segments.slice(1).map((segment) => segment.text)).toEqual([
+      "3. First Author: Cited work, 2016.",
+      "4. Second Author: Another work, 2011.",
+    ]);
+
+    const markdown = translatedMarkdown(
+      segments,
+      segments.map((segment) => ({
+        segmentId: segment.segmentId,
+        text: segment.text,
+      })),
+    );
+    expect(markdown.match(/\[Notas al pie\]:/g)).toHaveLength(1);
+    expect(markdown.indexOf(footnoteMarker())).toBeLessThan(
+      markdown.indexOf("3. First Author"),
+    );
+    expect(
+      sourceTextArtifact([
+        {
+          page: 4,
+          method: "native",
+          text: `Body.\n\n${PDF_FOOTNOTE_BOUNDARY}\n\n3. Note.`,
+        },
+      ]),
+    ).toContain("[Notas al pie]:");
+    expect(
+      sourceTextArtifact([
+        {
+          page: 4,
+          method: "native",
+          text: `Body.\n\n${PDF_FOOTNOTE_BOUNDARY}\n\n3. Note.`,
+        },
+      ]),
+    ).not.toContain(PDF_FOOTNOTE_BOUNDARY);
+  });
+
+  it("uses a conservative citation fallback when spatial metadata is absent", () => {
+    const segments = segmentExtractedPages([
+      {
+        page: 1,
+        method: "ocr",
+        text: [
+          "A complete body paragraph.",
+          "",
+          "1. Author: Article title, Journal 12, 2020.",
+        ].join("\n"),
+      },
+    ]);
+
+    expect(segments.at(-1)?.blockType).toBe("footnote");
+    expect(
+      segmentExtractedPages([
+        {
+          page: 1,
+          method: "ocr",
+          text: "Instructions\n\n1. First step\n2. Second step",
+        },
+      ]).some((segment) => segment.blockType === "footnote"),
+    ).toBe(false);
   });
 
   it("validates IDs before generating Markdown", () => {

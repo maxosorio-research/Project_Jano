@@ -7,3 +7,13 @@ export function translationPageBoundary(
   if (!current || current.page === previous?.page) return null;
   return current.page;
 }
+
+export function translationFootnoteBoundary(
+  current: SourceSegment | undefined,
+  previous: SourceSegment | undefined,
+): boolean {
+  return Boolean(
+    current?.blockType === "footnote" &&
+    (previous?.blockType !== "footnote" || previous.page !== current.page),
+  );
+}

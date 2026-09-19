@@ -117,6 +117,12 @@ signal. The translated reader must degrade conservatively: render validated
 LaTeX, keep uncertain equations as literal text, and reference figures/tables
 back to the canonical PDF page instead of reconstructing their layout.
 
+Footnotes are also classified before translation. Native PDF extraction uses a
+conservative combination of lower-page position, smaller typography, and a
+numbered or symbolic note label; OCR text falls back to citation-shaped trailing
+blocks. Detected notes remain ordinary aligned segments with the `footnote`
+block type.
+
 Do not use plain `.txt` as the only internal representation.
 
 ## Translation representation

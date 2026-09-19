@@ -20,6 +20,7 @@ export type SourceSegment = {
   blockType:
     | "heading"
     | "paragraph"
+    | "footnote"
     | "equation-marker"
     | "figure-marker"
     | "table-marker";

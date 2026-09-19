@@ -17,11 +17,15 @@ import type { SourceFileGateway } from "../../application/ports/SourceFileGatewa
 import type { ReaderSurfaceHandle } from "../../application/reader/semanticScroll";
 import { selectedDomSegmentIds } from "../../application/reader/selectionProjection";
 import {
+  footnoteMarker,
   pageMarker,
   stripReaderMetadata,
 } from "../../application/pipeline/textPipeline";
 import type { ReaderDocument, SourceSegment } from "../../domain/processing";
-import { translationPageBoundary } from "./translationPageBoundary";
+import {
+  translationFootnoteBoundary,
+  translationPageBoundary,
+} from "./translationPageBoundary";
 
 type MarkdownReaderProps = {
   fileGateway: SourceFileGateway;
@@ -193,13 +197,17 @@ export const MarkdownReader = forwardRef<
                 source,
                 previousSource,
               );
+              const footnoteBoundary = translationFootnoteBoundary(
+                source,
+                previousSource,
+              );
               return (
                 <section
                   className={`translation-segment ${
                     projectedSegments.has(translation.segmentId)
                       ? "projected-counterpart"
                       : ""
-                  }`}
+                  } ${source?.blockType === "footnote" ? "translation-footnote" : ""}`}
                   data-segment-id={translation.segmentId}
                   key={translation.segmentId}
                 >
@@ -210,6 +218,11 @@ export const MarkdownReader = forwardRef<
                       role="separator"
                     >
                       {pageMarker(pageBoundary)}
+                    </div>
+                  ) : null}
+                  {footnoteBoundary ? (
+                    <div className="translation-footnote-marker" role="note">
+                      {footnoteMarker()}
                     </div>
                   ) : null}
                   <MarkdownContent>

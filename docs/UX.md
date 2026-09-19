@@ -105,6 +105,11 @@ rendered from structured segment locations as well as stored in the generated
 Markdown, so the reading surface does not lose it when structured alignment is
 available.
 
+Detected footnotes are separated from body text before translation and begin
+with an amber `[Notas al pie]:` indicator in the reading surface. Footnote text
+uses a smaller, quieter treatment while remaining selectable and aligned with
+the original page.
+
 Target characteristics:
 
 - comfortable margins;

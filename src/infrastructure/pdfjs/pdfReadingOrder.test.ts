@@ -1,4 +1,5 @@
 import { describe, expect, it } from "vitest";
+import { PDF_FOOTNOTE_BOUNDARY } from "../../application/ports/PdfDocumentAdapter";
 import {
   reconstructPdfReadingOrder,
   type PositionedPdfText,
@@ -92,5 +93,46 @@ describe("PDF reading order", () => {
         "Sidebar line two",
       ].join("\n"),
     );
+  });
+
+  it("separates numbered small text in the lower page area as footnotes", () => {
+    const items = [
+      item("Body first line", 60, 220, 320, 10, 0),
+      item("Body final line.", 60, 205, 320, 10, 1),
+      item("1. Author: Cited work, 2020.", 60, 70, 320, 7.5, 2),
+      item("Continuation of the note.", 60, 60, 320, 7.5, 3),
+    ];
+
+    expect(reconstructPdfReadingOrder(items, { width: 450, height: 650 })).toBe(
+      [
+        "Body first line\nBody final line.",
+        PDF_FOOTNOTE_BOUNDARY,
+        "1. Author: Cited work, 2020.\nContinuation of the note.",
+      ].join("\n\n"),
+    );
+  });
+
+  it("recognizes a footnote label split across PDF text items", () => {
+    const items = [
+      item("Body text.", 60, 220, 320, 10, 0),
+      item("2", 60, 70, 6, 7.5, 1),
+      item(".", 66, 70, 3, 7.5, 2),
+      item("Cited work, 1997.", 72, 70, 180, 7.5, 3),
+    ];
+
+    expect(
+      reconstructPdfReadingOrder(items, { width: 450, height: 650 }),
+    ).toContain(PDF_FOOTNOTE_BOUNDARY);
+  });
+
+  it("does not classify an ordinary small footer without a note label", () => {
+    const items = [
+      item("Body text.", 60, 220, 320, 10, 0),
+      item("Journal name", 60, 60, 120, 7.5, 1),
+    ];
+
+    expect(
+      reconstructPdfReadingOrder(items, { width: 450, height: 650 }),
+    ).not.toContain(PDF_FOOTNOTE_BOUNDARY);
   });
 });

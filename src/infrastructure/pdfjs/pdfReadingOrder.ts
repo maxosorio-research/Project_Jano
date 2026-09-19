@@ -1,3 +1,5 @@
+import { PDF_FOOTNOTE_BOUNDARY } from "../../application/ports/PdfDocumentAdapter";
+
 export type PositionedPdfText = {
   text: string;
   x: number;
@@ -49,11 +51,57 @@ export function reconstructPdfReadingOrder(
   );
   if (!items.length) return "";
 
+  const footnoteTop = detectFootnoteTop(items, page);
+  if (footnoteTop !== null) {
+    const body = items.filter((item) => item.y + item.height / 2 > footnoteTop);
+    const footnotes = items.filter(
+      (item) => item.y + item.height / 2 <= footnoteTop,
+    );
+    return [
+      orderedText(body, page),
+      PDF_FOOTNOTE_BOUNDARY,
+      orderedText(footnotes, page),
+    ]
+      .filter(Boolean)
+      .join("\n\n")
+      .trim();
+  }
+
+  return orderedText(items, page);
+}
+
+function orderedText(items: PositionedPdfText[], page: PdfPageSpace): string {
   return partitionIntoReadingRegions(items, page)
     .map(regionText)
     .filter(Boolean)
     .join("\n\n")
     .trim();
+}
+
+function detectFootnoteTop(
+  items: PositionedPdfText[],
+  page: PdfPageSpace,
+): number | null {
+  const typicalHeight = percentile(
+    items.map((item) => Math.max(item.height, 1)),
+    0.75,
+  );
+  const lowerSmallText = items.filter(
+    (item) =>
+      item.y + item.height / 2 <= page.height * 0.25 &&
+      item.height <= typicalHeight * 0.86,
+  );
+  const footnoteLabel = /^(?:\d{1,3}\s*[.)]|[*†‡])(?:\s|$)/u;
+  const hasFootnoteLabel =
+    lowerSmallText.some((item) => footnoteLabel.test(item.text.trim())) ||
+    renderLines(lowerSmallText)
+      .split("\n")
+      .some((line) => footnoteLabel.test(line));
+  if (!hasFootnoteLabel) return null;
+  return (
+    Math.max(...lowerSmallText.map((item) => item.y + item.height)) +
+    typicalHeight * 0.35
+  );
 }
 
 function partitionIntoReadingRegions(
@@ -309,4 +357,9 @@ function median(values: number[]): number {
   return sorted.length % 2
     ? sorted[middle]
     : (sorted[middle - 1] + sorted[middle]) / 2;
+}
+
+function percentile(values: number[], quantile: number): number {
+  const sorted = [...values].sort((left, right) => left - right);
+  return sorted[Math.ceil((sorted.length - 1) * quantile)];
 }
