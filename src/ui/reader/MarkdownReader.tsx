@@ -1,6 +1,7 @@
 import {
   Component,
   forwardRef,
+  useCallback,
   useEffect,
   useImperativeHandle,
   useMemo,
@@ -14,6 +15,7 @@ import remarkMath from "remark-math";
 import "katex/dist/katex.min.css";
 import type { SourceFileGateway } from "../../application/ports/SourceFileGateway";
 import type { ReaderSurfaceHandle } from "../../application/reader/semanticScroll";
+import { selectedDomSegmentIds } from "../../application/reader/selectionProjection";
 import {
   pageMarker,
   stripReaderMetadata,
@@ -27,8 +29,10 @@ type MarkdownReaderProps = {
   rootPath: string;
   readerDocument?: ReaderDocument | null;
   locked?: boolean;
+  onSelectionChange?(segmentIds: string[]): void;
   onUserIntent?(): void;
   onViewportChange?(): void;
+  projectedSegmentIds?: string[];
 };
 
 function markdownForSegment(source: SourceSegment | undefined, text: string) {
@@ -52,8 +56,10 @@ export const MarkdownReader = forwardRef<
     rootPath,
     readerDocument,
     locked = false,
+    onSelectionChange,
     onUserIntent,
     onViewportChange,
+    projectedSegmentIds = [],
   },
   ref,
 ) {
@@ -61,6 +67,10 @@ export const MarkdownReader = forwardRef<
   const [error, setError] = useState<string | null>(null);
   const scrollRef = useRef<HTMLDivElement>(null);
   const frameRequest = useRef<number | null>(null);
+  const projectedSegments = useMemo(
+    () => new Set(projectedSegmentIds),
+    [projectedSegmentIds],
+  );
   const sourceById = useMemo(
     () =>
       new Map(
@@ -138,6 +148,13 @@ export const MarkdownReader = forwardRef<
     });
   }
 
+  const reportSelection = useCallback(() => {
+    const root = scrollRef.current;
+    onSelectionChange?.(
+      root ? selectedDomSegmentIds(root, ".translation-segment") : [],
+    );
+  }, [onSelectionChange]);
+
   if (error) {
     return <div className="translation-message error-message">{error}</div>;
   }
@@ -153,7 +170,9 @@ export const MarkdownReader = forwardRef<
       aria-label={locked ? "Traducción bloqueada" : "Lectura de la traducción"}
       className={`translation-scroll-view ${locked ? "reader-scroll-locked" : ""}`}
       onKeyDown={onUserIntent}
+      onKeyUp={reportSelection}
       onPointerDown={onUserIntent}
+      onPointerUp={reportSelection}
       onScroll={scheduleViewportChange}
       onTouchStart={onUserIntent}
       onWheel={onUserIntent}
@@ -176,7 +195,11 @@ export const MarkdownReader = forwardRef<
               );
               return (
                 <section
-                  className="translation-segment"
+                  className={`translation-segment ${
+                    projectedSegments.has(translation.segmentId)
+                      ? "projected-counterpart"
+                      : ""
+                  }`}
                   data-segment-id={translation.segmentId}
                   key={translation.segmentId}
                 >

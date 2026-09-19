@@ -9,7 +9,7 @@
   --teal: #37a79e;
   --amber: #d9a441;
   --red: #cc6a5f;
-  --selection: color-mix(in srgb, var(--teal) 22%, transparent);
+  --selection: color-mix(in srgb, var(--amber) 48%, transparent);
   --focus-ring: color-mix(in srgb, var(--teal) 55%, transparent);
   --scroll-track: var(--bg);
   --scroll-thumb: #4e6166;
@@ -602,6 +602,11 @@ button:disabled {
   display: flow-root;
   min-height: 1px;
   border-radius: 4px;
+}
+
+.translation-segment.projected-counterpart {
+  background: color-mix(in srgb, var(--amber) 16%, transparent);
+  box-shadow: inset 3px 0 0 color-mix(in srgb, var(--amber) 82%, transparent);
 }
 
 .markdown-reader blockquote {
@@ -1256,6 +1261,11 @@ button:disabled {
   min-height: 1px;
 }
 
+.pdf-semantic-anchor.projected-counterpart {
+  background: color-mix(in srgb, var(--amber) 20%, transparent);
+  box-shadow: inset 3px 0 0 color-mix(in srgb, var(--amber) 88%, transparent);
+}
+
 .pdf-page-number {
   position: absolute;
   right: 10px;
@@ -1336,7 +1346,7 @@ button:disabled {
 
 .textLayer ::selection {
   color: transparent;
-  background: color-mix(in srgb, #3f9da1, transparent 45%);
+  background: color-mix(in srgb, var(--amber) 58%, transparent);
 }
 
 .textLayer .endOfContent {

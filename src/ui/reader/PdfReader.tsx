@@ -13,6 +13,7 @@ import type {
 } from "../../application/ports/PdfDocumentAdapter";
 import type { SourceFileGateway } from "../../application/ports/SourceFileGateway";
 import type { ReaderSurfaceHandle } from "../../application/reader/semanticScroll";
+import { selectedOverlappingSegmentIds } from "../../application/reader/selectionProjection";
 import {
   locateVisiblePage,
   type SourceViewerLocator,
@@ -30,6 +31,8 @@ type PdfReaderProps = {
   documentAdapter: PdfDocumentAdapter;
   initialScale?: number;
   locked?: boolean;
+  onSelectionChange?(segmentIds: string[]): void;
+  projectedSegmentIds?: string[];
   segments?: SourceSegment[];
   onUserIntent?(): void;
   onViewportChange?(): void;
@@ -62,6 +65,7 @@ type PdfPageViewProps = {
   pageNumber: number;
   scale: number;
   scrollRoot: HTMLElement | null;
+  projectedSegmentIds: ReadonlySet<string>;
   segments: SourceSegment[];
   onRendered(): void;
 };
@@ -95,6 +99,7 @@ function PdfPageView({
   pageNumber,
   scale,
   scrollRoot,
+  projectedSegmentIds,
   segments,
   onRendered,
 }: PdfPageViewProps) {
@@ -171,7 +176,11 @@ function PdfPageView({
       <div aria-hidden="true" className="pdf-semantic-anchors">
         {anchors.map((anchor) => (
           <span
-            className="pdf-semantic-anchor"
+            className={`pdf-semantic-anchor ${
+              projectedSegmentIds.has(anchor.segmentId)
+                ? "projected-counterpart"
+                : ""
+            }`}
             data-segment-id={anchor.segmentId}
             key={anchor.segmentId}
             style={{ top: `${anchor.top}%`, height: `${anchor.height}%` }}
@@ -203,6 +212,8 @@ export const PdfReader = forwardRef<PdfReaderHandle, PdfReaderProps>(
       documentAdapter,
       initialScale = 1,
       locked = false,
+      onSelectionChange,
+      projectedSegmentIds = [],
       segments = [],
       onUserIntent,
       onViewportChange,
@@ -220,6 +231,10 @@ export const PdfReader = forwardRef<PdfReaderHandle, PdfReaderProps>(
     const scrollRef = useRef<HTMLDivElement>(null);
     const [scrollRoot, setScrollRoot] = useState<HTMLDivElement | null>(null);
     const frameRequest = useRef<number | null>(null);
+    const projectedSegments = useMemo(
+      () => new Set(projectedSegmentIds),
+      [projectedSegmentIds],
+    );
     const segmentsByPage = useMemo(() => {
       const result = new Map<number, SourceSegment[]>();
       for (const segment of segments) {
@@ -273,6 +288,13 @@ export const PdfReader = forwardRef<PdfReaderHandle, PdfReaderProps>(
         onViewportChange?.();
       });
     }, [onViewportChange, updateLocator]);
+
+    const reportSelection = useCallback(() => {
+      const root = scrollRef.current;
+      onSelectionChange?.(
+        root ? selectedOverlappingSegmentIds(root, ".pdf-semantic-anchor") : [],
+      );
+    }, [onSelectionChange]);
 
     useEffect(() => {
       let active = true;
@@ -402,7 +424,9 @@ export const PdfReader = forwardRef<PdfReaderHandle, PdfReaderProps>(
           aria-label={locked ? "Original bloqueado" : "Lectura del original"}
           className={`pdf-scroll-view ${locked ? "reader-scroll-locked" : ""}`}
           onKeyDown={onUserIntent}
+          onKeyUp={reportSelection}
           onPointerDown={onUserIntent}
+          onPointerUp={reportSelection}
           onScroll={scheduleLocatorUpdate}
           onTouchStart={onUserIntent}
           onWheel={onUserIntent}
@@ -416,6 +440,7 @@ export const PdfReader = forwardRef<PdfReaderHandle, PdfReaderProps>(
                 key={index + 1}
                 onRendered={scheduleLocatorUpdate}
                 pageNumber={index + 1}
+                projectedSegmentIds={projectedSegments}
                 scale={scale}
                 segments={segmentsByPage.get(index + 1) ?? []}
                 scrollRoot={scrollRoot}
