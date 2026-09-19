@@ -113,8 +113,34 @@ describe("text pipeline", () => {
     expect(translatedMarkdown(source, translations)).toContain(
       "## Introducción",
     );
+    expect(translatedMarkdown(source, translations)).toContain(
+      "------------[Página N° 1]------------",
+    );
     expect(translatedMarkdown(source, translations)).not.toContain("seg_00001");
     expect(() => validateTranslations(source, translations.slice(1))).toThrow();
+  });
+
+  it("adds a visible marker whenever the translated document changes page", () => {
+    const source = segmentExtractedPages([
+      { page: 1, method: "native", text: "First page paragraph." },
+      { page: 2, method: "native", text: "Second page paragraph." },
+    ]);
+    const markdown = translatedMarkdown(
+      source,
+      source.map((segment) => ({
+        segmentId: segment.segmentId,
+        text: segment.text,
+      })),
+    );
+
+    expect(markdown).toContain("------------[Página N° 1]------------");
+    expect(markdown).toContain("------------[Página N° 2]------------");
+    expect(markdown.indexOf("Página N° 1")).toBeLessThan(
+      markdown.indexOf("First page paragraph."),
+    );
+    expect(markdown.indexOf("Página N° 2")).toBeGreaterThan(
+      markdown.indexOf("First page paragraph."),
+    );
   });
 
   it("hides legacy segment metadata from the reading surface", () => {

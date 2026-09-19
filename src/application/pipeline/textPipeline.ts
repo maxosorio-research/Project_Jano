@@ -149,19 +149,26 @@ export function translatedMarkdown(
   const byId = new Map(
     translations.map((segment) => [segment.segmentId, segment.text.trim()]),
   );
-  return source
-    .map((segment) => {
-      const text = byId.get(segment.segmentId) ?? "";
-      if (segment.blockType === "heading") return `## ${text}`;
-      if (segment.blockType === "figure-marker") {
-        return `> **Figura o gráfica en el original · página ${segment.page}.**\n>\n> ${text}`;
-      }
-      if (segment.blockType === "table-marker") {
-        return `> **Tabla en el original · página ${segment.page}.**\n>\n> ${text}`;
-      }
-      return text;
-    })
-    .join("\n\n");
+  const markdown: string[] = [];
+  let currentPage: number | null = null;
+  for (const segment of source) {
+    if (segment.page !== currentPage) {
+      currentPage = segment.page;
+      markdown.push(`------------[Página N° ${segment.page}]------------`);
+    }
+    const text = byId.get(segment.segmentId) ?? "";
+    if (segment.blockType === "heading") markdown.push(`## ${text}`);
+    else if (segment.blockType === "figure-marker") {
+      markdown.push(
+        `> **Figura o gráfica en el original · página ${segment.page}.**\n>\n> ${text}`,
+      );
+    } else if (segment.blockType === "table-marker") {
+      markdown.push(
+        `> **Tabla en el original · página ${segment.page}.**\n>\n> ${text}`,
+      );
+    } else markdown.push(text);
+  }
+  return markdown.join("\n\n");
 }
 
 export function stripReaderMetadata(markdown: string): string {
