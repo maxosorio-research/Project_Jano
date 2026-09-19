@@ -3,6 +3,7 @@ import type { SourceSegment } from "../../domain/processing";
 import {
   protectStableTokensInSegments,
   restoreStableTokens,
+  annotateUnpreservedStableTokens,
   validateStableTokenIntegrity,
 } from "./stableTokenProtection";
 
@@ -29,6 +30,9 @@ describe("stable token protection", () => {
       "https://doi.org/10.1/test.",
     ]);
     expect(protectedDocument.segments[0].text).toContain("⟦MATH_INLINE_00001⟧");
+    expect(protectedDocument.segments[0].text).toContain(
+      "[[JANO_NUMBER_00001]]",
+    );
 
     const translated = [
       {
@@ -54,5 +58,63 @@ describe("stable token protection", () => {
         { segmentId: "seg_00086", text: "Sin marcadores." },
       ]),
     ).toThrow("marcadores de cifras o referencias");
+  });
+
+  it("accepts and restores common delimiter variants returned by local models", () => {
+    const protectedDocument = protectStableTokensInSegments(source);
+    const text = protectedDocument.segments[0].text.replace(
+      "[[JANO_NUMBER_00001]]",
+      "[JANO_NUMBER_00001]",
+    );
+    const translated = [{ segmentId: source[0].segmentId, text }];
+
+    expect(() =>
+      validateStableTokenIntegrity(protectedDocument.segments, translated),
+    ).not.toThrow();
+    expect(
+      restoreStableTokens(translated, protectedDocument.tokens)[0].text,
+    ).toContain("0.25");
+  });
+
+  it("annotates a translation that loses protected values instead of rejecting it", () => {
+    const protectedDocument = protectStableTokensInSegments(source);
+    const translated = [
+      { segmentId: source[0].segmentId, text: "La estimación." },
+    ];
+
+    annotateUnpreservedStableTokens(protectedDocument.segments, translated);
+
+    const restored = restoreStableTokens(
+      translated,
+      protectedDocument.tokens,
+    )[0].text;
+    expect(restored).toContain(
+      "⚠ **Verificar cifras o referencias con el original:**",
+    );
+    expect(restored).toContain("0.25");
+    expect(restored).toContain("https://doi.org/10.1/test.");
+  });
+
+  it("annotates only values that the model actually lost", () => {
+    const protectedDocument = protectStableTokensInSegments(source);
+    const keptNumber = protectedDocument.tokens.find(
+      (token) => token.source === "0.25",
+    );
+    const translated = [
+      {
+        segmentId: source[0].segmentId,
+        text: `La estimación es ${keptNumber?.placeholder}.`,
+      },
+    ];
+
+    annotateUnpreservedStableTokens(protectedDocument.segments, translated);
+
+    const restored = restoreStableTokens(
+      translated,
+      protectedDocument.tokens,
+    )[0].text;
+    expect(restored.match(/0\.25/g)).toHaveLength(1);
+    expect(restored).toContain("2011");
+    expect(restored).toContain("https://doi.org/10.1/test.");
   });
 });

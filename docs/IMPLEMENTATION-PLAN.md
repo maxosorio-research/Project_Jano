@@ -82,6 +82,10 @@ Deliverables:
 - raw result, duration, and token-count display;
 - explicit statement that document translation remains inactive.
 
+This historical diagnostic choice was later superseded for the active document
+pipeline: ADR 0012 designates `translategemma:12b` as the official translation
+model and separates conservative review into its own model role.
+
 ## Milestone 3 — translated text surface
 
 Goal: a clean right-hand reading panel.

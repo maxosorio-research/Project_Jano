@@ -119,7 +119,7 @@ At the user's explicit request, Jano now implements a manual local processing fl
 
 ## Local runtime: Ollama
 
-Milestone 2.6 detected the loopback Ollama runtime, listed installed models, recommended `translategemma:4b` for the observed machine, and ran a fixed translation smoke test. The user subsequently authorized connecting this boundary to the manual document pipeline. No official model is permanently selected and no remote endpoint is used. See ADRs 0011 and 0012.
+Milestone 2.6 detected the loopback Ollama runtime, listed installed models, tested `translategemma:4b` on the observed machine, and ran a fixed translation smoke test. The user subsequently authorized the manual document pipeline and designated `translategemma:12b` as Jano's official translation model. Conservative review remains a separate configurable role, defaulting to `qwen2.5:7b-instruct`. No remote endpoint is used. See ADRs 0011 and 0012.
 
 ## Handoff assumption: technology stack
 

@@ -2,6 +2,38 @@
 
 These instructions apply to the whole repository.
 
+## GitHub synchronization
+
+GitHub `origin` is the canonical source of truth for this repository.
+
+For every task that may modify repository files, follow this lifecycle:
+
+`SYNC → INSPECT → MODIFY → VERIFY → COMMIT → RESYNC → PUSH → VERIFY REMOTE`
+
+Before creating, editing, renaming, moving, or deleting files:
+
+1. Run `git status --short` and `git branch --show-current` to inspect the current state.
+2. Preserve uncommitted work not created by the current task. Do not discard, overwrite, or automatically stash it. If its origin cannot be established safely, stop before editing and report it.
+3. Run `git fetch origin --prune` and then `git pull --ff-only`. Do not modify files if synchronization fails or the branch cannot be fast-forwarded safely.
+4. Review recent changes with `git log --oneline --decorate -10`.
+
+During implementation, modify only files required for the task and do not revert, rewrite, or remove unrelated work.
+
+Before committing:
+
+1. Review `git status` and `git diff`.
+2. Run the relevant tests, linting, type checks, and build checks.
+3. Ensure no credentials, secrets, `.env` files, user data, generated junk, or unrelated files are staged.
+4. Stage only task files and create a concise commit.
+
+Immediately before pushing, run `git fetch origin --prune`. If the remote branch advanced, rebase only unpublished commits created by the current task onto `origin/<current-branch>`. Resolve conflicts only when the correct integration is unambiguous; otherwise stop and report the conflict. Re-run relevant verification after a rebase.
+
+Push completed changes with `git push origin HEAD`, then verify with `git status -sb` that the branch is synchronized with its upstream.
+
+Never use `git reset --hard`, `git clean -fd`, `git push --force`, or `git push --force-with-lease` unless the user explicitly requests that exact operation.
+
+A modifying task is complete only when its intended commit was successfully pushed to GitHub and the final report states the branch, commit hash, verification result, and push confirmation.
+
 ## Before changing code
 
 Read, in this order:

@@ -8,7 +8,9 @@ export type StableToken = {
 };
 
 const EXISTING_MARKER =
-  /⟦(?:MATH_(?:INLINE|DISPLAY)|JANO_(?:NUMBER|REFERENCE))_\d{5}⟧/g;
+  /(?:⟦(?:MATH_(?:INLINE|DISPLAY)|JANO_(?:NUMBER|REFERENCE))_\d{5}⟧|\[\[(?:MATH_(?:INLINE|DISPLAY)|JANO_(?:NUMBER|REFERENCE))_\d{5}\]\])/g;
+const STABLE_PLACEHOLDER =
+  /(?:⟦|\[\[|\[)?(JANO_(?:NUMBER|REFERENCE)_\d{5})(?:⟧|\]\]|\])?/g;
 const STABLE_VALUE_PATTERN =
   /https?:\/\/[^\s)\]}]+|\bdoi:\s*[^\s]+|\b10\.\d{4,9}\/[._;()/:A-Z0-9-]+|\b[\w.+-]+@[\w.-]+\.[A-Za-z]{2,}\b|(?<![\p{L}_])[-+]?\d+(?:[.,]\d+)*(?:\s*%)?/giu;
 
@@ -21,7 +23,8 @@ export function protectStableTokensInSegments(source: SourceSegment[]): {
     ...segment,
     text: replaceOutsideMarkers(segment.text, (value) => {
       const kind = isReference(value) ? "reference" : "number";
-      const placeholder = `⟦JANO_${kind.toUpperCase()}_${String(tokens.length + 1).padStart(5, "0")}⟧`;
+      // ASCII delimiters survive local models more reliably than Unicode brackets.
+      const placeholder = `[[JANO_${kind.toUpperCase()}_${String(tokens.length + 1).padStart(5, "0")}]]`;
       tokens.push({
         segmentId: segment.segmentId,
         placeholder,
@@ -54,6 +57,33 @@ export function validateStableTokenIntegrity(
   }
 }
 
+/**
+ * Keeps a translation usable when a local model loses a number or reference.
+ * The original values remain visible as a warning for manual verification,
+ * rather than making one unreliable segment discard the whole document.
+ */
+export function annotateUnpreservedStableTokens(
+  source: Array<{ segmentId: string; text: string }>,
+  translations: TranslatedSegment[],
+): void {
+  const translatedById = new Map(
+    translations.map((segment) => [segment.segmentId, segment]),
+  );
+  for (const segment of source) {
+    const expected = stableTokenPlaceholders(segment.text);
+    const translation = translatedById.get(segment.segmentId);
+    if (!translation) continue;
+    const received = stableTokenPlaceholders(translation.text);
+    if (sameSequence(expected, received)) continue;
+
+    const receivedSet = new Set(received);
+    const protectedValues = expected
+      .filter((placeholder) => !receivedSet.has(placeholder))
+      .join(" ");
+    translation.text = `${translation.text.trim()}\n\n> ⚠ **Verificar cifras o referencias con el original:** ${protectedValues}`;
+  }
+}
+
 export function restoreStableTokens(
   translations: TranslatedSegment[],
   tokens: StableToken[],
@@ -68,7 +98,7 @@ export function restoreStableTokens(
     const restore = (value: string): string => {
       let restored = value;
       for (const token of bySegment.get(translation.segmentId) ?? []) {
-        restored = restored.replaceAll(token.placeholder, token.source);
+        restored = restoreToken(restored, token.placeholder, token.source);
       }
       return restored;
     };
@@ -87,7 +117,21 @@ export function restoreStableTokens(
 }
 
 export function stableTokenPlaceholders(text: string): string[] {
-  return text.match(/⟦JANO_(?:NUMBER|REFERENCE)_\d{5}⟧/g) ?? [];
+  return [...text.matchAll(STABLE_PLACEHOLDER)].map(
+    (match) => `[[${match[1]}]]`,
+  );
+}
+
+function restoreToken(
+  text: string,
+  placeholder: string,
+  source: string,
+): string {
+  const token = placeholder.slice(2, -2);
+  return text.replace(
+    new RegExp(`(?:⟦|\\[\\[|\\[)?${token}(?:⟧|\\]\\]|\\])?`, "g"),
+    source,
+  );
 }
 
 function replaceOutsideMarkers(

@@ -31,6 +31,7 @@ import { selectReviewedTranslations } from "./translationReview";
 import {
   protectStableTokensInSegments,
   restoreStableTokens,
+  annotateUnpreservedStableTokens,
   validateStableTokenIntegrity,
 } from "./stableTokenProtection";
 import { errorDetail, pipelineError, PipelineError } from "./pipelineError";
@@ -200,13 +201,13 @@ export async function processPdfDocument({
       stage: "translating",
       current: index + 1,
       total: batches.length,
-      message: `Traduciendo bloque ${index + 1} de ${batches.length} con ${settings.ollamaModel}`,
+      message: `Traduciendo bloque ${index + 1} de ${batches.length} con ${settings.translationModel}`,
     });
     let result: TranslationBatchResult;
     try {
       result = await translateBatchWithRecovery(
         translationRuntime,
-        settings.ollamaModel,
+        settings.translationModel,
         settings.targetLanguage,
         batches[index],
         (attempt, maximum) =>
@@ -218,7 +219,7 @@ export async function processPdfDocument({
           }),
         (source, translated) => {
           validateMathIntegrity(source, translated);
-          validateStableTokenIntegrity(source, translated);
+          annotateUnpreservedStableTokens(source, translated);
         },
       );
     } catch (caught) {
@@ -228,7 +229,6 @@ export async function processPdfDocument({
   }
   validateTranslations(stableDocument.segments, baseTranslations);
   validateMathIntegrity(stableDocument.segments, baseTranslations);
-  validateStableTokenIntegrity(stableDocument.segments, baseTranslations);
 
   const reviewedTranslations: TranslatedSegment[] = [];
   if (settings.reviewLevel !== "none") {
@@ -245,12 +245,12 @@ export async function processPdfDocument({
         stage: "reviewing",
         current: index + 1,
         total: batches.length,
-        message: `Revisando estilo académico ${index + 1} de ${batches.length}…`,
+        message: `Revisando estilo académico ${index + 1} de ${batches.length} con ${settings.reviewModel}…`,
       });
       try {
         const result = await reviewBatchWithRecovery(
           translationRuntime,
-          settings.ollamaModel,
+          settings.reviewModel,
           settings.targetLanguage,
           settings.reviewLevel,
           reviewBatch,
@@ -305,7 +305,7 @@ export async function processPdfDocument({
       mathObjects: protectedDocument.mathObjects,
       markdown: translatedMarkdown(segments, markdownTranslations),
       metadata: {
-        model: settings.ollamaModel,
+        model: settings.translationModel,
         sourceLanguage: "en",
         targetLanguage: settings.targetLanguage,
         createdAt: new Date().toISOString(),
