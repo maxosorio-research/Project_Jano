@@ -14,8 +14,12 @@ import remarkMath from "remark-math";
 import "katex/dist/katex.min.css";
 import type { SourceFileGateway } from "../../application/ports/SourceFileGateway";
 import type { ReaderSurfaceHandle } from "../../application/reader/semanticScroll";
-import { stripReaderMetadata } from "../../application/pipeline/textPipeline";
+import {
+  pageMarker,
+  stripReaderMetadata,
+} from "../../application/pipeline/textPipeline";
 import type { ReaderDocument, SourceSegment } from "../../domain/processing";
+import { translationPageBoundary } from "./translationPageBoundary";
 
 type MarkdownReaderProps = {
   fileGateway: SourceFileGateway;
@@ -159,20 +163,38 @@ export const MarkdownReader = forwardRef<
       <MarkdownRenderBoundary markdown={boundaryMarkdown}>
         <article className="markdown-reader">
           {readerDocument ? (
-            readerDocument.translations.map((translation) => (
-              <section
-                className="translation-segment"
-                data-segment-id={translation.segmentId}
-                key={translation.segmentId}
-              >
-                <MarkdownContent>
-                  {markdownForSegment(
-                    sourceById.get(translation.segmentId),
-                    translation.text,
-                  )}
-                </MarkdownContent>
-              </section>
-            ))
+            readerDocument.translations.map((translation, index) => {
+              const source = sourceById.get(translation.segmentId);
+              const previousTranslation =
+                readerDocument.translations[index - 1];
+              const previousSource = previousTranslation
+                ? sourceById.get(previousTranslation.segmentId)
+                : undefined;
+              const pageBoundary = translationPageBoundary(
+                source,
+                previousSource,
+              );
+              return (
+                <section
+                  className="translation-segment"
+                  data-segment-id={translation.segmentId}
+                  key={translation.segmentId}
+                >
+                  {pageBoundary !== null ? (
+                    <div
+                      aria-label={`Inicio de la página ${pageBoundary} del original`}
+                      className="translation-page-marker"
+                      role="separator"
+                    >
+                      {pageMarker(pageBoundary)}
+                    </div>
+                  ) : null}
+                  <MarkdownContent>
+                    {markdownForSegment(source, translation.text)}
+                  </MarkdownContent>
+                </section>
+              );
+            })
           ) : (
             <MarkdownContent>{visibleMarkdown}</MarkdownContent>
           )}

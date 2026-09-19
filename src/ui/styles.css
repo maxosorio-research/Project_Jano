@@ -565,6 +565,20 @@ button:disabled {
   line-height: 1.62;
 }
 
+.translation-page-marker {
+  margin: 2.7rem 0 1.8rem;
+  color: var(--amber);
+  font-family: Inter, "Segoe UI", sans-serif;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-align: center;
+}
+
+.translation-segment:first-child .translation-page-marker {
+  margin-top: 0;
+}
+
 .markdown-reader h1,
 .markdown-reader h2,
 .markdown-reader h3,

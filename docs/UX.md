@@ -99,6 +99,12 @@ Page numbers remain useful metadata in the original panel, but they are not the 
 
 The translation surface is optimized for reading, not publication layout reproduction.
 
+Generated translations show a visible separator at every original-page
+boundary, labeled `------------[Página N° X]------------`. The separator is
+rendered from structured segment locations as well as stored in the generated
+Markdown, so the reading surface does not lose it when structured alignment is
+available.
+
 Target characteristics:
 
 - comfortable margins;
