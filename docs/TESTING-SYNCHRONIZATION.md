@@ -2,7 +2,8 @@
 
 This procedure uses selected PDFs from the active `Bibliografía Tesis` project.
 The PDFs stay in that user-owned project; the repository contains only a
-de-identified structural fixture with lengths, page numbers, IDs, and statuses.
+de-identified structural fixture with lengths, sentence-length profiles, page
+numbers, IDs, and statuses.
 
 ## Selected corpus
 
@@ -30,7 +31,37 @@ pnpm fixture:sync:export -- `
 
 The exporter rejects incomplete relationships and writes no source or translated
 text. The frontend test uses the recorded shapes to verify bidirectional,
-monotonic semantic mapping over the complete document.
+monotonic semantic mapping over the complete document. It also reconstructs
+synthetic text with the same sentence-length profile and verifies experimental
+resegmentation without retaining any academic wording.
+
+## Experimental resegmentation procedure
+
+The temporary **Resegmentar (prueba)** button beside **Regenerar traducción**
+operates only on the open, already processed document. It does not call Ollama,
+write JSON or Markdown, or change the project catalog. Selecting it again as
+**Restaurar segmentos**, changing document, or reopening Jano returns to the
+persisted representation.
+
+1. Open F22 and record the source/translation segment counts shown after
+   enabling the experiment.
+2. Verify selection projection and synchronized scrolling at the beginning,
+   middle, and end in both directions.
+3. Inspect several long paragraphs: selectable units should be a sentence or a
+   short sentence group rather than a full extracted paragraph.
+4. Verify that headings, figure/table markers, equations, and page boundaries
+   have not been split or relabeled.
+5. Exercise an unequal sentence count and confirm navigation remains forward
+   and the broader side is represented as `1:n`, `n:1`, or `n:m`.
+6. Choose **Restaurar segmentos** and confirm the original counts and behavior
+   return immediately.
+7. Repeat on F12, including its OCR page, and then on H6 with visible review
+   warnings before authorizing any persistent or recursive migration.
+
+The experiment passes only if normalized source and target text are preserved,
+every child ID participates exactly once in an alignment, mappings never move
+backward, and structural blocks remain whole. Any missing content, duplicate
+coverage, oscillation, or misleading cross-page correspondence blocks rollout.
 
 ## Manual baseline procedure
 
@@ -76,4 +107,5 @@ segment is recorded for later tuning but is not automatically a blocker.
 
 | Date | Tag/commit | Platform/build | Document | Result | Notes |
 |---|---|---|---|---|---|
-| — | — | — | F22 baseline | Not run | First packaged RC walkthrough pending |
+| 2026-09-20 | `v0.1.0-rc.1` | Automated fixture | F22 sentence shape | Pass | No text retained; complete, monotonic child alignment |
+| — | `v0.1.0-rc.1` | Packaged Windows build | F22/F12/H6 manual | Not run | Visual walkthrough pending |

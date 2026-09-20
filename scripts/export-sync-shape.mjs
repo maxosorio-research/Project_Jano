@@ -33,6 +33,23 @@ function countBy(values, selector) {
   }, {});
 }
 
+function sentenceLengths(text, locale) {
+  const normalized = text.replace(/\s+/g, " ").trim();
+  if (!normalized) return [];
+
+  if (typeof Intl.Segmenter === "function") {
+    const segmenter = new Intl.Segmenter(locale, { granularity: "sentence" });
+    return Array.from(
+      segmenter.segment(normalized),
+      ({ segment }) => segment.trim().length,
+    ).filter((length) => length > 0);
+  }
+
+  return (normalized.match(/[^.!?]+(?:[.!?]+(?=\s|$)|$)/g) ?? [normalized])
+    .map((sentence) => sentence.trim().length)
+    .filter((length) => length > 0);
+}
+
 const options = parseArguments(process.argv.slice(2));
 const projectRoot = options["project-root"];
 const documentId = options["document-id"];
@@ -122,7 +139,7 @@ const reviewStatusCounts = countBy(
 );
 
 const fixture = {
-  schemaVersion: 1,
+  schemaVersion: 2,
   name: fixtureName,
   contentIncluded: false,
   source: {
@@ -148,6 +165,8 @@ const fixture = {
       blockType: segment.blockType,
       sourceLength: segment.text.length,
       targetLength: translation.text.length,
+      sourceSentenceLengths: sentenceLengths(segment.text, "en"),
+      targetSentenceLengths: sentenceLengths(translation.text, "es"),
       reviewStatus: translation.reviewStatus ?? "not-reviewed",
       reviewWarningCount: translation.reviewWarnings?.length ?? 0,
     };

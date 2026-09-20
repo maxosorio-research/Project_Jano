@@ -2,6 +2,27 @@
 
 Notable changes to Jano are recorded here.
 
+## 0.1.0-rc.1 — 2026-09-20
+
+### Included
+
+- A temporary **Resegmentar (prueba)** action beside **Regenerar traducción**
+  for already processed Jano documents.
+- Reversible, in-memory subdivision of paragraph and footnote blocks into
+  sentence-sized groups while headings and structural markers remain intact.
+- Monotonic one-to-one, one-to-many, many-to-one, or many-to-many grouping
+  when source and translation sentence counts differ.
+- Automated coverage using the de-identified sentence-length profile of the
+  selected F22 test document.
+
+### Experimental limits
+
+- Resegmentation is limited to the open document and is not persisted.
+- It does not call Ollama, rewrite project artifacts, or recursively migrate a
+  library. The button restores the persisted segments immediately.
+- Source PDF anchors remain approximate until precise text rectangles are
+  available; recursive migration is gated on the documented manual corpus.
+
 ## 0.1.0-rc.0 — 2026-09-20
 
 ### Included

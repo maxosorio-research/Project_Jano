@@ -85,6 +85,19 @@ export const MarkdownReader = forwardRef<
       ),
     [readerDocument],
   );
+  const sourceForTargetId = useMemo(() => {
+    const result = new Map<string, SourceSegment>();
+    for (const alignment of readerDocument?.alignments ?? []) {
+      const source = alignment.sourceSegmentIds
+        .map((segmentId) => sourceById.get(segmentId))
+        .find((segment): segment is SourceSegment => Boolean(segment));
+      if (!source) continue;
+      for (const targetId of alignment.targetSegmentIds) {
+        result.set(targetId, source);
+      }
+    }
+    return result;
+  }, [readerDocument, sourceById]);
 
   useEffect(() => {
     if (readerDocument) return;
@@ -187,11 +200,14 @@ export const MarkdownReader = forwardRef<
         <article className="markdown-reader">
           {readerDocument ? (
             readerDocument.translations.map((translation, index) => {
-              const source = sourceById.get(translation.segmentId);
+              const source =
+                sourceById.get(translation.segmentId) ??
+                sourceForTargetId.get(translation.segmentId);
               const previousTranslation =
                 readerDocument.translations[index - 1];
               const previousSource = previousTranslation
-                ? sourceById.get(previousTranslation.segmentId)
+                ? (sourceById.get(previousTranslation.segmentId) ??
+                  sourceForTargetId.get(previousTranslation.segmentId))
                 : undefined;
               const pageBoundary = translationPageBoundary(
                 source,

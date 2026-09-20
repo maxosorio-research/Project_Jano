@@ -1,5 +1,5 @@
 {
-  "schemaVersion": 1,
+  "schemaVersion": 2,
   "name": "f22-bunker-baseline",
   "contentIncluded": false,
   "source": {
@@ -21,6 +21,8 @@
       "blockType": "heading",
       "sourceLength": 96,
       "targetLength": 100,
+      "sourceSentenceLengths": [96],
+      "targetSentenceLengths": [100],
       "reviewStatus": "approved",
       "reviewWarningCount": 0
     },
@@ -30,6 +32,8 @@
       "blockType": "paragraph",
       "sourceLength": 47,
       "targetLength": 50,
+      "sourceSentenceLengths": [47],
+      "targetSentenceLengths": [50],
       "reviewStatus": "approved",
       "reviewWarningCount": 0
     },
@@ -39,6 +43,8 @@
       "blockType": "paragraph",
       "sourceLength": 1307,
       "targetLength": 1560,
+      "sourceSentenceLengths": [166, 201, 189, 278, 223, 245],
+      "targetSentenceLengths": [199, 223, 228, 337, 275, 293],
       "reviewStatus": "approved",
       "reviewWarningCount": 0
     },
@@ -48,6 +54,8 @@
       "blockType": "paragraph",
       "sourceLength": 247,
       "targetLength": 251,
+      "sourceSentenceLengths": [247],
+      "targetSentenceLengths": [251],
       "reviewStatus": "approved",
       "reviewWarningCount": 0
     },
@@ -57,6 +65,8 @@
       "blockType": "paragraph",
       "sourceLength": 15,
       "targetLength": 15,
+      "sourceSentenceLengths": [15],
+      "targetSentenceLengths": [15],
       "reviewStatus": "approved",
       "reviewWarningCount": 0
     },
@@ -66,6 +76,8 @@
       "blockType": "paragraph",
       "sourceLength": 157,
       "targetLength": 184,
+      "sourceSentenceLengths": [66, 90],
+      "targetSentenceLengths": [74, 109],
       "reviewStatus": "approved",
       "reviewWarningCount": 0
     },
@@ -75,6 +87,8 @@
       "blockType": "paragraph",
       "sourceLength": 107,
       "targetLength": 90,
+      "sourceSentenceLengths": [107],
+      "targetSentenceLengths": [90],
       "reviewStatus": "approved",
       "reviewWarningCount": 0
     },
@@ -84,6 +98,8 @@
       "blockType": "heading",
       "sourceLength": 1,
       "targetLength": 1,
+      "sourceSentenceLengths": [1],
+      "targetSentenceLengths": [1],
       "reviewStatus": "approved",
       "reviewWarningCount": 0
     },
@@ -93,6 +109,8 @@
       "blockType": "figure-marker",
       "sourceLength": 49,
       "targetLength": 53,
+      "sourceSentenceLengths": [49],
+      "targetSentenceLengths": [53],
       "reviewStatus": "approved",
       "reviewWarningCount": 0
     },
@@ -102,6 +120,8 @@
       "blockType": "heading",
       "sourceLength": 7,
       "targetLength": 8,
+      "sourceSentenceLengths": [7],
+      "targetSentenceLengths": [8],
       "reviewStatus": "approved",
       "reviewWarningCount": 0
     },
@@ -111,6 +131,8 @@
       "blockType": "paragraph",
       "sourceLength": 90,
       "targetLength": 72,
+      "sourceSentenceLengths": [90],
+      "targetSentenceLengths": [72],
       "reviewStatus": "approved",
       "reviewWarningCount": 0
     },
@@ -120,6 +142,8 @@
       "blockType": "heading",
       "sourceLength": 21,
       "targetLength": 22,
+      "sourceSentenceLengths": [21],
+      "targetSentenceLengths": [22],
       "reviewStatus": "approved",
       "reviewWarningCount": 0
     },
@@ -129,6 +153,8 @@
       "blockType": "paragraph",
       "sourceLength": 1256,
       "targetLength": 1406,
+      "sourceSentenceLengths": [116, 281, 302, 258, 39, 255],
+      "targetSentenceLengths": [144, 302, 325, 279, 43, 308],
       "reviewStatus": "approved",
       "reviewWarningCount": 0
     },
@@ -138,6 +164,8 @@
       "blockType": "paragraph",
       "sourceLength": 1154,
       "targetLength": 1291,
+      "sourceSentenceLengths": [171, 74, 561, 231, 113],
+      "targetSentenceLengths": [201, 84, 605, 267, 130],
       "reviewStatus": "approved",
       "reviewWarningCount": 0
     },
@@ -147,6 +175,8 @@
       "blockType": "paragraph",
       "sourceLength": 1294,
       "targetLength": 1446,
+      "sourceSentenceLengths": [302, 231, 440, 77, 240],
+      "targetSentenceLengths": [352, 246, 486, 94, 264],
       "reviewStatus": "approved",
       "reviewWarningCount": 0
     },
@@ -156,6 +186,8 @@
       "blockType": "paragraph",
       "sourceLength": 210,
       "targetLength": 219,
+      "sourceSentenceLengths": [210],
+      "targetSentenceLengths": [219],
       "reviewStatus": "approved",
       "reviewWarningCount": 0
     },
@@ -165,6 +197,8 @@
       "blockType": "paragraph",
       "sourceLength": 1284,
       "targetLength": 1440,
+      "sourceSentenceLengths": [75, 192, 130, 120, 106, 148, 152, 298, 55],
+      "targetSentenceLengths": [77, 215, 145, 138, 115, 154, 176, 345, 67],
       "reviewStatus": "approved",
       "reviewWarningCount": 0
     },
@@ -174,6 +208,8 @@
       "blockType": "paragraph",
       "sourceLength": 736,
       "targetLength": 860,
+      "sourceSentenceLengths": [125, 106, 142, 187, 172],
+      "targetSentenceLengths": [143, 144, 168, 189, 212],
       "reviewStatus": "approved",
       "reviewWarningCount": 0
     },
@@ -183,6 +219,8 @@
       "blockType": "paragraph",
       "sourceLength": 1203,
       "targetLength": 1377,
+      "sourceSentenceLengths": [168, 191, 361, 183, 196, 99],
+      "targetSentenceLengths": [91, 118, 238, 389, 216, 216, 103],
       "reviewStatus": "approved",
       "reviewWarningCount": 0
     },
@@ -192,6 +230,8 @@
       "blockType": "paragraph",
       "sourceLength": 675,
       "targetLength": 816,
+      "sourceSentenceLengths": [214, 309, 150],
+      "targetSentenceLengths": [257, 360, 197],
       "reviewStatus": "approved",
       "reviewWarningCount": 0
     },
@@ -201,6 +241,8 @@
       "blockType": "heading",
       "sourceLength": 1,
       "targetLength": 1,
+      "sourceSentenceLengths": [1],
+      "targetSentenceLengths": [1],
       "reviewStatus": "approved",
       "reviewWarningCount": 0
     },
@@ -210,6 +252,8 @@
       "blockType": "paragraph",
       "sourceLength": 107,
       "targetLength": 107,
+      "sourceSentenceLengths": [107],
+      "targetSentenceLengths": [107],
       "reviewStatus": "approved",
       "reviewWarningCount": 0
     },
@@ -219,6 +263,8 @@
       "blockType": "paragraph",
       "sourceLength": 90,
       "targetLength": 90,
+      "sourceSentenceLengths": [90],
+      "targetSentenceLengths": [90],
       "reviewStatus": "approved",
       "reviewWarningCount": 0
     },
@@ -228,6 +274,8 @@
       "blockType": "heading",
       "sourceLength": 7,
       "targetLength": 7,
+      "sourceSentenceLengths": [7],
+      "targetSentenceLengths": [7],
       "reviewStatus": "approved",
       "reviewWarningCount": 0
     },
@@ -237,6 +285,8 @@
       "blockType": "paragraph",
       "sourceLength": 1269,
       "targetLength": 1261,
+      "sourceSentenceLengths": [101, 229, 34, 178, 218, 109, 188, 41, 163],
+      "targetSentenceLengths": [100, 229, 34, 173, 218, 107, 188, 41, 163],
       "reviewStatus": "approved",
       "reviewWarningCount": 0
     },
@@ -246,6 +296,8 @@
       "blockType": "paragraph",
       "sourceLength": 1335,
       "targetLength": 1334,
+      "sourceSentenceLengths": [244, 172, 207, 233, 197, 277],
+      "targetSentenceLengths": [244, 172, 207, 233, 196, 277],
       "reviewStatus": "approved",
       "reviewWarningCount": 0
     },
@@ -255,6 +307,8 @@
       "blockType": "paragraph",
       "sourceLength": 1085,
       "targetLength": 1233,
+      "sourceSentenceLengths": [306, 170, 109, 219, 277],
+      "targetSentenceLengths": [327, 209, 121, 244, 328],
       "reviewStatus": "approved",
       "reviewWarningCount": 0
     },
@@ -264,6 +318,10 @@
       "blockType": "paragraph",
       "sourceLength": 1377,
       "targetLength": 1627,
+      "sourceSentenceLengths": [186, 149, 147, 153, 56, 239, 138, 143, 39, 118],
+      "targetSentenceLengths": [
+        249, 57, 117, 177, 177, 67, 301, 156, 149, 37, 130
+      ],
       "reviewStatus": "approved",
       "reviewWarningCount": 0
     },
@@ -273,6 +331,8 @@
       "blockType": "paragraph",
       "sourceLength": 1228,
       "targetLength": 1361,
+      "sourceSentenceLengths": [137, 296, 174, 197, 164, 40, 86, 127],
+      "targetSentenceLengths": [148, 296, 202, 242, 173, 50, 102, 141],
       "reviewStatus": "approved",
       "reviewWarningCount": 0
     },
@@ -282,6 +342,8 @@
       "blockType": "table-marker",
       "sourceLength": 499,
       "targetLength": 554,
+      "sourceSentenceLengths": [26, 168, 241, 61],
+      "targetSentenceLengths": [25, 196, 264, 66],
       "reviewStatus": "approved",
       "reviewWarningCount": 0
     },
@@ -291,6 +353,8 @@
       "blockType": "table-marker",
       "sourceLength": 659,
       "targetLength": 699,
+      "sourceSentenceLengths": [26, 205, 110, 311, 3],
+      "targetSentenceLengths": [25, 215, 122, 334],
       "reviewStatus": "approved",
       "reviewWarningCount": 0
     },
@@ -300,6 +364,8 @@
       "blockType": "paragraph",
       "sourceLength": 107,
       "targetLength": 111,
+      "sourceSentenceLengths": [107],
+      "targetSentenceLengths": [111],
       "reviewStatus": "approved",
       "reviewWarningCount": 0
     },
@@ -309,6 +375,8 @@
       "blockType": "heading",
       "sourceLength": 1,
       "targetLength": 1,
+      "sourceSentenceLengths": [1],
+      "targetSentenceLengths": [1],
       "reviewStatus": "approved",
       "reviewWarningCount": 0
     },
@@ -318,6 +386,8 @@
       "blockType": "heading",
       "sourceLength": 7,
       "targetLength": 8,
+      "sourceSentenceLengths": [7],
+      "targetSentenceLengths": [8],
       "reviewStatus": "approved",
       "reviewWarningCount": 0
     },
@@ -327,6 +397,8 @@
       "blockType": "paragraph",
       "sourceLength": 90,
       "targetLength": 94,
+      "sourceSentenceLengths": [90],
+      "targetSentenceLengths": [94],
       "reviewStatus": "approved",
       "reviewWarningCount": 0
     },
@@ -336,6 +408,8 @@
       "blockType": "paragraph",
       "sourceLength": 1327,
       "targetLength": 1511,
+      "sourceSentenceLengths": [97, 80, 126, 143, 216, 59, 187, 215, 196],
+      "targetSentenceLengths": [115, 102, 149, 153, 259, 65, 218, 232, 210],
       "reviewStatus": "approved",
       "reviewWarningCount": 0
     },
@@ -345,6 +419,8 @@
       "blockType": "paragraph",
       "sourceLength": 1166,
       "targetLength": 1322,
+      "sourceSentenceLengths": [96, 229, 176, 182, 71, 214, 192],
+      "targetSentenceLengths": [118, 239, 184, 205, 82, 244, 244],
       "reviewStatus": "approved",
       "reviewWarningCount": 0
     },
@@ -354,6 +430,8 @@
       "blockType": "paragraph",
       "sourceLength": 503,
       "targetLength": 545,
+      "sourceSentenceLengths": [319, 183],
+      "targetSentenceLengths": [42, 305, 196],
       "reviewStatus": "approved",
       "reviewWarningCount": 0
     },
@@ -363,6 +441,8 @@
       "blockType": "paragraph",
       "sourceLength": 728,
       "targetLength": 820,
+      "sourceSentenceLengths": [37, 283, 167, 238],
+      "targetSentenceLengths": [60, 303, 180, 274],
       "reviewStatus": "approved",
       "reviewWarningCount": 0
     },
@@ -372,6 +452,8 @@
       "blockType": "figure-marker",
       "sourceLength": 702,
       "targetLength": 830,
+      "sourceSentenceLengths": [4, 81, 182, 96, 141, 151, 41],
+      "targetSentenceLengths": [4, 102, 222, 103, 174, 181, 38],
       "reviewStatus": "approved",
       "reviewWarningCount": 0
     },
@@ -381,6 +463,8 @@
       "blockType": "figure-marker",
       "sourceLength": 1310,
       "targetLength": 1500,
+      "sourceSentenceLengths": [125, 198, 199, 100, 54, 157, 173, 297],
+      "targetSentenceLengths": [127, 234, 231, 102, 75, 208, 182, 334],
       "reviewStatus": "approved",
       "reviewWarningCount": 0
     },
@@ -390,6 +474,8 @@
       "blockType": "paragraph",
       "sourceLength": 645,
       "targetLength": 701,
+      "sourceSentenceLengths": [51, 117, 146, 220, 107],
+      "targetSentenceLengths": [53, 131, 152, 237, 124],
       "reviewStatus": "approved",
       "reviewWarningCount": 0
     },
@@ -399,6 +485,8 @@
       "blockType": "heading",
       "sourceLength": 1,
       "targetLength": 1,
+      "sourceSentenceLengths": [1],
+      "targetSentenceLengths": [1],
       "reviewStatus": "approved",
       "reviewWarningCount": 0
     },
@@ -408,6 +496,8 @@
       "blockType": "paragraph",
       "sourceLength": 107,
       "targetLength": 107,
+      "sourceSentenceLengths": [107],
+      "targetSentenceLengths": [107],
       "reviewStatus": "approved",
       "reviewWarningCount": 0
     },
@@ -417,6 +507,8 @@
       "blockType": "paragraph",
       "sourceLength": 90,
       "targetLength": 90,
+      "sourceSentenceLengths": [90],
+      "targetSentenceLengths": [90],
       "reviewStatus": "approved",
       "reviewWarningCount": 0
     },
@@ -426,6 +518,8 @@
       "blockType": "heading",
       "sourceLength": 7,
       "targetLength": 7,
+      "sourceSentenceLengths": [7],
+      "targetSentenceLengths": [7],
       "reviewStatus": "approved",
       "reviewWarningCount": 0
     },
@@ -435,6 +529,8 @@
       "blockType": "figure-marker",
       "sourceLength": 593,
       "targetLength": 671,
+      "sourceSentenceLengths": [4, 67, 143, 84, 249, 41],
+      "targetSentenceLengths": [4, 77, 159, 88, 300, 38],
       "reviewStatus": "approved",
       "reviewWarningCount": 0
     },
@@ -444,6 +540,8 @@
       "blockType": "paragraph",
       "sourceLength": 126,
       "targetLength": 149,
+      "sourceSentenceLengths": [126],
+      "targetSentenceLengths": [149],
       "reviewStatus": "approved",
       "reviewWarningCount": 0
     },
@@ -453,6 +551,8 @@
       "blockType": "figure-marker",
       "sourceLength": 1334,
       "targetLength": 1641,
+      "sourceSentenceLengths": [62, 200, 157, 197, 100, 164, 212, 235],
+      "targetSentenceLengths": [66, 245, 186, 265, 118, 207, 269, 278],
       "reviewStatus": "approved",
       "reviewWarningCount": 0
     },
@@ -462,6 +562,8 @@
       "blockType": "paragraph",
       "sourceLength": 636,
       "targetLength": 701,
+      "sourceSentenceLengths": [42, 156, 165, 136, 75, 57],
+      "targetSentenceLengths": [44, 171, 206, 138, 79, 58],
       "reviewStatus": "approved",
       "reviewWarningCount": 0
     },
@@ -471,6 +573,8 @@
       "blockType": "figure-marker",
       "sourceLength": 601,
       "targetLength": 674,
+      "sourceSentenceLengths": [4, 71, 93, 84, 136, 166, 41],
+      "targetSentenceLengths": [4, 67, 100, 91, 179, 189, 38],
       "reviewStatus": "approved",
       "reviewWarningCount": 0
     },
@@ -480,6 +584,8 @@
       "blockType": "paragraph",
       "sourceLength": 188,
       "targetLength": 207,
+      "sourceSentenceLengths": [84, 103],
+      "targetSentenceLengths": [97, 109],
       "reviewStatus": "approved",
       "reviewWarningCount": 0
     },
@@ -489,6 +595,8 @@
       "blockType": "figure-marker",
       "sourceLength": 1321,
       "targetLength": 1609,
+      "sourceSentenceLengths": [71, 188, 232, 149, 75, 130, 145, 159, 164],
+      "targetSentenceLengths": [75, 193, 302, 190, 105, 195, 180, 184, 177],
       "reviewStatus": "approved",
       "reviewWarningCount": 0
     },
@@ -498,6 +606,8 @@
       "blockType": "paragraph",
       "sourceLength": 453,
       "targetLength": 495,
+      "sourceSentenceLengths": [24, 147, 260, 16, 2],
+      "targetSentenceLengths": [25, 174, 264, 26, 2],
       "reviewStatus": "approved",
       "reviewWarningCount": 0
     },
@@ -507,6 +617,8 @@
       "blockType": "paragraph",
       "sourceLength": 107,
       "targetLength": 107,
+      "sourceSentenceLengths": [107],
+      "targetSentenceLengths": [107],
       "reviewStatus": "approved",
       "reviewWarningCount": 0
     },
@@ -516,6 +628,8 @@
       "blockType": "heading",
       "sourceLength": 1,
       "targetLength": 1,
+      "sourceSentenceLengths": [1],
+      "targetSentenceLengths": [1],
       "reviewStatus": "approved",
       "reviewWarningCount": 0
     },
@@ -525,6 +639,8 @@
       "blockType": "heading",
       "sourceLength": 7,
       "targetLength": 7,
+      "sourceSentenceLengths": [7],
+      "targetSentenceLengths": [7],
       "reviewStatus": "approved",
       "reviewWarningCount": 0
     },
@@ -534,6 +650,8 @@
       "blockType": "paragraph",
       "sourceLength": 90,
       "targetLength": 90,
+      "sourceSentenceLengths": [90],
+      "targetSentenceLengths": [90],
       "reviewStatus": "approved",
       "reviewWarningCount": 0
     },
@@ -543,6 +661,8 @@
       "blockType": "heading",
       "sourceLength": 3,
       "targetLength": 3,
+      "sourceSentenceLengths": [3],
+      "targetSentenceLengths": [3],
       "reviewStatus": "approved",
       "reviewWarningCount": 0
     },
@@ -552,6 +672,8 @@
       "blockType": "heading",
       "sourceLength": 3,
       "targetLength": 3,
+      "sourceSentenceLengths": [3],
+      "targetSentenceLengths": [3],
       "reviewStatus": "approved",
       "reviewWarningCount": 0
     },
@@ -561,6 +683,8 @@
       "blockType": "heading",
       "sourceLength": 3,
       "targetLength": 3,
+      "sourceSentenceLengths": [3],
+      "targetSentenceLengths": [3],
       "reviewStatus": "approved",
       "reviewWarningCount": 0
     },
@@ -570,6 +694,8 @@
       "blockType": "heading",
       "sourceLength": 38,
       "targetLength": 37,
+      "sourceSentenceLengths": [38],
+      "targetSentenceLengths": [37],
       "reviewStatus": "approved",
       "reviewWarningCount": 0
     },
@@ -579,6 +705,8 @@
       "blockType": "heading",
       "sourceLength": 3,
       "targetLength": 3,
+      "sourceSentenceLengths": [3],
+      "targetSentenceLengths": [3],
       "reviewStatus": "approved",
       "reviewWarningCount": 0
     },
@@ -588,6 +716,8 @@
       "blockType": "heading",
       "sourceLength": 1,
       "targetLength": 1,
+      "sourceSentenceLengths": [1],
+      "targetSentenceLengths": [1],
       "reviewStatus": "approved",
       "reviewWarningCount": 0
     },
@@ -597,6 +727,8 @@
       "blockType": "heading",
       "sourceLength": 42,
       "targetLength": 45,
+      "sourceSentenceLengths": [42],
+      "targetSentenceLengths": [45],
       "reviewStatus": "approved",
       "reviewWarningCount": 0
     },
@@ -606,6 +738,8 @@
       "blockType": "heading",
       "sourceLength": 1,
       "targetLength": 1,
+      "sourceSentenceLengths": [1],
+      "targetSentenceLengths": [1],
       "reviewStatus": "approved",
       "reviewWarningCount": 0
     },
@@ -615,6 +749,8 @@
       "blockType": "figure-marker",
       "sourceLength": 608,
       "targetLength": 640,
+      "sourceSentenceLengths": [4, 113, 185, 137, 130, 34],
+      "targetSentenceLengths": [4, 113, 179, 148, 160, 31],
       "reviewStatus": "approved",
       "reviewWarningCount": 0
     },
@@ -624,6 +760,8 @@
       "blockType": "paragraph",
       "sourceLength": 1213,
       "targetLength": 1395,
+      "sourceSentenceLengths": [235, 361, 60, 194, 122, 178, 57],
+      "targetSentenceLengths": [268, 408, 73, 220, 156, 196, 68],
       "reviewStatus": "approved",
       "reviewWarningCount": 0
     },
@@ -633,6 +771,8 @@
       "blockType": "paragraph",
       "sourceLength": 468,
       "targetLength": 522,
+      "sourceSentenceLengths": [209, 258],
+      "targetSentenceLengths": [227, 294],
       "reviewStatus": "approved",
       "reviewWarningCount": 0
     },
@@ -642,6 +782,8 @@
       "blockType": "paragraph",
       "sourceLength": 268,
       "targetLength": 284,
+      "sourceSentenceLengths": [227, 40],
+      "targetSentenceLengths": [11, 231, 40],
       "reviewStatus": "approved",
       "reviewWarningCount": 0
     },
@@ -651,6 +793,8 @@
       "blockType": "figure-marker",
       "sourceLength": 496,
       "targetLength": 540,
+      "sourceSentenceLengths": [4, 79, 168, 202, 39],
+      "targetSentenceLengths": [4, 84, 192, 223, 33],
       "reviewStatus": "approved",
       "reviewWarningCount": 0
     },
@@ -660,6 +804,8 @@
       "blockType": "paragraph",
       "sourceLength": 1325,
       "targetLength": 1505,
+      "sourceSentenceLengths": [173, 149, 39, 60, 208, 138, 194, 50, 199, 106],
+      "targetSentenceLengths": [202, 179, 37, 77, 230, 153, 212, 61, 227, 118],
       "reviewStatus": "approved",
       "reviewWarningCount": 0
     },
@@ -669,6 +815,8 @@
       "blockType": "paragraph",
       "sourceLength": 755,
       "targetLength": 995,
+      "sourceSentenceLengths": [134, 241, 195, 106, 75],
+      "targetSentenceLengths": [166, 279, 211, 124, 211],
       "reviewStatus": "approved",
       "reviewWarningCount": 0
     },
@@ -678,6 +826,8 @@
       "blockType": "heading",
       "sourceLength": 1,
       "targetLength": 1,
+      "sourceSentenceLengths": [1],
+      "targetSentenceLengths": [1],
       "reviewStatus": "approved",
       "reviewWarningCount": 0
     },
@@ -687,6 +837,8 @@
       "blockType": "paragraph",
       "sourceLength": 107,
       "targetLength": 107,
+      "sourceSentenceLengths": [107],
+      "targetSentenceLengths": [107],
       "reviewStatus": "approved",
       "reviewWarningCount": 0
     },
@@ -696,6 +848,8 @@
       "blockType": "paragraph",
       "sourceLength": 90,
       "targetLength": 90,
+      "sourceSentenceLengths": [90],
+      "targetSentenceLengths": [90],
       "reviewStatus": "approved",
       "reviewWarningCount": 0
     },
@@ -705,6 +859,8 @@
       "blockType": "heading",
       "sourceLength": 7,
       "targetLength": 7,
+      "sourceSentenceLengths": [7],
+      "targetSentenceLengths": [7],
       "reviewStatus": "approved",
       "reviewWarningCount": 0
     },
@@ -714,6 +870,8 @@
       "blockType": "paragraph",
       "sourceLength": 105,
       "targetLength": 106,
+      "sourceSentenceLengths": [105],
+      "targetSentenceLengths": [106],
       "reviewStatus": "approved",
       "reviewWarningCount": 0
     },
@@ -723,6 +881,8 @@
       "blockType": "paragraph",
       "sourceLength": 211,
       "targetLength": 233,
+      "sourceSentenceLengths": [211],
+      "targetSentenceLengths": [233],
       "reviewStatus": "approved",
       "reviewWarningCount": 0
     },
@@ -732,6 +892,8 @@
       "blockType": "paragraph",
       "sourceLength": 53,
       "targetLength": 60,
+      "sourceSentenceLengths": [53],
+      "targetSentenceLengths": [60],
       "reviewStatus": "approved",
       "reviewWarningCount": 0
     },
@@ -741,6 +903,14 @@
       "blockType": "paragraph",
       "sourceLength": 1384,
       "targetLength": 1470,
+      "sourceSentenceLengths": [
+        93, 71, 5, 107, 43, 123, 65, 14, 5, 110, 66, 14, 5, 137, 63, 5, 93, 243,
+        55, 5, 36, 5
+      ],
+      "targetSentenceLengths": [
+        104, 71, 5, 114, 43, 133, 65, 14, 5, 118, 66, 14, 5, 167, 63, 5, 93,
+        263, 55, 5, 36, 5
+      ],
       "reviewStatus": "approved",
       "reviewWarningCount": 0
     },
@@ -750,6 +920,14 @@
       "blockType": "paragraph",
       "sourceLength": 1387,
       "targetLength": 1431,
+      "sourceSentenceLengths": [
+        80, 40, 132, 44, 14, 5, 152, 93, 5, 16, 11, 45, 9, 48, 23, 98, 58, 10,
+        5, 122, 133, 51, 59, 66, 44
+      ],
+      "targetSentenceLengths": [
+        95, 40, 161, 44, 14, 5, 152, 93, 5, 16, 11, 45, 9, 48, 23, 98, 58, 10,
+        5, 122, 133, 51, 59, 66, 44
+      ],
       "reviewStatus": "approved",
       "reviewWarningCount": 0
     },
@@ -759,6 +937,8 @@
       "blockType": "paragraph",
       "sourceLength": 721,
       "targetLength": 755,
+      "sourceSentenceLengths": [120, 106, 61, 5, 97, 48, 102, 61, 5, 84, 22],
+      "targetSentenceLengths": [123, 118, 61, 5, 97, 48, 118, 61, 5, 87, 22],
       "reviewStatus": "approved",
       "reviewWarningCount": 0
     },
@@ -768,6 +948,13 @@
       "blockType": "paragraph",
       "sourceLength": 1396,
       "targetLength": 1541,
+      "sourceSentenceLengths": [
+        89, 63, 120, 47, 192, 60, 5, 3, 180, 5, 3, 112, 177, 46, 131, 45, 102
+      ],
+      "targetSentenceLengths": [
+        85, 63, 134, 47, 189, 60, 5, 3, 158, 62, 5, 3, 112, 195, 46, 135, 45,
+        115, 60
+      ],
       "reviewStatus": "needs-review",
       "reviewWarningCount": 1
     },
@@ -777,6 +964,12 @@
       "blockType": "paragraph",
       "sourceLength": 1347,
       "targetLength": 1347,
+      "sourceSentenceLengths": [
+        52, 146, 152, 50, 106, 65, 5, 3, 131, 51, 170, 46, 156, 46, 108, 45
+      ],
+      "targetSentenceLengths": [
+        52, 146, 152, 50, 106, 65, 5, 3, 131, 51, 170, 46, 156, 46, 108, 45
+      ],
       "reviewStatus": "approved",
       "reviewWarningCount": 0
     },
@@ -786,6 +979,14 @@
       "blockType": "paragraph",
       "sourceLength": 1399,
       "targetLength": 1472,
+      "sourceSentenceLengths": [
+        119, 5, 2, 10, 2, 14, 2, 13, 48, 9, 74, 4, 55, 54, 5, 88, 49, 83, 133,
+        53, 145, 52, 15, 103, 44, 133, 59
+      ],
+      "targetSentenceLengths": [
+        126, 5, 2, 10, 2, 14, 2, 13, 48, 9, 74, 4, 56, 54, 5, 108, 49, 91, 140,
+        53, 165, 52, 15, 113, 44, 133, 59
+      ],
       "reviewStatus": "approved",
       "reviewWarningCount": 0
     },
@@ -795,6 +996,12 @@
       "blockType": "paragraph",
       "sourceLength": 570,
       "targetLength": 580,
+      "sourceSentenceLengths": [
+        5, 58, 29, 47, 106, 31, 62, 5, 3, 96, 41, 62, 5, 3, 3
+      ],
+      "targetSentenceLengths": [
+        5, 17, 2, 41, 29, 47, 34, 73, 31, 62, 5, 3, 28, 71, 41, 62, 5, 3, 3
+      ],
       "reviewStatus": "approved",
       "reviewWarningCount": 0
     },
@@ -804,6 +1011,8 @@
       "blockType": "paragraph",
       "sourceLength": 107,
       "targetLength": 107,
+      "sourceSentenceLengths": [107],
+      "targetSentenceLengths": [107],
       "reviewStatus": "approved",
       "reviewWarningCount": 0
     },
@@ -813,6 +1022,8 @@
       "blockType": "heading",
       "sourceLength": 1,
       "targetLength": 1,
+      "sourceSentenceLengths": [1],
+      "targetSentenceLengths": [1],
       "reviewStatus": "approved",
       "reviewWarningCount": 0
     },
@@ -822,6 +1033,8 @@
       "blockType": "heading",
       "sourceLength": 7,
       "targetLength": 7,
+      "sourceSentenceLengths": [7],
+      "targetSentenceLengths": [7],
       "reviewStatus": "approved",
       "reviewWarningCount": 0
     },
@@ -831,6 +1044,8 @@
       "blockType": "paragraph",
       "sourceLength": 90,
       "targetLength": 90,
+      "sourceSentenceLengths": [90],
+      "targetSentenceLengths": [90],
       "reviewStatus": "approved",
       "reviewWarningCount": 0
     },
@@ -840,6 +1055,8 @@
       "blockType": "paragraph",
       "sourceLength": 629,
       "targetLength": 643,
+      "sourceSentenceLengths": [107, 189, 137, 129, 63],
+      "targetSentenceLengths": [26, 2, 83, 84, 106, 105, 35, 80, 50, 63],
       "reviewStatus": "approved",
       "reviewWarningCount": 0
     },
@@ -849,6 +1066,8 @@
       "blockType": "paragraph",
       "sourceLength": 156,
       "targetLength": 156,
+      "sourceSentenceLengths": [156],
+      "targetSentenceLengths": [156],
       "reviewStatus": "approved",
       "reviewWarningCount": 0
     },
@@ -858,6 +1077,8 @@
       "blockType": "paragraph",
       "sourceLength": 80,
       "targetLength": 80,
+      "sourceSentenceLengths": [80],
+      "targetSentenceLengths": [80],
       "reviewStatus": "approved",
       "reviewWarningCount": 0
     },
@@ -867,6 +1088,8 @@
       "blockType": "paragraph",
       "sourceLength": 218,
       "targetLength": 219,
+      "sourceSentenceLengths": [218],
+      "targetSentenceLengths": [83, 135],
       "reviewStatus": "approved",
       "reviewWarningCount": 0
     },
@@ -876,6 +1099,8 @@
       "blockType": "paragraph",
       "sourceLength": 111,
       "targetLength": 111,
+      "sourceSentenceLengths": [111],
+      "targetSentenceLengths": [111],
       "reviewStatus": "approved",
       "reviewWarningCount": 0
     },
@@ -885,6 +1110,8 @@
       "blockType": "paragraph",
       "sourceLength": 171,
       "targetLength": 171,
+      "sourceSentenceLengths": [82, 88],
+      "targetSentenceLengths": [82, 88],
       "reviewStatus": "approved",
       "reviewWarningCount": 0
     },
@@ -894,6 +1121,8 @@
       "blockType": "paragraph",
       "sourceLength": 63,
       "targetLength": 63,
+      "sourceSentenceLengths": [63],
+      "targetSentenceLengths": [63],
       "reviewStatus": "approved",
       "reviewWarningCount": 0
     },
@@ -903,6 +1132,8 @@
       "blockType": "paragraph",
       "sourceLength": 164,
       "targetLength": 170,
+      "sourceSentenceLengths": [118, 45],
+      "targetSentenceLengths": [17, 102, 49],
       "reviewStatus": "approved",
       "reviewWarningCount": 0
     },
@@ -912,6 +1143,8 @@
       "blockType": "paragraph",
       "sourceLength": 107,
       "targetLength": 117,
+      "sourceSentenceLengths": [107],
+      "targetSentenceLengths": [25, 91],
       "reviewStatus": "approved",
       "reviewWarningCount": 0
     },
@@ -921,6 +1154,8 @@
       "blockType": "paragraph",
       "sourceLength": 1023,
       "targetLength": 1085,
+      "sourceSentenceLengths": [411, 113, 173, 233, 89],
+      "targetSentenceLengths": [15, 426, 117, 192, 236, 94],
       "reviewStatus": "approved",
       "reviewWarningCount": 0
     },
@@ -930,6 +1165,8 @@
       "blockType": "paragraph",
       "sourceLength": 20,
       "targetLength": 20,
+      "sourceSentenceLengths": [20],
+      "targetSentenceLengths": [20],
       "reviewStatus": "approved",
       "reviewWarningCount": 0
     },
@@ -939,6 +1176,8 @@
       "blockType": "heading",
       "sourceLength": 1,
       "targetLength": 1,
+      "sourceSentenceLengths": [1],
+      "targetSentenceLengths": [1],
       "reviewStatus": "approved",
       "reviewWarningCount": 0
     },
@@ -948,6 +1187,8 @@
       "blockType": "paragraph",
       "sourceLength": 107,
       "targetLength": 107,
+      "sourceSentenceLengths": [107],
+      "targetSentenceLengths": [107],
       "reviewStatus": "approved",
       "reviewWarningCount": 0
     }

@@ -2,6 +2,7 @@ import { forwardRef, useImperativeHandle, useRef } from "react";
 import type { SourceFileGateway } from "../../application/ports/SourceFileGateway";
 import type { ReaderSurfaceHandle } from "../../application/reader/semanticScroll";
 import type { BackgroundProcessingJob } from "../../application/pipeline/backgroundDocumentProcessing";
+import type { ExperimentalResegmentationReport } from "../../application/reader/experimentalResegmentation";
 import type { ReaderDocument } from "../../domain/processing";
 import type { DocumentSummary } from "../../domain/project";
 import { JanoIcon } from "../icons/JanoIcon";
@@ -12,6 +13,7 @@ type DocumentTranslationPanelProps = {
   fileGateway: SourceFileGateway;
   locked?: boolean;
   onProcess(): void;
+  onToggleExperimentalResegmentation(): void;
   onSelectionChange?(segmentIds: string[]): void;
   onUserIntent?(): void;
   onViewportChange?(): void;
@@ -19,6 +21,7 @@ type DocumentTranslationPanelProps = {
   projectedSegmentIds?: string[];
   readerDocument?: ReaderDocument | null;
   readerDocumentLoaded?: boolean;
+  resegmentationReport?: ExperimentalResegmentationReport | null;
   rootPath: string | null;
 };
 
@@ -31,6 +34,7 @@ export const DocumentTranslationPanel = forwardRef<
     fileGateway,
     locked = false,
     onProcess,
+    onToggleExperimentalResegmentation,
     onSelectionChange,
     onUserIntent,
     onViewportChange,
@@ -38,6 +42,7 @@ export const DocumentTranslationPanel = forwardRef<
     projectedSegmentIds,
     readerDocument,
     readerDocumentLoaded = false,
+    resegmentationReport = null,
     rootPath,
   }: DocumentTranslationPanelProps,
   ref,
@@ -77,19 +82,47 @@ export const DocumentTranslationPanel = forwardRef<
       return (
         <div className="translation-result">
           <div className="translation-result-toolbar">
-            <span>
+            <span className="translation-result-status">
               {processing
                 ? (progress?.message ?? "Preparando procesamiento…")
-                : "Traducción Jano alineada"}
+                : resegmentationReport
+                  ? `Prueba temporal · fuente ${resegmentationReport.originalSourceSegmentCount}→${resegmentationReport.sourceSegmentCount} · traducción ${resegmentationReport.originalTargetSegmentCount}→${resegmentationReport.targetSegmentCount} · sin guardar`
+                  : "Traducción Jano alineada"}
             </span>
-            <button
-              className="secondary-button button-with-icon"
-              disabled={processing}
-              onClick={onProcess}
-            >
-              {!processing ? <JanoIcon name="regenerar" size={16} /> : null}
-              <span>{processing ? "Procesando…" : "Regenerar traducción"}</span>
-            </button>
+            <div className="translation-result-actions">
+              <button
+                aria-pressed={Boolean(resegmentationReport)}
+                className={`secondary-button button-with-icon ${
+                  resegmentationReport ? "experimental-button-active" : ""
+                }`}
+                disabled={processing}
+                onClick={onToggleExperimentalResegmentation}
+                title={
+                  resegmentationReport
+                    ? "Volver a los segmentos persistidos"
+                    : "Probar unidades de oración en memoria sin modificar archivos"
+                }
+                type="button"
+              >
+                <JanoIcon name="segmento" size={16} />
+                <span>
+                  {resegmentationReport
+                    ? "Restaurar segmentos"
+                    : "Resegmentar (prueba)"}
+                </span>
+              </button>
+              <button
+                className="secondary-button button-with-icon"
+                disabled={processing}
+                onClick={onProcess}
+                type="button"
+              >
+                {!processing ? <JanoIcon name="regenerar" size={16} /> : null}
+                <span>
+                  {processing ? "Procesando…" : "Regenerar traducción"}
+                </span>
+              </button>
+            </div>
           </div>
           {processing ? (
             <div

@@ -16,6 +16,8 @@ export type MathObject = {
 
 export type SourceSegment = {
   segmentId: string;
+  parentSegmentId?: string;
+  unitOrdinal?: number;
   page: number;
   blockType:
     | "heading"
@@ -30,6 +32,8 @@ export type SourceSegment = {
 
 export type TranslatedSegment = {
   segmentId: string;
+  parentSegmentId?: string;
+  unitOrdinal?: number;
   text: string;
   baseText?: string;
   reviewedText?: string | null;

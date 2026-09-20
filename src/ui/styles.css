@@ -543,10 +543,24 @@ button:disabled {
   font-size: 11px;
 }
 
-.translation-result-toolbar span {
+.translation-result-status {
+  min-width: 0;
+  flex: 1;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
+}
+
+.translation-result-actions {
+  display: flex;
+  flex: none;
+  align-items: center;
+  gap: 6px;
+}
+
+.experimental-button-active {
+  border-color: color-mix(in srgb, var(--amber) 64%, var(--line));
+  color: var(--amber);
 }
 
 .translation-inline-progress {

@@ -31,6 +31,10 @@ import {
   type ReaderSurfaceHandle,
 } from "../application/reader/semanticScroll";
 import {
+  resegmentReaderDocument,
+  type ExperimentalResegmentationResult,
+} from "../application/reader/experimentalResegmentation";
+import {
   projectedSegmentIds,
   type SemanticSelection,
 } from "../application/reader/selectionProjection";
@@ -115,6 +119,11 @@ export function App({
     documentId: string;
     value: ReaderDocument | null;
   } | null>(null);
+  const [experimentalResegmentation, setExperimentalResegmentation] = useState<{
+    documentId: string;
+    translationHash: string | null;
+    result: ExperimentalResegmentationResult;
+  } | null>(null);
   const [backgroundJobs, dispatchBackgroundJob] = useReducer(
     backgroundProcessingReducer,
     {},
@@ -160,10 +169,18 @@ export function App({
     snapshot?.project.projectId,
     selectedDocument?.documentId,
   );
-  const readerDocument =
+  const persistedReaderDocument =
     loadedReaderDocument?.documentId === activeDocumentId
       ? loadedReaderDocument.value
       : null;
+  const activeExperimentalResegmentation =
+    experimentalResegmentation?.documentId === activeDocumentId &&
+    experimentalResegmentation.translationHash === activeTranslationHash
+      ? experimentalResegmentation
+      : null;
+  const readerDocument =
+    activeExperimentalResegmentation?.result.document ??
+    persistedReaderDocument;
   const readerDocumentLoaded =
     loadedReaderDocument?.documentId === activeDocumentId;
   const activeSemanticSelection =
@@ -710,6 +727,20 @@ export function App({
     setPanelLocks((current) => ({ ...current, [side]: !current[side] }));
   }
 
+  function toggleExperimentalResegmentation() {
+    setSemanticSelection(null);
+    if (activeExperimentalResegmentation) {
+      setExperimentalResegmentation(null);
+      return;
+    }
+    if (!activeDocumentId || !persistedReaderDocument) return;
+    setExperimentalResegmentation({
+      documentId: activeDocumentId,
+      translationHash: activeTranslationHash,
+      result: resegmentReaderDocument(persistedReaderDocument),
+    });
+  }
+
   const syncAvailable = Boolean(readerDocument?.alignments.length);
   const readerActive = Boolean(snapshot && selectedDocument);
 
@@ -1005,6 +1036,9 @@ export function App({
             key={selectedDocument?.documentId ?? "empty"}
             locked={panelLocks.translation}
             onProcess={processDocumentInBackground}
+            onToggleExperimentalResegmentation={
+              toggleExperimentalResegmentation
+            }
             onSelectionChange={handleTranslationSelection}
             onUserIntent={handleTranslationIntent}
             onViewportChange={handleTranslationScroll}
@@ -1012,6 +1046,9 @@ export function App({
             projectedSegmentIds={projectedTranslationSegmentIds}
             readerDocument={readerDocument}
             readerDocumentLoaded={readerDocumentLoaded}
+            resegmentationReport={
+              activeExperimentalResegmentation?.result.report ?? null
+            }
             ref={translationReaderRef}
             rootPath={snapshot?.project.root ?? null}
           />

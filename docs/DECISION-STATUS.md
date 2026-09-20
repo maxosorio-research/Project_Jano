@@ -112,6 +112,20 @@ a quieter amber field with an edge marker so it remains distinguishable from
 the user's real browser selection. Precise contextual spans still remain future
 work.
 
+## Experimental slice: hierarchical sentence-group resegmentation
+
+`v0.1.0-rc.1` adds a temporary, reversible reader experiment for Jano-generated
+translations. Eligible paragraph and footnote blocks retain their persisted
+identity as a parent and are subdivided in memory into sentence-sized child
+units. Source and target children are grouped contiguously and monotonically;
+unequal counts remain explicit rather than fabricating word-level precision.
+
+This is evidence gathering, not a new persistence contract. It neither rewrites
+artifacts nor triggers translation, and it is not yet available as a recursive
+project operation. Persistent migration requires the F22/F12/H6 manual gate and
+a separate versioned artifact-migration design. See
+`adr/0015-experimental-hierarchical-resegmentation.md`.
+
 ## Implemented initial slice: conditional OCR and local translation
 
 At the user's explicit request, Jano now implements a manual local processing flow. It first inspects native PDF text and uses bundled English OCR only when text is absent or deficient. It then normalizes, segments, translates through loopback Ollama while preserving segment IDs, persists transparent artifacts, and renders generated Markdown. See `adr/0010-conditional-ocr-translation-pipeline.md` and `adr/0012-local-document-processing-pipeline.md`.
