@@ -64,6 +64,11 @@ Project
 
 A document row shows pair state.
 
+Translation review status is a separate dimension from pair state. A paired
+document can still contain segments that need verification; it must not be
+misrepresented as a missing or unavailable pair. The presentation and severity
+rules are defined in `TRANSLATION-REVIEW-POLICY.md`.
+
 When local processing is active, the same status position temporarily shows a processing indicator. The task continues when the user opens another document. On completion, only the document's persisted pair-state indicator changes to the completed color/state; Jano must not navigate back to the processed document. A failure remains attached to that document and is exposed through the indicator tooltip and its translation panel when reopened.
 
 Examples:
@@ -306,15 +311,20 @@ The library shows logical folders without card borders. Folder creation preserve
 
 The library uses a compact expandable tree. Its header provides actions to import a document, create a mirrored folder, change sort order, reveal the current document, and collapse all folders. Keyboard navigation follows desktop tree conventions: Up/Down move between visible rows, Left/Right collapse or expand hierarchy, Home/End jump to the first or last visible row, and Enter/Space activate the focused row. Enter submits project, folder, and import forms; Escape closes dialogs.
 
-“New file” imports a selectable-text original PDF and may also import a PDF, Markdown, or text translation. Imported files are copied into the selected logical folder without overwriting existing files. When both sides are supplied, the translation receives a matching base name so discovery creates one logical document pair.
+“New file” imports one original PDF. The file is copied into the selected
+logical folder without overwriting an existing file. A translation is created
+only by the explicit local Jano pipeline; importing an external PDF, Markdown,
+or text translation is deferred beyond 0.1.
 
 Deletion is deliberately conservative:
 
 - the primary action removes a document from Jano while preserving ordinary files;
 - hidden documents can be restored from Settings;
-- deleting an original, translation, or both requires a separate explicit action;
-- never remember “delete both” as an automatic preference;
-- until system Trash integration exists, the UI must state that file deletion is permanent.
+- destructive file removal must eventually go through the project-local trash
+  design in `TRASH-DESIGN.md`;
+- until that design is implemented, no new permanent-delete shortcut should be
+  introduced and any existing destructive action must remain explicit;
+- never remember a destructive scope as an automatic preference.
 
 Settings expose the active manual local pipeline and its conditional OCR policy. A document without a translation offers an explicit **Extract and translate** action; importing a document never starts expensive OCR or model inference automatically.
 

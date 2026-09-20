@@ -17,17 +17,21 @@ The selected early license direction is:
 
 This means Jano should be described as **source-available non-commercial**, not as OSI-approved open source.
 
-## Repository action before public release
+## Repository status and action before public release
 
 Do not generate a homemade license.
 
-Before distribution:
+The official, unmodified PolyForm Noncommercial 1.0.0 text is already present
+in `LICENSE`. Before public distribution:
 
-1. obtain the official, unmodified PolyForm Noncommercial 1.0.0 text from its authoritative source;
-2. place it in `LICENSE`;
-3. add a separate `TRADEMARKS.md`;
-4. add `THIRD_PARTY_LICENSES.md`;
-5. review all bundled/runtime dependencies.
+1. confirm that `LICENSE` still matches the authoritative text;
+2. add and verify `THIRD_PARTY_LICENSES.md` from a complete bundled/runtime
+   dependency review;
+3. add a separate `TRADEMARKS.md` at the final public-release stage.
+
+Items 1 and 2 are public-distribution gates. The trademark file is explicitly
+deferred by the project owner and is not a blocker for internal 0.1 release
+candidates.
 
 ## Dependency policy
 

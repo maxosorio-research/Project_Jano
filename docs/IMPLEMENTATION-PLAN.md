@@ -86,19 +86,22 @@ This historical diagnostic choice was later superseded for the active document
 pipeline: ADR 0012 designates `translategemma:12b` as the official translation
 model and separates conservative review into its own model role.
 
-## Milestone 3 — translated text surface
+## Milestone 3 — translated text surface (historical baseline)
 
 Goal: a clean right-hand reading panel.
 
 Deliverables:
 
-- normalize/extract selectable translated PDF text, or load supported Markdown input;
+- render the Markdown produced by Jano's local pipeline;
 - render paragraphs as addressable segments;
 - continuous reading;
 - readable typography;
 - segment DOM/view mapping.
 
-Do not implement language translation.
+The original prohibition on language translation was superseded by the
+user-authorized extension below and ADR 0012. It remains applicable to remote
+providers, automatic processing on import, and externally supplied
+translations in 0.1.
 
 ## User-authorized extension — local processing pipeline
 
@@ -126,9 +129,10 @@ Deliverables:
 - persistence through repository interface;
 - fixtures from several real academic PDFs.
 
-## Milestone 5 — alignment design spike
+## Milestone 5 — external alignment design spike (post-0.1)
 
-Goal: choose the first real algorithm without hard-coding it into the UI.
+Goal: choose a correspondence algorithm for externally supplied translations
+without hard-coding it into the UI.
 
 Deliverables:
 
@@ -138,7 +142,9 @@ Deliverables:
 - benchmark cases;
 - explicit ADR describing the chosen MVP algorithm.
 
-Until then, viewer work may use fixture alignments.
+Jano-generated translations do not wait for this spike: ADR 0012 defines their
+deterministic 1:1 structural alignment by segment ID. External translation
+normalization and heuristic alignment are deferred by ADR 0013.
 
 ## Milestone 6 — synchronized scroll
 
@@ -192,29 +198,40 @@ Deliverables:
 
 Manual correction, split/merge operations, and confidence approval remain a later workflow because they require versioning and durable mutation semantics.
 
-## Storage design spike — before editable alignment
+## Hybrid storage migration — before editable alignment
 
-The current versioned JSON strategy remains valid for the synchronized-reader milestone. Before alignment correction, annotations, or substantially larger structured datasets, run a focused SQLite-versus-hybrid spike.
-
-Evaluate this candidate split:
+The SQLite-versus-JSON evaluation is closed by ADR 0014. The current versioned
+JSON strategy remains valid for `v0.1.0-rc.0`; do not combine the first manual
+reader exit test with a storage-engine migration. Before alignment correction,
+annotations, trash history, or substantially larger structured datasets,
+implement this split:
 
 ```text
 .jano/project.json        bootstrap, schema version, portable folder names
 .jano/state.sqlite        documents, representations, segments, alignments,
                           reading positions, revisions and future annotations
 .jano/documents/...       inspectable source/translation/math artifacts
+.jano/exports/...         explicit versioned JSON snapshots, never a second
+                          writable source of truth
 ```
 
-The spike must include:
+The migration must include:
 
 - migration from existing `documents.json` and per-document JSON artifacts;
 - relative paths only;
-- atomic schema migrations and backup before migration;
+- atomic schema migrations and a verified backup before migration;
 - foreign-key and transaction behavior for alignment replacement;
 - performance comparison on realistic papers and a roughly 20-document project;
 - recovery/export strategy so a damaged index does not make original and translation files inaccessible;
 - behavior inside folders synchronized by OneDrive, Dropbox, Syncthing, or similar tools;
 - repository interfaces that keep SQL out of UI/domain code.
+
+Use a Rust-owned SQLite connection behind the existing repository boundary;
+do not expose generic SQL execution to React. Start with rollback-journal
+`DELETE`, `synchronous=EXTRA`, `foreign_keys=ON`, `trusted_schema=OFF`, and a
+single serialized writer. WAL is not the default for portable/synchronized
+project folders. See `STORAGE-EVALUATION.md` for the evidence and operational
+constraints.
 
 Do not store original PDFs or the only readable copy of a translation inside SQLite.
 
@@ -230,6 +247,16 @@ Deliverables:
 - large-document smoke tests;
 - Windows x64 build;
 - macOS compilation/CI check if environment supports it.
+
+The first repeatable exit procedure and selected real-PDF corpus are defined in
+`TESTING-SYNCHRONIZATION.md`. It begins with one short baseline document, then
+adds OCR and warning-heavy cases without committing copyrighted document text.
+
+## Release-candidate progression
+
+The repository starts version tagging at `v0.1.0-rc.0`. Subsequent fixes use
+ordered release-candidate tags until the exit procedure passes on a packaged
+Windows build. Version and tag rules live in `VERSIONING.md`.
 
 ## MVP exit test
 

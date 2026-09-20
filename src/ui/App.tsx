@@ -110,7 +110,6 @@ export function App({
   const [expandedPaths, setExpandedPaths] = useState<Set<string>>(new Set());
   const [locateRequest, setLocateRequest] = useState(0);
   const [importOriginalPath, setImportOriginalPath] = useState("");
-  const [importTranslationPath, setImportTranslationPath] = useState("");
   const [importFolderPath, setImportFolderPath] = useState("");
   const [loadedReaderDocument, setLoadedReaderDocument] = useState<{
     documentId: string;
@@ -165,6 +164,8 @@ export function App({
     loadedReaderDocument?.documentId === activeDocumentId
       ? loadedReaderDocument.value
       : null;
+  const readerDocumentLoaded =
+    loadedReaderDocument?.documentId === activeDocumentId;
   const activeSemanticSelection =
     semanticSelection?.documentId === activeDocumentId
       ? semanticSelection
@@ -430,7 +431,6 @@ export function App({
 
   function openFileDialog() {
     setImportOriginalPath("");
-    setImportTranslationPath("");
     setImportFolderPath(activeFolderPath);
     setDialog("file");
   }
@@ -509,25 +509,14 @@ export function App({
     }
   }
 
-  async function chooseImportFile(side: "original" | "translation") {
+  async function chooseImportFile() {
     const selected = await open({
       multiple: false,
-      title:
-        side === "original"
-          ? "Seleccionar PDF original"
-          : "Seleccionar archivo de traducción",
-      filters: [
-        side === "original"
-          ? { name: "PDF", extensions: ["pdf"] }
-          : {
-              name: "Traducción",
-              extensions: ["pdf", "md", "markdown", "txt"],
-            },
-      ],
+      title: "Seleccionar PDF original",
+      filters: [{ name: "PDF", extensions: ["pdf"] }],
     });
     const path = Array.isArray(selected) ? selected[0] : selected;
-    if (path && side === "original") setImportOriginalPath(path);
-    if (path && side === "translation") setImportTranslationPath(path);
+    if (path) setImportOriginalPath(path);
   }
 
   async function importDocument() {
@@ -540,7 +529,7 @@ export function App({
       projectGateway.importDocument(
         snapshot.project.root,
         importOriginalPath,
-        importTranslationPath || null,
+        null,
         destinationFolder,
       ),
     );
@@ -1022,6 +1011,7 @@ export function App({
             processingJob={selectedProcessingJob}
             projectedSegmentIds={projectedTranslationSegmentIds}
             readerDocument={readerDocument}
+            readerDocumentLoaded={readerDocumentLoaded}
             ref={translationReaderRef}
             rootPath={snapshot?.project.root ?? null}
           />
@@ -1119,8 +1109,9 @@ export function App({
             }}
           >
             <p>
-              Importa un PDF original y, opcionalmente, su traducción. Jano no
-              sobrescribirá archivos existentes.
+              Importa un PDF original. En Jano 0.1, la traducción y su
+              alineación se generan después mediante el pipeline local de Jano.
+              No se sobrescribirán archivos existentes.
             </p>
             <div className="file-picker-row">
               <div>
@@ -1133,24 +1124,7 @@ export function App({
               </div>
               <button
                 className="secondary-button"
-                onClick={() => void chooseImportFile("original")}
-                type="button"
-              >
-                Elegir…
-              </button>
-            </div>
-            <div className="file-picker-row">
-              <div>
-                <label>Traducción</label>
-                <span>
-                  {importTranslationPath
-                    ? fileName(importTranslationPath)
-                    : "Opcional · PDF, Markdown o texto"}
-                </span>
-              </div>
-              <button
-                className="secondary-button"
-                onClick={() => void chooseImportFile("translation")}
+                onClick={() => void chooseImportFile()}
                 type="button"
               >
                 Elegir…

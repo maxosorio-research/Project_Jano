@@ -1,6 +1,8 @@
 # Data model
 
-This document defines the conceptual model. It does **not** decide the final SQLite-vs-JSON persistence split.
+This document defines the conceptual model. ADR 0014 decides the target
+SQLite/files/JSON-export split; repositories keep that physical choice out of
+the domain model.
 
 ## Project
 
@@ -42,6 +44,10 @@ type Document = {
 Filename matching discovers relationships; it must not remain the permanent identity after pairing.
 
 Milestone 2.5 persists `hidden` in the document catalog so “Remove from Jano” remains reversible and does not cause the same ordinary files to be rediscovered as a new document. Restoring clears the flag and preserves `documentId`.
+
+`hidden` must never be reused to mean “in trash.” A future trashed record has
+explicit provenance, original locations, and restoration state as specified in
+`TRASH-DESIGN.md`.
 
 Logical project folders are the union of relative directories found beneath the original and translation roots. Creating a folder through Jano creates the same relative path on both sides.
 
@@ -212,7 +218,8 @@ UI should present icon + text, not color alone.
 
 ## `.jano` conceptual contents
 
-The final physical layout is open, but conceptually `.jano` owns:
+ADR 0014 assigns structured mutable state to SQLite while preserving ordinary
+files and explicit JSON exports. Conceptually `.jano` owns:
 
 ```text
 project configuration
@@ -251,4 +258,6 @@ interface SegmentRepository {
 }
 ```
 
-The implementation may start with JSON or SQLite, but application/domain code must not depend on raw storage details.
+The release-candidate implementation starts with versioned JSON. The accepted
+target is hybrid SQLite/files/JSON-export storage, but application/domain code
+must not depend on raw storage details.

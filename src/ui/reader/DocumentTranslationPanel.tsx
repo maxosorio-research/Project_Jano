@@ -18,6 +18,7 @@ type DocumentTranslationPanelProps = {
   processingJob: BackgroundProcessingJob | null;
   projectedSegmentIds?: string[];
   readerDocument?: ReaderDocument | null;
+  readerDocumentLoaded?: boolean;
   rootPath: string | null;
 };
 
@@ -36,6 +37,7 @@ export const DocumentTranslationPanel = forwardRef<
     processingJob,
     projectedSegmentIds,
     readerDocument,
+    readerDocumentLoaded = false,
     rootPath,
   }: DocumentTranslationPanelProps,
   ref,
@@ -60,13 +62,25 @@ export const DocumentTranslationPanel = forwardRef<
       document.translation.mediaType === "text/markdown" ||
       document.translation.mediaType === "text/plain"
     ) {
+      if (!readerDocument) {
+        return (
+          <div className="panel-placeholder">
+            <p className="file-path">{document.translation.relativePath}</p>
+            <span>
+              {readerDocumentLoaded
+                ? "Traducción externa o sin representación estructurada. Jano 0.1 solo sincroniza traducciones generadas por su pipeline local."
+                : "Cargando traducción estructurada…"}
+            </span>
+          </div>
+        );
+      }
       return (
         <div className="translation-result">
           <div className="translation-result-toolbar">
             <span>
               {processing
                 ? (progress?.message ?? "Preparando procesamiento…")
-                : "Markdown traducido y alineado"}
+                : "Traducción Jano alineada"}
             </span>
             <button
               className="secondary-button button-with-icon"

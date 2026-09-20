@@ -51,12 +51,17 @@ When a change affects an architectural decision, also read the relevant file und
 
 Jano 0.1 is the only implementation target unless the user explicitly requests otherwise.
 
+For 0.1, the supported bilingual flow starts from an original PDF and uses the
+manual local Jano pipeline to create the translated Markdown, structured
+segments, and deterministic alignment. Importing, normalizing, or aligning an
+external translation is deferred until after 0.1.
+
 Do **not** implement the following in 0.1:
 
-- OCR
-- automatic translation
 - remote AI APIs or API-key management
-- local LLM runtimes
+- automatic processing on import
+- external translation import, normalization, or alignment
+- OCR languages other than English
 - Zotero integration
 - persistent research annotations or notes
 - plugins

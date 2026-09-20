@@ -36,7 +36,11 @@ native extraction
 
 ## Translation engine
 
-Future translation pipeline:
+The 0.1 translation pipeline is local and user-initiated. It generates target
+segments inside Jano and preserves source segment IDs, which gives the reader a
+deterministic structural correspondence.
+
+Future translation evolution:
 
 ```text
 extract
@@ -51,6 +55,21 @@ extract
 ```
 
 The engine should be provider-agnostic.
+
+## Post-0.1 — external translations
+
+External translated PDFs, Markdown, and text require a distinct ingestion
+contract. Future work must normalize them into target segments, record
+provenance, compute non-trivial `1:n`, `n:1`, and `n:m` correspondences, expose
+confidence and unmatched content, and preserve the original supplied file.
+
+This work is intentionally not a 0.1 exit requirement. See ADR 0013.
+
+## Post-0.1 — recoverable deletion
+
+Before expanding destructive library actions, implement the project-local
+trash and restore design in `TRASH-DESIGN.md`. Hiding a document remains a
+separate, non-destructive operation.
 
 ## Local AI
 
@@ -167,6 +186,8 @@ Intended early code policy:
 - source-available;
 - non-commercial;
 - PolyForm Noncommercial 1.0.0;
-- Jano name/logo handled separately as trademark/brand assets.
+- Jano name/logo handled separately as final-release trademark/brand assets.
 
-Dependency licenses must be reviewed before distribution.
+Dependency licenses must be reviewed before public distribution. Trademark
+documentation is deliberately deferred to the final public-release stage and
+does not block internal 0.1 release candidates.

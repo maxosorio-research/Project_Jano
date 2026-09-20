@@ -1,0 +1,1685 @@
+{
+  "schemaVersion": 1,
+  "name": "f22-bunker-baseline",
+  "contentIncluded": false,
+  "source": {
+    "documentId": "08c3ecef-a541-4e62-9a8f-c2d75c811da2",
+    "originalFileName": "F22_Bunker_2025_Decades_of_democracy_Insights_into_the_political_landscape_of_Chile.pdf",
+    "originalSha256": "bd8c9a367810f40bfb7e32d4debf7032ad7a944b67ecb1b3e6c2441578720c7c",
+    "pageCount": 8,
+    "nativePageCount": 8,
+    "ocrPageCount": 0,
+    "segmentCount": 104,
+    "translationCount": 104,
+    "alignmentCount": 104,
+    "reviewStatusCounts": { "approved": 103, "needs-review": 1 }
+  },
+  "segments": [
+    {
+      "segmentId": "seg_00001",
+      "page": 1,
+      "blockType": "heading",
+      "sourceLength": 96,
+      "targetLength": 100,
+      "reviewStatus": "approved",
+      "reviewWarningCount": 0
+    },
+    {
+      "segmentId": "seg_00002",
+      "page": 1,
+      "blockType": "paragraph",
+      "sourceLength": 47,
+      "targetLength": 50,
+      "reviewStatus": "approved",
+      "reviewWarningCount": 0
+    },
+    {
+      "segmentId": "seg_00003",
+      "page": 1,
+      "blockType": "paragraph",
+      "sourceLength": 1307,
+      "targetLength": 1560,
+      "reviewStatus": "approved",
+      "reviewWarningCount": 0
+    },
+    {
+      "segmentId": "seg_00004",
+      "page": 1,
+      "blockType": "paragraph",
+      "sourceLength": 247,
+      "targetLength": 251,
+      "reviewStatus": "approved",
+      "reviewWarningCount": 0
+    },
+    {
+      "segmentId": "seg_00005",
+      "page": 1,
+      "blockType": "paragraph",
+      "sourceLength": 15,
+      "targetLength": 15,
+      "reviewStatus": "approved",
+      "reviewWarningCount": 0
+    },
+    {
+      "segmentId": "seg_00006",
+      "page": 1,
+      "blockType": "paragraph",
+      "sourceLength": 157,
+      "targetLength": 184,
+      "reviewStatus": "approved",
+      "reviewWarningCount": 0
+    },
+    {
+      "segmentId": "seg_00007",
+      "page": 1,
+      "blockType": "paragraph",
+      "sourceLength": 107,
+      "targetLength": 90,
+      "reviewStatus": "approved",
+      "reviewWarningCount": 0
+    },
+    {
+      "segmentId": "seg_00008",
+      "page": 1,
+      "blockType": "heading",
+      "sourceLength": 1,
+      "targetLength": 1,
+      "reviewStatus": "approved",
+      "reviewWarningCount": 0
+    },
+    {
+      "segmentId": "seg_00009",
+      "page": 1,
+      "blockType": "figure-marker",
+      "sourceLength": 49,
+      "targetLength": 53,
+      "reviewStatus": "approved",
+      "reviewWarningCount": 0
+    },
+    {
+      "segmentId": "seg_00010",
+      "page": 2,
+      "blockType": "heading",
+      "sourceLength": 7,
+      "targetLength": 8,
+      "reviewStatus": "approved",
+      "reviewWarningCount": 0
+    },
+    {
+      "segmentId": "seg_00011",
+      "page": 2,
+      "blockType": "paragraph",
+      "sourceLength": 90,
+      "targetLength": 72,
+      "reviewStatus": "approved",
+      "reviewWarningCount": 0
+    },
+    {
+      "segmentId": "seg_00012",
+      "page": 2,
+      "blockType": "heading",
+      "sourceLength": 21,
+      "targetLength": 22,
+      "reviewStatus": "approved",
+      "reviewWarningCount": 0
+    },
+    {
+      "segmentId": "seg_00013",
+      "page": 2,
+      "blockType": "paragraph",
+      "sourceLength": 1256,
+      "targetLength": 1406,
+      "reviewStatus": "approved",
+      "reviewWarningCount": 0
+    },
+    {
+      "segmentId": "seg_00014",
+      "page": 2,
+      "blockType": "paragraph",
+      "sourceLength": 1154,
+      "targetLength": 1291,
+      "reviewStatus": "approved",
+      "reviewWarningCount": 0
+    },
+    {
+      "segmentId": "seg_00015",
+      "page": 2,
+      "blockType": "paragraph",
+      "sourceLength": 1294,
+      "targetLength": 1446,
+      "reviewStatus": "approved",
+      "reviewWarningCount": 0
+    },
+    {
+      "segmentId": "seg_00016",
+      "page": 2,
+      "blockType": "paragraph",
+      "sourceLength": 210,
+      "targetLength": 219,
+      "reviewStatus": "approved",
+      "reviewWarningCount": 0
+    },
+    {
+      "segmentId": "seg_00017",
+      "page": 2,
+      "blockType": "paragraph",
+      "sourceLength": 1284,
+      "targetLength": 1440,
+      "reviewStatus": "approved",
+      "reviewWarningCount": 0
+    },
+    {
+      "segmentId": "seg_00018",
+      "page": 2,
+      "blockType": "paragraph",
+      "sourceLength": 736,
+      "targetLength": 860,
+      "reviewStatus": "approved",
+      "reviewWarningCount": 0
+    },
+    {
+      "segmentId": "seg_00019",
+      "page": 2,
+      "blockType": "paragraph",
+      "sourceLength": 1203,
+      "targetLength": 1377,
+      "reviewStatus": "approved",
+      "reviewWarningCount": 0
+    },
+    {
+      "segmentId": "seg_00020",
+      "page": 2,
+      "blockType": "paragraph",
+      "sourceLength": 675,
+      "targetLength": 816,
+      "reviewStatus": "approved",
+      "reviewWarningCount": 0
+    },
+    {
+      "segmentId": "seg_00021",
+      "page": 2,
+      "blockType": "heading",
+      "sourceLength": 1,
+      "targetLength": 1,
+      "reviewStatus": "approved",
+      "reviewWarningCount": 0
+    },
+    {
+      "segmentId": "seg_00022",
+      "page": 2,
+      "blockType": "paragraph",
+      "sourceLength": 107,
+      "targetLength": 107,
+      "reviewStatus": "approved",
+      "reviewWarningCount": 0
+    },
+    {
+      "segmentId": "seg_00023",
+      "page": 3,
+      "blockType": "paragraph",
+      "sourceLength": 90,
+      "targetLength": 90,
+      "reviewStatus": "approved",
+      "reviewWarningCount": 0
+    },
+    {
+      "segmentId": "seg_00024",
+      "page": 3,
+      "blockType": "heading",
+      "sourceLength": 7,
+      "targetLength": 7,
+      "reviewStatus": "approved",
+      "reviewWarningCount": 0
+    },
+    {
+      "segmentId": "seg_00025",
+      "page": 3,
+      "blockType": "paragraph",
+      "sourceLength": 1269,
+      "targetLength": 1261,
+      "reviewStatus": "approved",
+      "reviewWarningCount": 0
+    },
+    {
+      "segmentId": "seg_00026",
+      "page": 3,
+      "blockType": "paragraph",
+      "sourceLength": 1335,
+      "targetLength": 1334,
+      "reviewStatus": "approved",
+      "reviewWarningCount": 0
+    },
+    {
+      "segmentId": "seg_00027",
+      "page": 3,
+      "blockType": "paragraph",
+      "sourceLength": 1085,
+      "targetLength": 1233,
+      "reviewStatus": "approved",
+      "reviewWarningCount": 0
+    },
+    {
+      "segmentId": "seg_00028",
+      "page": 3,
+      "blockType": "paragraph",
+      "sourceLength": 1377,
+      "targetLength": 1627,
+      "reviewStatus": "approved",
+      "reviewWarningCount": 0
+    },
+    {
+      "segmentId": "seg_00029",
+      "page": 3,
+      "blockType": "paragraph",
+      "sourceLength": 1228,
+      "targetLength": 1361,
+      "reviewStatus": "approved",
+      "reviewWarningCount": 0
+    },
+    {
+      "segmentId": "seg_00030",
+      "page": 3,
+      "blockType": "table-marker",
+      "sourceLength": 499,
+      "targetLength": 554,
+      "reviewStatus": "approved",
+      "reviewWarningCount": 0
+    },
+    {
+      "segmentId": "seg_00031",
+      "page": 3,
+      "blockType": "table-marker",
+      "sourceLength": 659,
+      "targetLength": 699,
+      "reviewStatus": "approved",
+      "reviewWarningCount": 0
+    },
+    {
+      "segmentId": "seg_00032",
+      "page": 3,
+      "blockType": "paragraph",
+      "sourceLength": 107,
+      "targetLength": 111,
+      "reviewStatus": "approved",
+      "reviewWarningCount": 0
+    },
+    {
+      "segmentId": "seg_00033",
+      "page": 3,
+      "blockType": "heading",
+      "sourceLength": 1,
+      "targetLength": 1,
+      "reviewStatus": "approved",
+      "reviewWarningCount": 0
+    },
+    {
+      "segmentId": "seg_00034",
+      "page": 4,
+      "blockType": "heading",
+      "sourceLength": 7,
+      "targetLength": 8,
+      "reviewStatus": "approved",
+      "reviewWarningCount": 0
+    },
+    {
+      "segmentId": "seg_00035",
+      "page": 4,
+      "blockType": "paragraph",
+      "sourceLength": 90,
+      "targetLength": 94,
+      "reviewStatus": "approved",
+      "reviewWarningCount": 0
+    },
+    {
+      "segmentId": "seg_00036",
+      "page": 4,
+      "blockType": "paragraph",
+      "sourceLength": 1327,
+      "targetLength": 1511,
+      "reviewStatus": "approved",
+      "reviewWarningCount": 0
+    },
+    {
+      "segmentId": "seg_00037",
+      "page": 4,
+      "blockType": "paragraph",
+      "sourceLength": 1166,
+      "targetLength": 1322,
+      "reviewStatus": "approved",
+      "reviewWarningCount": 0
+    },
+    {
+      "segmentId": "seg_00038",
+      "page": 4,
+      "blockType": "paragraph",
+      "sourceLength": 503,
+      "targetLength": 545,
+      "reviewStatus": "approved",
+      "reviewWarningCount": 0
+    },
+    {
+      "segmentId": "seg_00039",
+      "page": 4,
+      "blockType": "paragraph",
+      "sourceLength": 728,
+      "targetLength": 820,
+      "reviewStatus": "approved",
+      "reviewWarningCount": 0
+    },
+    {
+      "segmentId": "seg_00040",
+      "page": 4,
+      "blockType": "figure-marker",
+      "sourceLength": 702,
+      "targetLength": 830,
+      "reviewStatus": "approved",
+      "reviewWarningCount": 0
+    },
+    {
+      "segmentId": "seg_00041",
+      "page": 4,
+      "blockType": "figure-marker",
+      "sourceLength": 1310,
+      "targetLength": 1500,
+      "reviewStatus": "approved",
+      "reviewWarningCount": 0
+    },
+    {
+      "segmentId": "seg_00042",
+      "page": 4,
+      "blockType": "paragraph",
+      "sourceLength": 645,
+      "targetLength": 701,
+      "reviewStatus": "approved",
+      "reviewWarningCount": 0
+    },
+    {
+      "segmentId": "seg_00043",
+      "page": 4,
+      "blockType": "heading",
+      "sourceLength": 1,
+      "targetLength": 1,
+      "reviewStatus": "approved",
+      "reviewWarningCount": 0
+    },
+    {
+      "segmentId": "seg_00044",
+      "page": 4,
+      "blockType": "paragraph",
+      "sourceLength": 107,
+      "targetLength": 107,
+      "reviewStatus": "approved",
+      "reviewWarningCount": 0
+    },
+    {
+      "segmentId": "seg_00045",
+      "page": 5,
+      "blockType": "paragraph",
+      "sourceLength": 90,
+      "targetLength": 90,
+      "reviewStatus": "approved",
+      "reviewWarningCount": 0
+    },
+    {
+      "segmentId": "seg_00046",
+      "page": 5,
+      "blockType": "heading",
+      "sourceLength": 7,
+      "targetLength": 7,
+      "reviewStatus": "approved",
+      "reviewWarningCount": 0
+    },
+    {
+      "segmentId": "seg_00047",
+      "page": 5,
+      "blockType": "figure-marker",
+      "sourceLength": 593,
+      "targetLength": 671,
+      "reviewStatus": "approved",
+      "reviewWarningCount": 0
+    },
+    {
+      "segmentId": "seg_00048",
+      "page": 5,
+      "blockType": "paragraph",
+      "sourceLength": 126,
+      "targetLength": 149,
+      "reviewStatus": "approved",
+      "reviewWarningCount": 0
+    },
+    {
+      "segmentId": "seg_00049",
+      "page": 5,
+      "blockType": "figure-marker",
+      "sourceLength": 1334,
+      "targetLength": 1641,
+      "reviewStatus": "approved",
+      "reviewWarningCount": 0
+    },
+    {
+      "segmentId": "seg_00050",
+      "page": 5,
+      "blockType": "paragraph",
+      "sourceLength": 636,
+      "targetLength": 701,
+      "reviewStatus": "approved",
+      "reviewWarningCount": 0
+    },
+    {
+      "segmentId": "seg_00051",
+      "page": 5,
+      "blockType": "figure-marker",
+      "sourceLength": 601,
+      "targetLength": 674,
+      "reviewStatus": "approved",
+      "reviewWarningCount": 0
+    },
+    {
+      "segmentId": "seg_00052",
+      "page": 5,
+      "blockType": "paragraph",
+      "sourceLength": 188,
+      "targetLength": 207,
+      "reviewStatus": "approved",
+      "reviewWarningCount": 0
+    },
+    {
+      "segmentId": "seg_00053",
+      "page": 5,
+      "blockType": "figure-marker",
+      "sourceLength": 1321,
+      "targetLength": 1609,
+      "reviewStatus": "approved",
+      "reviewWarningCount": 0
+    },
+    {
+      "segmentId": "seg_00054",
+      "page": 5,
+      "blockType": "paragraph",
+      "sourceLength": 453,
+      "targetLength": 495,
+      "reviewStatus": "approved",
+      "reviewWarningCount": 0
+    },
+    {
+      "segmentId": "seg_00055",
+      "page": 5,
+      "blockType": "paragraph",
+      "sourceLength": 107,
+      "targetLength": 107,
+      "reviewStatus": "approved",
+      "reviewWarningCount": 0
+    },
+    {
+      "segmentId": "seg_00056",
+      "page": 5,
+      "blockType": "heading",
+      "sourceLength": 1,
+      "targetLength": 1,
+      "reviewStatus": "approved",
+      "reviewWarningCount": 0
+    },
+    {
+      "segmentId": "seg_00057",
+      "page": 6,
+      "blockType": "heading",
+      "sourceLength": 7,
+      "targetLength": 7,
+      "reviewStatus": "approved",
+      "reviewWarningCount": 0
+    },
+    {
+      "segmentId": "seg_00058",
+      "page": 6,
+      "blockType": "paragraph",
+      "sourceLength": 90,
+      "targetLength": 90,
+      "reviewStatus": "approved",
+      "reviewWarningCount": 0
+    },
+    {
+      "segmentId": "seg_00059",
+      "page": 6,
+      "blockType": "heading",
+      "sourceLength": 3,
+      "targetLength": 3,
+      "reviewStatus": "approved",
+      "reviewWarningCount": 0
+    },
+    {
+      "segmentId": "seg_00060",
+      "page": 6,
+      "blockType": "heading",
+      "sourceLength": 3,
+      "targetLength": 3,
+      "reviewStatus": "approved",
+      "reviewWarningCount": 0
+    },
+    {
+      "segmentId": "seg_00061",
+      "page": 6,
+      "blockType": "heading",
+      "sourceLength": 3,
+      "targetLength": 3,
+      "reviewStatus": "approved",
+      "reviewWarningCount": 0
+    },
+    {
+      "segmentId": "seg_00062",
+      "page": 6,
+      "blockType": "heading",
+      "sourceLength": 38,
+      "targetLength": 37,
+      "reviewStatus": "approved",
+      "reviewWarningCount": 0
+    },
+    {
+      "segmentId": "seg_00063",
+      "page": 6,
+      "blockType": "heading",
+      "sourceLength": 3,
+      "targetLength": 3,
+      "reviewStatus": "approved",
+      "reviewWarningCount": 0
+    },
+    {
+      "segmentId": "seg_00064",
+      "page": 6,
+      "blockType": "heading",
+      "sourceLength": 1,
+      "targetLength": 1,
+      "reviewStatus": "approved",
+      "reviewWarningCount": 0
+    },
+    {
+      "segmentId": "seg_00065",
+      "page": 6,
+      "blockType": "heading",
+      "sourceLength": 42,
+      "targetLength": 45,
+      "reviewStatus": "approved",
+      "reviewWarningCount": 0
+    },
+    {
+      "segmentId": "seg_00066",
+      "page": 6,
+      "blockType": "heading",
+      "sourceLength": 1,
+      "targetLength": 1,
+      "reviewStatus": "approved",
+      "reviewWarningCount": 0
+    },
+    {
+      "segmentId": "seg_00067",
+      "page": 6,
+      "blockType": "figure-marker",
+      "sourceLength": 608,
+      "targetLength": 640,
+      "reviewStatus": "approved",
+      "reviewWarningCount": 0
+    },
+    {
+      "segmentId": "seg_00068",
+      "page": 6,
+      "blockType": "paragraph",
+      "sourceLength": 1213,
+      "targetLength": 1395,
+      "reviewStatus": "approved",
+      "reviewWarningCount": 0
+    },
+    {
+      "segmentId": "seg_00069",
+      "page": 6,
+      "blockType": "paragraph",
+      "sourceLength": 468,
+      "targetLength": 522,
+      "reviewStatus": "approved",
+      "reviewWarningCount": 0
+    },
+    {
+      "segmentId": "seg_00070",
+      "page": 6,
+      "blockType": "paragraph",
+      "sourceLength": 268,
+      "targetLength": 284,
+      "reviewStatus": "approved",
+      "reviewWarningCount": 0
+    },
+    {
+      "segmentId": "seg_00071",
+      "page": 6,
+      "blockType": "figure-marker",
+      "sourceLength": 496,
+      "targetLength": 540,
+      "reviewStatus": "approved",
+      "reviewWarningCount": 0
+    },
+    {
+      "segmentId": "seg_00072",
+      "page": 6,
+      "blockType": "paragraph",
+      "sourceLength": 1325,
+      "targetLength": 1505,
+      "reviewStatus": "approved",
+      "reviewWarningCount": 0
+    },
+    {
+      "segmentId": "seg_00073",
+      "page": 6,
+      "blockType": "paragraph",
+      "sourceLength": 755,
+      "targetLength": 995,
+      "reviewStatus": "approved",
+      "reviewWarningCount": 0
+    },
+    {
+      "segmentId": "seg_00074",
+      "page": 6,
+      "blockType": "heading",
+      "sourceLength": 1,
+      "targetLength": 1,
+      "reviewStatus": "approved",
+      "reviewWarningCount": 0
+    },
+    {
+      "segmentId": "seg_00075",
+      "page": 6,
+      "blockType": "paragraph",
+      "sourceLength": 107,
+      "targetLength": 107,
+      "reviewStatus": "approved",
+      "reviewWarningCount": 0
+    },
+    {
+      "segmentId": "seg_00076",
+      "page": 7,
+      "blockType": "paragraph",
+      "sourceLength": 90,
+      "targetLength": 90,
+      "reviewStatus": "approved",
+      "reviewWarningCount": 0
+    },
+    {
+      "segmentId": "seg_00077",
+      "page": 7,
+      "blockType": "heading",
+      "sourceLength": 7,
+      "targetLength": 7,
+      "reviewStatus": "approved",
+      "reviewWarningCount": 0
+    },
+    {
+      "segmentId": "seg_00078",
+      "page": 7,
+      "blockType": "paragraph",
+      "sourceLength": 105,
+      "targetLength": 106,
+      "reviewStatus": "approved",
+      "reviewWarningCount": 0
+    },
+    {
+      "segmentId": "seg_00079",
+      "page": 7,
+      "blockType": "paragraph",
+      "sourceLength": 211,
+      "targetLength": 233,
+      "reviewStatus": "approved",
+      "reviewWarningCount": 0
+    },
+    {
+      "segmentId": "seg_00080",
+      "page": 7,
+      "blockType": "paragraph",
+      "sourceLength": 53,
+      "targetLength": 60,
+      "reviewStatus": "approved",
+      "reviewWarningCount": 0
+    },
+    {
+      "segmentId": "seg_00081",
+      "page": 7,
+      "blockType": "paragraph",
+      "sourceLength": 1384,
+      "targetLength": 1470,
+      "reviewStatus": "approved",
+      "reviewWarningCount": 0
+    },
+    {
+      "segmentId": "seg_00082",
+      "page": 7,
+      "blockType": "paragraph",
+      "sourceLength": 1387,
+      "targetLength": 1431,
+      "reviewStatus": "approved",
+      "reviewWarningCount": 0
+    },
+    {
+      "segmentId": "seg_00083",
+      "page": 7,
+      "blockType": "paragraph",
+      "sourceLength": 721,
+      "targetLength": 755,
+      "reviewStatus": "approved",
+      "reviewWarningCount": 0
+    },
+    {
+      "segmentId": "seg_00084",
+      "page": 7,
+      "blockType": "paragraph",
+      "sourceLength": 1396,
+      "targetLength": 1541,
+      "reviewStatus": "needs-review",
+      "reviewWarningCount": 1
+    },
+    {
+      "segmentId": "seg_00085",
+      "page": 7,
+      "blockType": "paragraph",
+      "sourceLength": 1347,
+      "targetLength": 1347,
+      "reviewStatus": "approved",
+      "reviewWarningCount": 0
+    },
+    {
+      "segmentId": "seg_00086",
+      "page": 7,
+      "blockType": "paragraph",
+      "sourceLength": 1399,
+      "targetLength": 1472,
+      "reviewStatus": "approved",
+      "reviewWarningCount": 0
+    },
+    {
+      "segmentId": "seg_00087",
+      "page": 7,
+      "blockType": "paragraph",
+      "sourceLength": 570,
+      "targetLength": 580,
+      "reviewStatus": "approved",
+      "reviewWarningCount": 0
+    },
+    {
+      "segmentId": "seg_00088",
+      "page": 7,
+      "blockType": "paragraph",
+      "sourceLength": 107,
+      "targetLength": 107,
+      "reviewStatus": "approved",
+      "reviewWarningCount": 0
+    },
+    {
+      "segmentId": "seg_00089",
+      "page": 7,
+      "blockType": "heading",
+      "sourceLength": 1,
+      "targetLength": 1,
+      "reviewStatus": "approved",
+      "reviewWarningCount": 0
+    },
+    {
+      "segmentId": "seg_00090",
+      "page": 8,
+      "blockType": "heading",
+      "sourceLength": 7,
+      "targetLength": 7,
+      "reviewStatus": "approved",
+      "reviewWarningCount": 0
+    },
+    {
+      "segmentId": "seg_00091",
+      "page": 8,
+      "blockType": "paragraph",
+      "sourceLength": 90,
+      "targetLength": 90,
+      "reviewStatus": "approved",
+      "reviewWarningCount": 0
+    },
+    {
+      "segmentId": "seg_00092",
+      "page": 8,
+      "blockType": "paragraph",
+      "sourceLength": 629,
+      "targetLength": 643,
+      "reviewStatus": "approved",
+      "reviewWarningCount": 0
+    },
+    {
+      "segmentId": "seg_00093",
+      "page": 8,
+      "blockType": "paragraph",
+      "sourceLength": 156,
+      "targetLength": 156,
+      "reviewStatus": "approved",
+      "reviewWarningCount": 0
+    },
+    {
+      "segmentId": "seg_00094",
+      "page": 8,
+      "blockType": "paragraph",
+      "sourceLength": 80,
+      "targetLength": 80,
+      "reviewStatus": "approved",
+      "reviewWarningCount": 0
+    },
+    {
+      "segmentId": "seg_00095",
+      "page": 8,
+      "blockType": "paragraph",
+      "sourceLength": 218,
+      "targetLength": 219,
+      "reviewStatus": "approved",
+      "reviewWarningCount": 0
+    },
+    {
+      "segmentId": "seg_00096",
+      "page": 8,
+      "blockType": "paragraph",
+      "sourceLength": 111,
+      "targetLength": 111,
+      "reviewStatus": "approved",
+      "reviewWarningCount": 0
+    },
+    {
+      "segmentId": "seg_00097",
+      "page": 8,
+      "blockType": "paragraph",
+      "sourceLength": 171,
+      "targetLength": 171,
+      "reviewStatus": "approved",
+      "reviewWarningCount": 0
+    },
+    {
+      "segmentId": "seg_00098",
+      "page": 8,
+      "blockType": "paragraph",
+      "sourceLength": 63,
+      "targetLength": 63,
+      "reviewStatus": "approved",
+      "reviewWarningCount": 0
+    },
+    {
+      "segmentId": "seg_00099",
+      "page": 8,
+      "blockType": "paragraph",
+      "sourceLength": 164,
+      "targetLength": 170,
+      "reviewStatus": "approved",
+      "reviewWarningCount": 0
+    },
+    {
+      "segmentId": "seg_00100",
+      "page": 8,
+      "blockType": "paragraph",
+      "sourceLength": 107,
+      "targetLength": 117,
+      "reviewStatus": "approved",
+      "reviewWarningCount": 0
+    },
+    {
+      "segmentId": "seg_00101",
+      "page": 8,
+      "blockType": "paragraph",
+      "sourceLength": 1023,
+      "targetLength": 1085,
+      "reviewStatus": "approved",
+      "reviewWarningCount": 0
+    },
+    {
+      "segmentId": "seg_00102",
+      "page": 8,
+      "blockType": "paragraph",
+      "sourceLength": 20,
+      "targetLength": 20,
+      "reviewStatus": "approved",
+      "reviewWarningCount": 0
+    },
+    {
+      "segmentId": "seg_00103",
+      "page": 8,
+      "blockType": "heading",
+      "sourceLength": 1,
+      "targetLength": 1,
+      "reviewStatus": "approved",
+      "reviewWarningCount": 0
+    },
+    {
+      "segmentId": "seg_00104",
+      "page": 8,
+      "blockType": "paragraph",
+      "sourceLength": 107,
+      "targetLength": 107,
+      "reviewStatus": "approved",
+      "reviewWarningCount": 0
+    }
+  ],
+  "alignments": [
+    {
+      "alignmentId": "al_seg_00001",
+      "sourceSegmentIds": ["seg_00001"],
+      "targetSegmentIds": ["seg_00001"],
+      "type": "1:1",
+      "method": "generated-id"
+    },
+    {
+      "alignmentId": "al_seg_00002",
+      "sourceSegmentIds": ["seg_00002"],
+      "targetSegmentIds": ["seg_00002"],
+      "type": "1:1",
+      "method": "generated-id"
+    },
+    {
+      "alignmentId": "al_seg_00003",
+      "sourceSegmentIds": ["seg_00003"],
+      "targetSegmentIds": ["seg_00003"],
+      "type": "1:1",
+      "method": "generated-id"
+    },
+    {
+      "alignmentId": "al_seg_00004",
+      "sourceSegmentIds": ["seg_00004"],
+      "targetSegmentIds": ["seg_00004"],
+      "type": "1:1",
+      "method": "generated-id"
+    },
+    {
+      "alignmentId": "al_seg_00005",
+      "sourceSegmentIds": ["seg_00005"],
+      "targetSegmentIds": ["seg_00005"],
+      "type": "1:1",
+      "method": "generated-id"
+    },
+    {
+      "alignmentId": "al_seg_00006",
+      "sourceSegmentIds": ["seg_00006"],
+      "targetSegmentIds": ["seg_00006"],
+      "type": "1:1",
+      "method": "generated-id"
+    },
+    {
+      "alignmentId": "al_seg_00007",
+      "sourceSegmentIds": ["seg_00007"],
+      "targetSegmentIds": ["seg_00007"],
+      "type": "1:1",
+      "method": "generated-id"
+    },
+    {
+      "alignmentId": "al_seg_00008",
+      "sourceSegmentIds": ["seg_00008"],
+      "targetSegmentIds": ["seg_00008"],
+      "type": "1:1",
+      "method": "generated-id"
+    },
+    {
+      "alignmentId": "al_seg_00009",
+      "sourceSegmentIds": ["seg_00009"],
+      "targetSegmentIds": ["seg_00009"],
+      "type": "1:1",
+      "method": "generated-id"
+    },
+    {
+      "alignmentId": "al_seg_00010",
+      "sourceSegmentIds": ["seg_00010"],
+      "targetSegmentIds": ["seg_00010"],
+      "type": "1:1",
+      "method": "generated-id"
+    },
+    {
+      "alignmentId": "al_seg_00011",
+      "sourceSegmentIds": ["seg_00011"],
+      "targetSegmentIds": ["seg_00011"],
+      "type": "1:1",
+      "method": "generated-id"
+    },
+    {
+      "alignmentId": "al_seg_00012",
+      "sourceSegmentIds": ["seg_00012"],
+      "targetSegmentIds": ["seg_00012"],
+      "type": "1:1",
+      "method": "generated-id"
+    },
+    {
+      "alignmentId": "al_seg_00013",
+      "sourceSegmentIds": ["seg_00013"],
+      "targetSegmentIds": ["seg_00013"],
+      "type": "1:1",
+      "method": "generated-id"
+    },
+    {
+      "alignmentId": "al_seg_00014",
+      "sourceSegmentIds": ["seg_00014"],
+      "targetSegmentIds": ["seg_00014"],
+      "type": "1:1",
+      "method": "generated-id"
+    },
+    {
+      "alignmentId": "al_seg_00015",
+      "sourceSegmentIds": ["seg_00015"],
+      "targetSegmentIds": ["seg_00015"],
+      "type": "1:1",
+      "method": "generated-id"
+    },
+    {
+      "alignmentId": "al_seg_00016",
+      "sourceSegmentIds": ["seg_00016"],
+      "targetSegmentIds": ["seg_00016"],
+      "type": "1:1",
+      "method": "generated-id"
+    },
+    {
+      "alignmentId": "al_seg_00017",
+      "sourceSegmentIds": ["seg_00017"],
+      "targetSegmentIds": ["seg_00017"],
+      "type": "1:1",
+      "method": "generated-id"
+    },
+    {
+      "alignmentId": "al_seg_00018",
+      "sourceSegmentIds": ["seg_00018"],
+      "targetSegmentIds": ["seg_00018"],
+      "type": "1:1",
+      "method": "generated-id"
+    },
+    {
+      "alignmentId": "al_seg_00019",
+      "sourceSegmentIds": ["seg_00019"],
+      "targetSegmentIds": ["seg_00019"],
+      "type": "1:1",
+      "method": "generated-id"
+    },
+    {
+      "alignmentId": "al_seg_00020",
+      "sourceSegmentIds": ["seg_00020"],
+      "targetSegmentIds": ["seg_00020"],
+      "type": "1:1",
+      "method": "generated-id"
+    },
+    {
+      "alignmentId": "al_seg_00021",
+      "sourceSegmentIds": ["seg_00021"],
+      "targetSegmentIds": ["seg_00021"],
+      "type": "1:1",
+      "method": "generated-id"
+    },
+    {
+      "alignmentId": "al_seg_00022",
+      "sourceSegmentIds": ["seg_00022"],
+      "targetSegmentIds": ["seg_00022"],
+      "type": "1:1",
+      "method": "generated-id"
+    },
+    {
+      "alignmentId": "al_seg_00023",
+      "sourceSegmentIds": ["seg_00023"],
+      "targetSegmentIds": ["seg_00023"],
+      "type": "1:1",
+      "method": "generated-id"
+    },
+    {
+      "alignmentId": "al_seg_00024",
+      "sourceSegmentIds": ["seg_00024"],
+      "targetSegmentIds": ["seg_00024"],
+      "type": "1:1",
+      "method": "generated-id"
+    },
+    {
+      "alignmentId": "al_seg_00025",
+      "sourceSegmentIds": ["seg_00025"],
+      "targetSegmentIds": ["seg_00025"],
+      "type": "1:1",
+      "method": "generated-id"
+    },
+    {
+      "alignmentId": "al_seg_00026",
+      "sourceSegmentIds": ["seg_00026"],
+      "targetSegmentIds": ["seg_00026"],
+      "type": "1:1",
+      "method": "generated-id"
+    },
+    {
+      "alignmentId": "al_seg_00027",
+      "sourceSegmentIds": ["seg_00027"],
+      "targetSegmentIds": ["seg_00027"],
+      "type": "1:1",
+      "method": "generated-id"
+    },
+    {
+      "alignmentId": "al_seg_00028",
+      "sourceSegmentIds": ["seg_00028"],
+      "targetSegmentIds": ["seg_00028"],
+      "type": "1:1",
+      "method": "generated-id"
+    },
+    {
+      "alignmentId": "al_seg_00029",
+      "sourceSegmentIds": ["seg_00029"],
+      "targetSegmentIds": ["seg_00029"],
+      "type": "1:1",
+      "method": "generated-id"
+    },
+    {
+      "alignmentId": "al_seg_00030",
+      "sourceSegmentIds": ["seg_00030"],
+      "targetSegmentIds": ["seg_00030"],
+      "type": "1:1",
+      "method": "generated-id"
+    },
+    {
+      "alignmentId": "al_seg_00031",
+      "sourceSegmentIds": ["seg_00031"],
+      "targetSegmentIds": ["seg_00031"],
+      "type": "1:1",
+      "method": "generated-id"
+    },
+    {
+      "alignmentId": "al_seg_00032",
+      "sourceSegmentIds": ["seg_00032"],
+      "targetSegmentIds": ["seg_00032"],
+      "type": "1:1",
+      "method": "generated-id"
+    },
+    {
+      "alignmentId": "al_seg_00033",
+      "sourceSegmentIds": ["seg_00033"],
+      "targetSegmentIds": ["seg_00033"],
+      "type": "1:1",
+      "method": "generated-id"
+    },
+    {
+      "alignmentId": "al_seg_00034",
+      "sourceSegmentIds": ["seg_00034"],
+      "targetSegmentIds": ["seg_00034"],
+      "type": "1:1",
+      "method": "generated-id"
+    },
+    {
+      "alignmentId": "al_seg_00035",
+      "sourceSegmentIds": ["seg_00035"],
+      "targetSegmentIds": ["seg_00035"],
+      "type": "1:1",
+      "method": "generated-id"
+    },
+    {
+      "alignmentId": "al_seg_00036",
+      "sourceSegmentIds": ["seg_00036"],
+      "targetSegmentIds": ["seg_00036"],
+      "type": "1:1",
+      "method": "generated-id"
+    },
+    {
+      "alignmentId": "al_seg_00037",
+      "sourceSegmentIds": ["seg_00037"],
+      "targetSegmentIds": ["seg_00037"],
+      "type": "1:1",
+      "method": "generated-id"
+    },
+    {
+      "alignmentId": "al_seg_00038",
+      "sourceSegmentIds": ["seg_00038"],
+      "targetSegmentIds": ["seg_00038"],
+      "type": "1:1",
+      "method": "generated-id"
+    },
+    {
+      "alignmentId": "al_seg_00039",
+      "sourceSegmentIds": ["seg_00039"],
+      "targetSegmentIds": ["seg_00039"],
+      "type": "1:1",
+      "method": "generated-id"
+    },
+    {
+      "alignmentId": "al_seg_00040",
+      "sourceSegmentIds": ["seg_00040"],
+      "targetSegmentIds": ["seg_00040"],
+      "type": "1:1",
+      "method": "generated-id"
+    },
+    {
+      "alignmentId": "al_seg_00041",
+      "sourceSegmentIds": ["seg_00041"],
+      "targetSegmentIds": ["seg_00041"],
+      "type": "1:1",
+      "method": "generated-id"
+    },
+    {
+      "alignmentId": "al_seg_00042",
+      "sourceSegmentIds": ["seg_00042"],
+      "targetSegmentIds": ["seg_00042"],
+      "type": "1:1",
+      "method": "generated-id"
+    },
+    {
+      "alignmentId": "al_seg_00043",
+      "sourceSegmentIds": ["seg_00043"],
+      "targetSegmentIds": ["seg_00043"],
+      "type": "1:1",
+      "method": "generated-id"
+    },
+    {
+      "alignmentId": "al_seg_00044",
+      "sourceSegmentIds": ["seg_00044"],
+      "targetSegmentIds": ["seg_00044"],
+      "type": "1:1",
+      "method": "generated-id"
+    },
+    {
+      "alignmentId": "al_seg_00045",
+      "sourceSegmentIds": ["seg_00045"],
+      "targetSegmentIds": ["seg_00045"],
+      "type": "1:1",
+      "method": "generated-id"
+    },
+    {
+      "alignmentId": "al_seg_00046",
+      "sourceSegmentIds": ["seg_00046"],
+      "targetSegmentIds": ["seg_00046"],
+      "type": "1:1",
+      "method": "generated-id"
+    },
+    {
+      "alignmentId": "al_seg_00047",
+      "sourceSegmentIds": ["seg_00047"],
+      "targetSegmentIds": ["seg_00047"],
+      "type": "1:1",
+      "method": "generated-id"
+    },
+    {
+      "alignmentId": "al_seg_00048",
+      "sourceSegmentIds": ["seg_00048"],
+      "targetSegmentIds": ["seg_00048"],
+      "type": "1:1",
+      "method": "generated-id"
+    },
+    {
+      "alignmentId": "al_seg_00049",
+      "sourceSegmentIds": ["seg_00049"],
+      "targetSegmentIds": ["seg_00049"],
+      "type": "1:1",
+      "method": "generated-id"
+    },
+    {
+      "alignmentId": "al_seg_00050",
+      "sourceSegmentIds": ["seg_00050"],
+      "targetSegmentIds": ["seg_00050"],
+      "type": "1:1",
+      "method": "generated-id"
+    },
+    {
+      "alignmentId": "al_seg_00051",
+      "sourceSegmentIds": ["seg_00051"],
+      "targetSegmentIds": ["seg_00051"],
+      "type": "1:1",
+      "method": "generated-id"
+    },
+    {
+      "alignmentId": "al_seg_00052",
+      "sourceSegmentIds": ["seg_00052"],
+      "targetSegmentIds": ["seg_00052"],
+      "type": "1:1",
+      "method": "generated-id"
+    },
+    {
+      "alignmentId": "al_seg_00053",
+      "sourceSegmentIds": ["seg_00053"],
+      "targetSegmentIds": ["seg_00053"],
+      "type": "1:1",
+      "method": "generated-id"
+    },
+    {
+      "alignmentId": "al_seg_00054",
+      "sourceSegmentIds": ["seg_00054"],
+      "targetSegmentIds": ["seg_00054"],
+      "type": "1:1",
+      "method": "generated-id"
+    },
+    {
+      "alignmentId": "al_seg_00055",
+      "sourceSegmentIds": ["seg_00055"],
+      "targetSegmentIds": ["seg_00055"],
+      "type": "1:1",
+      "method": "generated-id"
+    },
+    {
+      "alignmentId": "al_seg_00056",
+      "sourceSegmentIds": ["seg_00056"],
+      "targetSegmentIds": ["seg_00056"],
+      "type": "1:1",
+      "method": "generated-id"
+    },
+    {
+      "alignmentId": "al_seg_00057",
+      "sourceSegmentIds": ["seg_00057"],
+      "targetSegmentIds": ["seg_00057"],
+      "type": "1:1",
+      "method": "generated-id"
+    },
+    {
+      "alignmentId": "al_seg_00058",
+      "sourceSegmentIds": ["seg_00058"],
+      "targetSegmentIds": ["seg_00058"],
+      "type": "1:1",
+      "method": "generated-id"
+    },
+    {
+      "alignmentId": "al_seg_00059",
+      "sourceSegmentIds": ["seg_00059"],
+      "targetSegmentIds": ["seg_00059"],
+      "type": "1:1",
+      "method": "generated-id"
+    },
+    {
+      "alignmentId": "al_seg_00060",
+      "sourceSegmentIds": ["seg_00060"],
+      "targetSegmentIds": ["seg_00060"],
+      "type": "1:1",
+      "method": "generated-id"
+    },
+    {
+      "alignmentId": "al_seg_00061",
+      "sourceSegmentIds": ["seg_00061"],
+      "targetSegmentIds": ["seg_00061"],
+      "type": "1:1",
+      "method": "generated-id"
+    },
+    {
+      "alignmentId": "al_seg_00062",
+      "sourceSegmentIds": ["seg_00062"],
+      "targetSegmentIds": ["seg_00062"],
+      "type": "1:1",
+      "method": "generated-id"
+    },
+    {
+      "alignmentId": "al_seg_00063",
+      "sourceSegmentIds": ["seg_00063"],
+      "targetSegmentIds": ["seg_00063"],
+      "type": "1:1",
+      "method": "generated-id"
+    },
+    {
+      "alignmentId": "al_seg_00064",
+      "sourceSegmentIds": ["seg_00064"],
+      "targetSegmentIds": ["seg_00064"],
+      "type": "1:1",
+      "method": "generated-id"
+    },
+    {
+      "alignmentId": "al_seg_00065",
+      "sourceSegmentIds": ["seg_00065"],
+      "targetSegmentIds": ["seg_00065"],
+      "type": "1:1",
+      "method": "generated-id"
+    },
+    {
+      "alignmentId": "al_seg_00066",
+      "sourceSegmentIds": ["seg_00066"],
+      "targetSegmentIds": ["seg_00066"],
+      "type": "1:1",
+      "method": "generated-id"
+    },
+    {
+      "alignmentId": "al_seg_00067",
+      "sourceSegmentIds": ["seg_00067"],
+      "targetSegmentIds": ["seg_00067"],
+      "type": "1:1",
+      "method": "generated-id"
+    },
+    {
+      "alignmentId": "al_seg_00068",
+      "sourceSegmentIds": ["seg_00068"],
+      "targetSegmentIds": ["seg_00068"],
+      "type": "1:1",
+      "method": "generated-id"
+    },
+    {
+      "alignmentId": "al_seg_00069",
+      "sourceSegmentIds": ["seg_00069"],
+      "targetSegmentIds": ["seg_00069"],
+      "type": "1:1",
+      "method": "generated-id"
+    },
+    {
+      "alignmentId": "al_seg_00070",
+      "sourceSegmentIds": ["seg_00070"],
+      "targetSegmentIds": ["seg_00070"],
+      "type": "1:1",
+      "method": "generated-id"
+    },
+    {
+      "alignmentId": "al_seg_00071",
+      "sourceSegmentIds": ["seg_00071"],
+      "targetSegmentIds": ["seg_00071"],
+      "type": "1:1",
+      "method": "generated-id"
+    },
+    {
+      "alignmentId": "al_seg_00072",
+      "sourceSegmentIds": ["seg_00072"],
+      "targetSegmentIds": ["seg_00072"],
+      "type": "1:1",
+      "method": "generated-id"
+    },
+    {
+      "alignmentId": "al_seg_00073",
+      "sourceSegmentIds": ["seg_00073"],
+      "targetSegmentIds": ["seg_00073"],
+      "type": "1:1",
+      "method": "generated-id"
+    },
+    {
+      "alignmentId": "al_seg_00074",
+      "sourceSegmentIds": ["seg_00074"],
+      "targetSegmentIds": ["seg_00074"],
+      "type": "1:1",
+      "method": "generated-id"
+    },
+    {
+      "alignmentId": "al_seg_00075",
+      "sourceSegmentIds": ["seg_00075"],
+      "targetSegmentIds": ["seg_00075"],
+      "type": "1:1",
+      "method": "generated-id"
+    },
+    {
+      "alignmentId": "al_seg_00076",
+      "sourceSegmentIds": ["seg_00076"],
+      "targetSegmentIds": ["seg_00076"],
+      "type": "1:1",
+      "method": "generated-id"
+    },
+    {
+      "alignmentId": "al_seg_00077",
+      "sourceSegmentIds": ["seg_00077"],
+      "targetSegmentIds": ["seg_00077"],
+      "type": "1:1",
+      "method": "generated-id"
+    },
+    {
+      "alignmentId": "al_seg_00078",
+      "sourceSegmentIds": ["seg_00078"],
+      "targetSegmentIds": ["seg_00078"],
+      "type": "1:1",
+      "method": "generated-id"
+    },
+    {
+      "alignmentId": "al_seg_00079",
+      "sourceSegmentIds": ["seg_00079"],
+      "targetSegmentIds": ["seg_00079"],
+      "type": "1:1",
+      "method": "generated-id"
+    },
+    {
+      "alignmentId": "al_seg_00080",
+      "sourceSegmentIds": ["seg_00080"],
+      "targetSegmentIds": ["seg_00080"],
+      "type": "1:1",
+      "method": "generated-id"
+    },
+    {
+      "alignmentId": "al_seg_00081",
+      "sourceSegmentIds": ["seg_00081"],
+      "targetSegmentIds": ["seg_00081"],
+      "type": "1:1",
+      "method": "generated-id"
+    },
+    {
+      "alignmentId": "al_seg_00082",
+      "sourceSegmentIds": ["seg_00082"],
+      "targetSegmentIds": ["seg_00082"],
+      "type": "1:1",
+      "method": "generated-id"
+    },
+    {
+      "alignmentId": "al_seg_00083",
+      "sourceSegmentIds": ["seg_00083"],
+      "targetSegmentIds": ["seg_00083"],
+      "type": "1:1",
+      "method": "generated-id"
+    },
+    {
+      "alignmentId": "al_seg_00084",
+      "sourceSegmentIds": ["seg_00084"],
+      "targetSegmentIds": ["seg_00084"],
+      "type": "1:1",
+      "method": "generated-id"
+    },
+    {
+      "alignmentId": "al_seg_00085",
+      "sourceSegmentIds": ["seg_00085"],
+      "targetSegmentIds": ["seg_00085"],
+      "type": "1:1",
+      "method": "generated-id"
+    },
+    {
+      "alignmentId": "al_seg_00086",
+      "sourceSegmentIds": ["seg_00086"],
+      "targetSegmentIds": ["seg_00086"],
+      "type": "1:1",
+      "method": "generated-id"
+    },
+    {
+      "alignmentId": "al_seg_00087",
+      "sourceSegmentIds": ["seg_00087"],
+      "targetSegmentIds": ["seg_00087"],
+      "type": "1:1",
+      "method": "generated-id"
+    },
+    {
+      "alignmentId": "al_seg_00088",
+      "sourceSegmentIds": ["seg_00088"],
+      "targetSegmentIds": ["seg_00088"],
+      "type": "1:1",
+      "method": "generated-id"
+    },
+    {
+      "alignmentId": "al_seg_00089",
+      "sourceSegmentIds": ["seg_00089"],
+      "targetSegmentIds": ["seg_00089"],
+      "type": "1:1",
+      "method": "generated-id"
+    },
+    {
+      "alignmentId": "al_seg_00090",
+      "sourceSegmentIds": ["seg_00090"],
+      "targetSegmentIds": ["seg_00090"],
+      "type": "1:1",
+      "method": "generated-id"
+    },
+    {
+      "alignmentId": "al_seg_00091",
+      "sourceSegmentIds": ["seg_00091"],
+      "targetSegmentIds": ["seg_00091"],
+      "type": "1:1",
+      "method": "generated-id"
+    },
+    {
+      "alignmentId": "al_seg_00092",
+      "sourceSegmentIds": ["seg_00092"],
+      "targetSegmentIds": ["seg_00092"],
+      "type": "1:1",
+      "method": "generated-id"
+    },
+    {
+      "alignmentId": "al_seg_00093",
+      "sourceSegmentIds": ["seg_00093"],
+      "targetSegmentIds": ["seg_00093"],
+      "type": "1:1",
+      "method": "generated-id"
+    },
+    {
+      "alignmentId": "al_seg_00094",
+      "sourceSegmentIds": ["seg_00094"],
+      "targetSegmentIds": ["seg_00094"],
+      "type": "1:1",
+      "method": "generated-id"
+    },
+    {
+      "alignmentId": "al_seg_00095",
+      "sourceSegmentIds": ["seg_00095"],
+      "targetSegmentIds": ["seg_00095"],
+      "type": "1:1",
+      "method": "generated-id"
+    },
+    {
+      "alignmentId": "al_seg_00096",
+      "sourceSegmentIds": ["seg_00096"],
+      "targetSegmentIds": ["seg_00096"],
+      "type": "1:1",
+      "method": "generated-id"
+    },
+    {
+      "alignmentId": "al_seg_00097",
+      "sourceSegmentIds": ["seg_00097"],
+      "targetSegmentIds": ["seg_00097"],
+      "type": "1:1",
+      "method": "generated-id"
+    },
+    {
+      "alignmentId": "al_seg_00098",
+      "sourceSegmentIds": ["seg_00098"],
+      "targetSegmentIds": ["seg_00098"],
+      "type": "1:1",
+      "method": "generated-id"
+    },
+    {
+      "alignmentId": "al_seg_00099",
+      "sourceSegmentIds": ["seg_00099"],
+      "targetSegmentIds": ["seg_00099"],
+      "type": "1:1",
+      "method": "generated-id"
+    },
+    {
+      "alignmentId": "al_seg_00100",
+      "sourceSegmentIds": ["seg_00100"],
+      "targetSegmentIds": ["seg_00100"],
+      "type": "1:1",
+      "method": "generated-id"
+    },
+    {
+      "alignmentId": "al_seg_00101",
+      "sourceSegmentIds": ["seg_00101"],
+      "targetSegmentIds": ["seg_00101"],
+      "type": "1:1",
+      "method": "generated-id"
+    },
+    {
+      "alignmentId": "al_seg_00102",
+      "sourceSegmentIds": ["seg_00102"],
+      "targetSegmentIds": ["seg_00102"],
+      "type": "1:1",
+      "method": "generated-id"
+    },
+    {
+      "alignmentId": "al_seg_00103",
+      "sourceSegmentIds": ["seg_00103"],
+      "targetSegmentIds": ["seg_00103"],
+      "type": "1:1",
+      "method": "generated-id"
+    },
+    {
+      "alignmentId": "al_seg_00104",
+      "sourceSegmentIds": ["seg_00104"],
+      "targetSegmentIds": ["seg_00104"],
+      "type": "1:1",
+      "method": "generated-id"
+    }
+  ]
+}
