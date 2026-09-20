@@ -1835,4 +1835,13 @@ button:disabled {
   .language-direction {
     display: none;
   }
+
+  .translation-result-actions .secondary-button {
+    padding-right: 7px;
+    padding-left: 7px;
+  }
+
+  .translation-result-actions .secondary-button span {
+    display: none;
+  }
 }
